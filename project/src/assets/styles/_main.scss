@@ -1,0 +1,47 @@
+@import './color';
+@import './font';
+
+html,
+body {
+	font-size: 14px;
+	overscroll-behavior-y: contain;
+	-webkit-text-size-adjust: none;
+	-webkit-touch-callout: auto; /* iOS Safari */
+	-webkit-user-select: auto; /* Safari */
+	-moz-user-select: auto; /* Old versions of Firefox */
+	-ms-user-select: auto; /* Internet Explorer/Edge */
+	user-select: auto; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+* {
+	font-family: 'Pretendard';
+	letter-spacing: -0.7px !important;
+}
+
+// 한줄이상 (...)처리
+@mixin ellipsis {
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+// 한줄이상 (...)처리
+@mixin ellipsis_1 {
+	display: -webkit-box !important;
+	word-wrap: break-word !important;
+	-webkit-line-clamp: 1 !important;
+	-webkit-box-orient: vertical !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+}
+
+// 두줄이상 (...)처리
+@mixin ellipsis_2 {
+	display: -webkit-box !important;
+	word-wrap: break-word !important;
+	-webkit-line-clamp: 2 !important;
+	-webkit-box-orient: vertical !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+}

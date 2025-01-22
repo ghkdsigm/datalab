@@ -1,0 +1,20 @@
+// {
+//     "compilerOptions": {
+//       "baseUrl": ".",
+//       "jsx": "preserve",
+//       "paths": {
+//         "@/*": ["./src/*"],
+//       }
+//     }
+//   }
+
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "jsx": "preserve",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
