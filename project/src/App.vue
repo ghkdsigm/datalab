@@ -1,18 +1,30 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+	<Layout></Layout>
 </template>
+
+<script>
+import { ref, onBeforeMount, onMounted, onUnmounted, computed } from 'vue'
+import router from '@/router'
+import { useRoute } from 'vue-router'
+import Layout from '@/layout/Layout.vue'
+export default {
+	components: {
+		Layout,
+	},
+	setup() {
+		const currentRoutes = useRoute()
+		const currentPath = computed(() => currentRoutes.path)
+
+		onMounted(() => {
+			document.documentElement.setAttribute('translate', 'no')
+		})
+
+		return {
+			currentPath,
+		}
+	},
+}
+</script>
 
 <style lang="scss">
 @import './assets/styles/main';
