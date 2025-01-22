@@ -1,20 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import NotFound from '@/router/NotFound.vue'
 
+const router = createRouter({
+	history: createWebHistory(),
+	routes: [
+		//Empty Page
+		{
+			path: '/',
+			name: 'emptyHome',
+			component: () => import('@/pages/Index.vue'),
+			title: 'emptyHome',
+			icon: 'far fa-bell fa-fw text-2xl',
+			meta: { isMenu: true, requireAuth: false },
+		},
+		{
+			path: '/:pathMatch(.*)*',
+			name: 'notFound',
+			component: NotFound,
+			meta: { isMenu: true },
+		},
+	],
+})
 
-// 라우트 설정
-const routes = [
-    {
-      path: '/',
-      name: 'Home',
-      component: () => import('@/pages/index.vue'),
-    }
-  ];
-  
-  // 라우터 생성
-  const router = createRouter({
-    history: createWebHistory(),
-    routes,
-  });
-  
-  export default router;
+router.beforeEach((to, from, next) => {	
+	next()
+})
+
+export default router
