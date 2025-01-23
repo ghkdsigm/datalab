@@ -8,7 +8,7 @@ module.exports = {
 				sans: ['Pretendard', 'ui-sans-serif', 'system-ui'],
 			},
 			colors: {
-				primary: '#1F2733',
+				primary: '#00B0B9',
 				primaryHover: '#434A66',
 				secondary: '#fff',
 				secondaryHover: '#eee',
@@ -82,19 +82,19 @@ module.exports = {
 			},
 		},
 		screens: {
-			'2xl': {max: '1535px'},
+			'2xl': { max: '1535px' },
 			// => @media (max-width: 1535px) { ... }
 
-			xl: {max: '1279px'},
+			xl: { max: '1279px' },
 			// => @media (max-width: 1279px) { ... }
 
-			lg: {max: '1023px'},
+			lg: { max: '1023px' },
 			// => @media (max-width: 1023px) { ... }
 
-			md: {max: '767px'},
+			md: { max: '767px' },
 			// => @media (max-width: 767px) { ... }
 
-			sm: {max: '639px'},
+			sm: { max: '639px' },
 			// => @media (max-width: 639px) { ... }
 		},
 	},
@@ -102,7 +102,7 @@ module.exports = {
 		container: false,
 	},
 	plugins: [
-		function ({addComponents}) {
+		function ({ addComponents }) {
 			// addComponents({
 			//   '.container': {
 			//     maxWidth: '100%',

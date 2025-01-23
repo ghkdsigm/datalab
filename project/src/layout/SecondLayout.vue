@@ -6,7 +6,7 @@
 				<img :src="imageSrc('common', 'logo')" alt="푸터 로고" />
 			</div>
 			<nav class="flex space-x-6">
-				<HeaderMenu :menuItems="menuItems" />
+				<HeaderMenu :menuItems="menuItems" @selectedIndex="handleSelectMenu" />
 			</nav>
 			<div class="flex items-center space-x-4">
 				<div>아이콘 1</div>
@@ -20,14 +20,11 @@
 			<div class="mx-auto h-full">
 				<div class="flex flex-col min-h-screen">
 					<!-- Top Content -->
-					<div class="bg-[#262626] py-[40px]">
-						<div class="container mx-auto max-w-[1280px]">
-							<div class="flex justify-between gap-6 mb-12">
-								<BoardSearch />
-							</div>
-							<div class="flex justify-between gap-6">
-								<Board />
-							</div>
+					<div class="bg-[#F8F8F8] py-[30px]">
+						<div class="container mx-auto max-w-[1280px] text-left">
+							<h1 class="text-[#262626] text-[24px] font-bold">
+								{{ currentMenu?.title }}
+							</h1>
 						</div>
 					</div>
 					<!-- Main Content -->
@@ -52,24 +49,23 @@ import { ref, onBeforeMount, onMounted, computed } from 'vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { Menu } from '@/data/common.js'
-import { useUtilities } from '@/utils/common'
 import HeaderMenu from '@/components/layout/appbar/menu.vue'
 import Footer from '@/components/layout/appbar/footer.vue'
-import BoardSearch from '@/components/mdf/board/boardsearch.vue'
-import Board from '@/components/mdf/board/board.vue'
+import { useUtilities } from '@/utils/common'
 
 export default {
 	components: {
 		HeaderMenu,
 		Footer,
-		BoardSearch,
-		Board,
 	},
 	setup() {
 		const currentRoutes = useRoute()
-		const currentPath = computed(() => currentRoutes.path)
+		const currentPath = computed(() => currentRoutes)
 		const routes = ref([])
 		const menuItems = ref(Menu)
+		const menuIdx = ref(null)
+		const currentMenu = computed(() => menuItems.value[menuIdx.value])
+
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
 
@@ -80,11 +76,18 @@ export default {
 
 		onMounted(() => {})
 
+		const handleSelectMenu = idx => {
+			menuIdx.value = idx
+		}
+
 		return {
 			routes,
 			router,
 			currentPath,
+			handleSelectMenu,
+			menuIdx,
 			menuItems,
+			currentMenu,
 			imageSrc,
 		}
 	},

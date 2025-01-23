@@ -1,13 +1,11 @@
 <template>
-  <div>test</div>
+	<Content />
 </template>
 
 <script>
 export default {
-
+	name: 'MDF',
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

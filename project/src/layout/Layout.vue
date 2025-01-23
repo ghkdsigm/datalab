@@ -5,19 +5,20 @@
 </template>
 
 <script>
-import DefaultLayout from '@/layout/DefaultLayout.vue'
-
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
+
+import DefaultLayout from '@/layout/DefaultLayout.vue'
+import SecondLayout from '@/layout/SecondLayout.vue'
 
 export default {
 	components: {
 		DefaultLayout,
+		SecondLayout,
 	},
 	setup() {
 		const route = useRoute()
-		const layout = computed(() => route.meta.layout || 'DefaultLayout')
-	
+		const layout = computed(() => route.meta.layout || 'DefaultLayout' || 'SecondLayout')
 
 		return {
 			layout,
