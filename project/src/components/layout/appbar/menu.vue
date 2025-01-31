@@ -2,7 +2,7 @@
 	<!-- 메뉴버튼 -->
 	<button
 		type="button"
-		class="inline-flex flex-row items-center px-5 hover:text-primary font-md"
+		class="inline-flex flex-row items-center mr-8 hover:text-primary font-md relative"
 		v-for="(item, idx) in menuItems"
 		:class="{
 			'text-primary font-bold !important': selectedIndex === idx,
@@ -12,6 +12,11 @@
 	>
 		<!-- 메뉴명 -->
 		<span class="">{{ item.title }}</span>
+		<span
+		v-if="selectedIndex === idx"
+		class="absolute top-6
+		 bottom-0 left-0 w-full h-1 bg-primary"
+		></span>
 	</button>
 </template>
 

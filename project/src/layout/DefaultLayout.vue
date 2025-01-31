@@ -5,9 +5,11 @@
 			<div class="logo cursor-pointer">
 				<img :src="imageSrc('common', 'logo')" alt="푸터 로고" @click="goToHome" />
 			</div>
-			<nav class="flex space-x-6">
-				<HeaderMenu :menuItems="menuItems" />
-			</nav>
+			<div class="w-[1200px]">
+				<nav class="flex">
+					<HeaderMenu :menuItems="menuItems" />
+				</nav>
+			</div>
 			<div class="flex items-center space-x-4">
 				<div>아이콘 1</div>
 				<div>아이콘 2</div>
