@@ -5,7 +5,7 @@
 		class="inline-flex flex-row items-center px-5 hover:text-primary font-md"
 		v-for="(item, idx) in menuItems"
 		:class="{
-			'text-primary font-bold': selectedIndex === idx,
+			'text-primary font-bold !important': selectedIndex === idx,
 		}"
 		:key="idx"
 		@click="moveToPage(item.to, idx)"

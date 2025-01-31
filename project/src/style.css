@@ -25,6 +25,9 @@ a {
 a:hover {
 	color: #535bf2;
 }
+button {
+	color: #262626;
+}
 
 body {
 	margin: 0;
@@ -47,6 +50,25 @@ h1 {
 	width: 100%;
 	margin: 0 auto;
 	text-align: center;
+}
+
+/* 스크롤바 기본 스타일링 */
+::-webkit-scrollbar {
+  width: 10px;  /* 스크롤바 너비 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* 스크롤바 thumb 색상 */
+  /* border-radius: 10px; */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* hover 시 색상 변경 */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* 스크롤 트랙 배경색 */
+  /* border-radius: 10px;   */
 }
 
 @media (prefers-color-scheme: light) {

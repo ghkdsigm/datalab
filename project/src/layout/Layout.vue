@@ -1,31 +1,46 @@
 <template>
 	<transition name="route" mode="out-in">
-		<component :is="layout"></component>
+		<component v-if="layoutReady" :is="layout"></component>
 	</transition>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 
 import DefaultLayout from '@/layout/DefaultLayout.vue'
 import SecondLayout from '@/layout/SecondLayout.vue'
+import LoginLayout from '@/layout/LoginLayout.vue'
 
 export default {
 	components: {
 		DefaultLayout,
 		SecondLayout,
+		LoginLayout
 	},
 	setup() {
 		const route = useRoute()
-		const layout = computed(() => route.meta.layout || 'DefaultLayout' || 'SecondLayout')
+		const layout = computed(() => route.meta.layout || 'LoginLayout' || 'DefaultLayout' )
+
+		const layoutReady = ref(false)
+
+		console.log('layout', layout)
+
+		// layout 값이 변경될 때 layoutReady를 true로 설정
+		watchEffect(() => {
+			if (layout.value) {
+				layoutReady.value = true
+			}
+		})
 
 		return {
 			layout,
+			layoutReady
 		}
 	},
 }
 </script>
+
 
 <style>
 /*컴포넌트 이동 트랜지션*/

@@ -2,8 +2,8 @@
 	<div>
 		<!-- Header -->
 		<header class="fixed top-0 left-0 z-50 flex items-center justify-between px-6 py-4 bg-white w-full shadow-md">
-			<div class="logo">
-				<img :src="imageSrc('common', 'logo')" alt="푸터 로고" />
+			<div class="logo cursor-pointer">
+				<img :src="imageSrc('common', 'logo')" alt="푸터 로고" @click="goToHome" />
 			</div>
 			<nav class="flex space-x-6">
 				<HeaderMenu :menuItems="menuItems" />
@@ -50,7 +50,7 @@
 <script>
 import { ref, onBeforeMount, onMounted, computed } from 'vue'
 import router from '@/router'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Menu } from '@/data/common.js'
 import { useUtilities } from '@/utils/common'
 import HeaderMenu from '@/components/layout/appbar/menu.vue'
@@ -69,9 +69,14 @@ export default {
 		const currentRoutes = useRoute()
 		const currentPath = computed(() => currentRoutes.path)
 		const routes = ref([])
+		const routers = useRouter()
 		const menuItems = ref(Menu)
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
+
+		const goToHome = () => {
+			routers.push('/')
+		}
 
 		onBeforeMount(() => {
 			//routes.value = router.options.routes
@@ -84,6 +89,7 @@ export default {
 			routes,
 			router,
 			currentPath,
+			goToHome,
 			menuItems,
 			imageSrc,
 		}
