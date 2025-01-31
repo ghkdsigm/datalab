@@ -13,6 +13,7 @@ import router from '@/router'
 import { useRoute } from 'vue-router'
 
 export default {
+	name: 'LoginLayout',
 	setup() {
 		const currentRoutes = useRoute()
 		const currentPath = computed(() => currentRoutes)

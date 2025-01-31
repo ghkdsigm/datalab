@@ -7,7 +7,7 @@
 			</div>
 			<div class="w-[1200px]">
 				<nav class="flex">
-					<HeaderMenu :menuItems="menuItems" />
+					<HeaderMenu :menuItems="menuItems" @selectedIndex="handleSelectMenu"  />
 				</nav>
 			</div>
 			<div class="flex items-center space-x-4">
@@ -56,6 +56,7 @@ import Footer from '@/components/layout/appbar/footer.vue'
 import { useUtilities } from '@/utils/common'
 
 export default {
+	name: 'SecondLayout',
 	components: {
 		HeaderMenu,
 		Footer,

@@ -13,6 +13,7 @@ import SecondLayout from '@/layout/SecondLayout.vue'
 import LoginLayout from '@/layout/LoginLayout.vue'
 
 export default {
+	name: 'Layout',
 	components: {
 		DefaultLayout,
 		SecondLayout,
@@ -20,7 +21,7 @@ export default {
 	},
 	setup() {
 		const route = useRoute()
-		const layout = computed(() => route.meta.layout || 'LoginLayout' || 'DefaultLayout' )
+		const layout = computed(() => route.meta.layout || 'LoginLayout' )
 
 		const layoutReady = ref(false)
 

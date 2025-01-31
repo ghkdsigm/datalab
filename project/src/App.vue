@@ -8,6 +8,7 @@ import router from '@/router'
 import { useRoute } from 'vue-router'
 import Layout from '@/layout/Layout.vue'
 export default {
+	name: 'App',
 	components: {
 		Layout,
 	},

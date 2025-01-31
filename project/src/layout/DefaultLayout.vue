@@ -61,6 +61,7 @@ import BoardSearch from '@/components/mdf/board/boardsearch.vue'
 import Board from '@/components/mdf/board/board.vue'
 
 export default {
+	name: 'DefaultLayout',
 	components: {
 		HeaderMenu,
 		Footer,

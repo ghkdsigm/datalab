@@ -43,6 +43,10 @@
 </template>
 
 <script setup>
+defineOptions({
+  name: 'Login'
+})
+
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
