@@ -1,34 +1,43 @@
 <template>
-	<select :id="id" class="styled-select">
-		<option v-for="(option, idx) in options" :key="idx" :value="option.value">
-			{{ option.title }}
-		</option>
+	<select :id="id" class="styled-select" :value="modelValue" @input="updateValue">
+	  <option v-for="(option, idx) in options" :key="idx" :value="option.value">
+		{{ option.title }}
+	  </option>
 	</select>
-</template>
-
-<script>
-import { defineComponent } from 'vue'
-
-export default defineComponent({
+  </template>
+  
+  <script>
+  import { defineComponent } from 'vue'
+  
+  export default defineComponent({
 	name: 'SelectBox',
 	props: {
-		id: {
-			type: String,
-			required: true,
+	  id: {
+		type: String,
+		required: true,
+	  },
+	  options: {
+		type: Array,
+		required: true,
+		validator: value => {
+		  return value.every(option => 'value' in option && 'title' in option)
 		},
-		options: {
-			type: Array,
-			required: true,
-			validator: value => {
-				return value.every(option => 'value' in option && 'title' in option)
-			},
-		},
+	  },
+	  modelValue: {
+		type: [String, Number],
+		default: '',
+	  },
 	},
-})
-</script>
-
-<style scoped>
-.styled-select {
+	methods: {
+	  updateValue(event) {
+		this.$emit('update:modelValue', event.target.value)
+	  },
+	},
+  })
+  </script>
+  
+  <style scoped>
+  .styled-select {
 	background-color: #3b3b3b;
 	color: rgba(210, 255, 231, 1);
 	padding: 8px 12px;
@@ -38,5 +47,6 @@ export default defineComponent({
 	font-size: 1rem;
 	font-weight: 600;
 	min-width: 140px;
-}
-</style>
+  }
+  </style>
+  

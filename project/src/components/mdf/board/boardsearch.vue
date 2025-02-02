@@ -5,7 +5,7 @@
 			<SelectBox id="product" :options="arr" />
 
 			<label for="month" class="mx-2 text-sm text-white"> 기준월 </label>
-			<SelectBox id="month" :options="month" />
+			<SelectBox id="month" :options="month" v-model="selectedMonth" />
 
 			<span class="ml-5 text-white">보드 수량 예측 결과입니다.</span>
 		</div>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 
 export default defineComponent({
 	name: 'BoardSearch',
@@ -26,13 +26,31 @@ export default defineComponent({
 		])
 
 		const month = ref([
-			{ value: '11', title: '11' },
-			{ value: '22', title: '22' },
+			{ value: '1', title: '1월' },
+			{ value: '2', title: '2월' },
+			{ value: '3', title: '3월' },
+			{ value: '4', title: '4월' },
+			{ value: '5', title: '5월' },
+			{ value: '6', title: '6월' },
+			{ value: '7', title: '7월' },
+			{ value: '8', title: '8월' },
+			{ value: '9', title: '9월' },
+			{ value: '10', title: '10월' },
+			{ value: '11', title: '11월' },
+			{ value: '12', title: '12월' },
 		])
+
+		const currentMonth = computed(() => {
+			const now = new Date()
+			return now.getMonth() + 1
+		})
+
+		const selectedMonth = ref(currentMonth.value)
 
 		return {
 			arr,
 			month,
+			selectedMonth,
 		}
 	},
 })

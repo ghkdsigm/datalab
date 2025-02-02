@@ -5,7 +5,7 @@
 				<img :src="`${imageSrc('mdf', ico)}`" :alt="ico || 'default-icon'" />
 				<span class="ml-2">{{ title }}</span>
 			</span>
-			<span v-if="more" class="text-white text-sm font-light">더보기</span>
+			<span v-if="more" class="text-white text-sm font-light">더보기 <em class="ml-1">></em> </span>
 		</div>
 
 		<template v-if="type === 'section'">
@@ -58,7 +58,7 @@
 		<template v-else>
 			<div class="flex gap-0">
 				<div class="flex-1 rounded-md text-center">
-					<div v-for="(item, idx) in content.slice(0, 3)" :key="idx" class="h-6 flex items-center">
+					<div v-for="(item, idx) in content.slice(0, 3)" :key="idx" class="h-6 flex items-center justify-center">
 						<span class="text-gray-800 bg-white w-6 h-6 rounded-full flex items-center justify-center font-bold mr-2">
 							{{ idx + 1 }}
 						</span>

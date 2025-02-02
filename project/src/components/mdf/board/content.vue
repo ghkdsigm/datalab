@@ -7,7 +7,7 @@
 						<img :src="imageSrc('mdf', 'ico_talk')" alt="초기화" class="inline-block mr-1" />
 						<span class="font-bold">예측 결과 요약</span>
 					</strong>
-					<span class="text-sm text-gray-800" @click="showPopup = true">더보기</span>
+					<span class="text-sm text-gray-800 font-light" @click="showPopup = true">더보기 <em class="ml-1">+</em></span>
 				</div>
 				<p class="max-w-full mt-1 text-sm overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack">
 					완만한 상승세를 보일 가능성이 있음. 특히 부동산 및 주택 시장 소비 심리지수가 긍정적인 으로 움직이는 상황에서
@@ -18,18 +18,21 @@
 			<div class="p-4 border rounded-lg bg-white shadow-black">
 				<div class="flex justify-between items-center mb-5">
 					<strong class="text-xl text-gray-800 font-bold">보드 예측 결과</strong>
-					<span class="text-sm text-gray-800">상세보기</span>
+					<span class="text-sm text-gray-800 font-light px-3 py-1 border rounded-full">상세보기</span>
+
 				</div>
-				<div class="w-full h-[300px] bg-gray-200"></div>
+				<div class="w-full h-[400px] ">
+					<Line01></Line01>
+				</div>
 			</div>
 		</div>
 
 		<div class="flex flex-col gap-6 flex-[5]">
 			<div class="mb-2 p-4 border rounded-lg bg-gray-50">
-				<div class="flex justify-between items-center mb-3">
+				<div class="flex justify-between items-center">
 					<Select01 :options="options" :selected-options="selectedOptions" @select="handleSelectChange" />
-					<button @click="handleReset" class="p-2 border rounded bg-white hover:bg-gray-100">
-						<img :src="imageSrc('mdf', 'ico_refresh')" alt="초기화" class="inline-block mr-2" />
+					<button @click="handleReset" class="text-pale p-2 font-light">
+						<img :src="imageSrc('mdf', 'ico_refresh')" alt="초기화" class="inline-block mr-1" />
 						초기화
 					</button>
 				</div>

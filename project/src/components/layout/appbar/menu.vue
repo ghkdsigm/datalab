@@ -1,7 +1,7 @@
 <template>
 	<button
 		type="button"
-		class="inline-flex flex-row items-center mr-8 hover:text-primary font-md relative"
+		class="inline-flex flex-row items-center mr-12 hover:text-primary font-md relative"
 		v-for="(item, idx) in menuItems"
 		:class="{ 'text-primary font-bold': selectedIndex === idx }"
 		:key="idx"
