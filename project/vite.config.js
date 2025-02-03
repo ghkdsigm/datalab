@@ -4,9 +4,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-	plugins: [
-		vue(),	
-	],
+	plugins: [vue()],
 	build: {
 		terserOptions: {
 			compress: {
@@ -21,7 +19,7 @@ export default defineConfig(({ mode }) => ({
 		},
 	},
 	server: {
-		port: 3000,
+		port: 3333,
 		proxy: {
 			'/api': {
 				target: 'http://localhost:4444',

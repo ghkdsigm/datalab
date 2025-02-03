@@ -19,16 +19,15 @@
 				<div class="flex justify-between items-center mb-5">
 					<strong class="text-xl text-gray-800 font-bold">보드 예측 결과</strong>
 					<span class="text-sm text-gray-800 font-light px-3 py-1 border rounded-full">상세보기</span>
-
 				</div>
-				<div class="w-full h-[400px] ">
+				<div class="w-full h-[400px]">
 					<Line01></Line01>
 				</div>
 			</div>
 		</div>
 
 		<div class="flex flex-col gap-6 flex-[5]">
-			<div class="mb-2 p-4 border rounded-lg bg-gray-50">
+			<div class="p-4 border rounded-lg bg-gray-50">
 				<div class="flex justify-between items-center">
 					<Select01 :options="options" :selected-options="selectedOptions" @select="handleSelectChange" />
 					<button @click="handleReset" class="text-pale p-2 font-light">
@@ -41,20 +40,49 @@
 					<div
 						v-for="option in selectedOptions"
 						:key="option"
-						class="flex items-center px-3 py-1 border rounded-full bg-white"
+						class="flex items-center px-3 py-1 border rounded-full bg-white w-[140px] text-[14px]"
 					>
-						<span class="text-gray-800 mr-2">{{ option }}</span>
+						<span class="text-gray-800 mr-2 w-[80%] overflow-hidden text-ellipsis line-clamp-1 text-left">{{
+							option
+						}}</span>
 						<span
-							class="w-4 h-4 flex items-center justify-center bg-gray-700 text-white rounded-full cursor-pointer"
+							class="flex items-center justify-center text-white rounded-full cursor-pointer"
 							@click="handleRemove(option)"
 						>
-							x
+							<img :src="imageSrc('common', 'ico_close')" alt="초기화" class="inline-block mr-1" />
 						</span>
 					</div>
 				</div>
 			</div>
 
-			<div class="p-4 border rounded-lg bg-gray-50 h-[3200px]">주요 영향인자 분석을 선택해주세요.</div>
+			<!-- <div class="p-4 border rounded-lg bg-gray-50 h-[3200px]">주요 영향인자 분석을 선택해주세요.</div> -->
+			<div class="mt-2">
+				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
+				<div class="mb-[16px]">
+					<Line02></Line02>
+				</div>
+				<div>
+					<Table01 />
+				</div>
+			</div>
+			<div class="mt-2">
+				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
+				<div class="mb-[16px]">
+					<Line02></Line02>
+				</div>
+				<div>
+					<Table01 />
+				</div>
+			</div>
+			<div class="mt-2">
+				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
+				<div class="mb-[16px]">
+					<Line02></Line02>
+				</div>
+				<div>
+					<Table01 />
+				</div>
+			</div>
 		</div>
 		<Popup01 :title="'팝업 제목'" :isVisible="showPopup" @update:isVisible="showPopup = $event">
 			<p class="text-gray-600">여기에 팝업 내용이 들어갑니다.</p>
@@ -68,11 +96,17 @@ import { useUtilities } from '@/utils/common'
 
 export default {
 	setup() {
-		const options = ['항목 1', '항목 2', '항목 3', '항목 4', '항목 5']
+		const options = [
+			'연립다세대매매실거래가격지수(10개월전)',
+			'선행종합지수_변동량(9개월전)',
+			'항목 3',
+			'항목 4',
+			'항목 5',
+		]
 		const selectedOptions = ref([])
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
-		const showPopup = ref(false);
+		const showPopup = ref(false)
 
 		const handleSelectChange = value => {
 			if (value && !selectedOptions.value.includes(value)) {
@@ -95,7 +129,7 @@ export default {
 			handleReset,
 			handleRemove,
 			imageSrc,
-			showPopup
+			showPopup,
 		}
 	},
 }

@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full">
+	<div class="bg-[#262626] rounded-[8px] p-4 pb-6">
 		<div class="flex justify-between items-center w-full">
 			<!-- ✅ 레이블 목록 -->
 			<div class="legend-container">
@@ -10,13 +10,10 @@
 					@click="toggleDataset(index)"
 					:class="{ active: isHidden(index) }"
 				>
-					<span class="legend-text">{{ dataset.label }}</span>
 					<span class="legend-color" :style="{ backgroundColor: dataset.borderColor }"></span>
+					<span class="legend-text">{{ dataset.label }}</span>
 				</div>
 			</div>
-
-			<!-- ✅ 캘린더 (우측) -->
-			<input type="month" class="calendar-input" />
 		</div>
 		<div class="chart-container">
 			<canvas ref="chartCanvas"></canvas>
@@ -29,44 +26,22 @@ import { defineComponent, onMounted, ref, reactive } from 'vue'
 import Chart from 'chart.js/auto'
 
 export default defineComponent({
-	name: 'LineChart01',
+	name: 'LineChart02',
 	setup() {
 		const chartCanvas = ref(null)
 		let chartInstance = null
 
 		const chartData = reactive({
-			labels: ['2024월 1일', '2024월 2일', '2024월 3일', '2024월 4일', '2025월 5일'],
+			labels: ['2024-01', '2024-02', '2024-03', '2024-04', '2025-05'],
 			datasets: [
-				{ label: 'MDF', data: [12000, 18000, 45000, 22000, 17000], tension: 0, radius: 1, borderColor: '#25CFEE' },
+				{ label: 'MDF', data: [36000, 25000, 20000, 27000, 21000], tension: 0, radius: 1, borderColor: '#BEE7A2' },
 				{
-					label: 'MDF (예측)',
-					data: [10000, 16000, 14000, 21000, 15000],
+					label: '동행종합지수_변동량',
+					data: [26000, 21000, 28000, 37000, 40000],
 					tension: 0,
 					radius: 1,
-					borderColor: '#FF9900',
+					borderColor: '#FB4F4F',
 				},
-				{
-					label: '특이사항',
-					data: [{}, { x: 3, y: 25000 }], // 특이사항이 있는 날짜에 동그라미 표시
-					borderColor: '#48B68E',
-					backgroundColor: '#48B68E',
-					radius: 6,
-					pointStyle: 'circle',
-					// pointRadius: 10,
-					// pointHoverRadius: 15,
-					fill: false,
-					type: 'scatter',
-				},
-				{
-					label: '사업계획',
-					data: [34000, 22000, 31000],
-					tension: 0,
-					radius: 1,
-					borderColor: '#66FF99',
-					fill: false,
-					borderDash: [5, 5],
-				},
-				{ label: 'SRM', data: [16000, 15000, 20000, 27000, 22000], tension: 0, radius: 1, borderColor: '#9966FF' },
 			],
 		})
 
@@ -80,18 +55,55 @@ export default defineComponent({
 					responsive: true,
 					maintainAspectRatio: false,
 					scales: {
-						x: { grid: { display: false } },
-						y: {
-							beginAtZero: false,
-							grid: {
-								color: context =>
-									[10000, 20000, 30000, 40000, 50000].includes(context.tick.value)
-										? 'rgba(0, 0, 0, 0.1)'
-										: 'transparent',
-								drawBorder: false,
-								drawTicks: false,
+						// x: {
+						// 	grid: { display: false },
+						// 	display: true,
+						// },
+						// y: {
+						// 	display: true,
+						// 	title: {
+						// 		display: true,
+						// 		text: 'Value',
+						// 	},
+						// 	beginAtZero: false,
+						// 	grid: {
+						// 		color: context =>
+						// 			[20000, 30000, 40000].includes(context.tick.value) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+						// 		drawBorder: false,
+						// 		drawTicks: false,
+						// 	},
+						// 	ticks: { stepSize: 10000, callback: value => `${value / 1000}k` },
+						// },
+
+						x: {
+							grid: { display: false },
+							//position: 'bottom',
+							ticks: {
+								callback: value => value,
+								maxRotation: -90,
+								minRotation: -90,
+								//align: 'end',
+								//autoSkip: true,
+								color: 'white',
+								autoSkip: true, // 일부 레이블 자동 생략
+								padding: 40, // 간격 조정
+								align: 'end', // 레이블 정렬 변경
 							},
-							ticks: { stepSize: 10000, callback: value => `${value / 1000}k` },
+							//title: { display: true, text: '수량', color: 'white', font: { size: 14 } },
+						},
+						y: {
+							position: 'left',
+							beginAtZero: false,
+							grid: { color: 'rgba(255, 255, 255, 0.2)' },
+							ticks: { callback: value => `${value / 1000}K`, color: 'white' },
+							title: { display: true, text: '수량(M3)', color: 'white', font: { size: 14 }, padding: { bottom: 10 } },
+						},
+						y2: {
+							position: 'right',
+							beginAtZero: true,
+							grid: { drawOnChartArea: false },
+							ticks: { callback: value => `${value / 0.5}`, stepSize: 0.5, color: 'white' },
+							title: { display: true, text: '영향인자', color: 'white', font: { size: 14 }, padding: { bottom: 10 } },
 						},
 					},
 					plugins: {
@@ -165,20 +177,15 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .chart-container {
 	width: 100%;
 	height: 85%;
-	background: white;
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-}
-
-/* ✅ 캘린더 (우측 상단) */
-.calendar-input {
-	/* 원하는 스타일 적용 */
+	border-radius: 8px;
 }
 
 /* ✅ 레이블 스타일 */
@@ -198,25 +205,24 @@ export default defineComponent({
 }
 
 .legend-color {
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
-	margin-left: 6px;
+	width: 15px;
+	height: 2px;
 }
 
 .legend-text {
 	color: white;
 	font-size: 14px;
 	font-weight: 400;
+	margin-left: 6px;
 }
 
 .active {
 	background: gray;
-	opacity: 0.6;
+	opacity: 1;
 }
 
 .active .legend-text {
 	text-decoration: line-through;
-	color: #ccc;
+	color: #fff;
 }
 </style>

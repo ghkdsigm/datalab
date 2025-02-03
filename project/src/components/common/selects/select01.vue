@@ -2,7 +2,7 @@
 	<div class="custom-select-wrapper">
 		<!-- 드롭다운 헤더 -->
 		<div class="custom-select-header" @click="toggleDropdown">
-			<span v-html="getSelectDisplayValue"></span>
+			<span v-html="getSelectDisplayValue" class=""></span>
 		</div>
 
 		<!-- 드롭다운 리스트 -->
@@ -44,7 +44,7 @@ export default {
 			const remainingCount = props.selectedOptions.length - 1
 
 			return `
-        ${lastSelected}
+        ${`<span class="w-[120px] overflow-hidden text-ellipsis line-clamp-1 text-left">${lastSelected}</span>`}
         ${
 					remainingCount > 0
 						? `<span style="
@@ -89,6 +89,11 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+.custom-select-header span {
+	width: 100% !important;
+	display: flex !important;
+	justify-content: space-between !important;
 }
 
 .custom-select-list {
