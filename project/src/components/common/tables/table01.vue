@@ -22,10 +22,14 @@
 					<td class="px-4 py-2">{{ row.value }}</td>
 					<td class="px-4 py-2">{{ row.importance }}</td>
 					<td class="px-4 py-2">
-						<span class="plus" v-if="row.change === '1'">{{ row.change }}</span>
+						<span class="plus" v-if="row.change === '1'">
+							<img :src="imageSrc('common', 'ico_plus')" alt="상승" class="inline-block mr-1" />
+						</span>
 					</td>
 					<td class="px-4 py-2">
-						<span class="plus">{{ row.iconValue }}</span>
+						<span class="plus flex items-center justify-center"
+							>{{ row.iconValue }} <img :src="imageSrc('common', 'ico_up')" alt="상승" class="inline-block ml-1"
+						/></span>
 					</td>
 				</tr>
 			</tbody>
@@ -34,12 +38,15 @@
 </template>
 
 <script>
+import { useUtilities } from '@/utils/common'
 export default {
 	name: 'Table01',
 	setup() {
+		const { setImageSrc } = useUtilities()
+		const imageSrc = (folder, img) => setImageSrc(folder, img)
 		const tableData = [{ value: '0.2', importance: '544', change: '1', iconValue: '193' }]
 
-		return { tableData }
+		return { tableData, imageSrc }
 	},
 }
 </script>

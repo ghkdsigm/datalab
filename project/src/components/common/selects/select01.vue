@@ -49,7 +49,7 @@ export default {
 					remainingCount > 0
 						? `<span style="
                 margin-left: 4px; color: #fff; font-weight: bold;
-                background-color: red; border-radius: 12px; width: 34px;
+                background-color: #FB4F4F; border-radius: 12px; width: 34px;
                 height: 22px; display: inline-flex; justify-content: center;
                 align-items: center; text-decoration: none;
               ">+${remainingCount + 1}</span>`
@@ -82,13 +82,14 @@ export default {
 
 .custom-select-header {
 	cursor: pointer;
-	background-color: #f4f4f4;
+	background-color: #fff;
 	padding: 8px 12px;
-	border: 1px solid #ccc;
+	border: 1px solid #555555;
 	border-radius: 4px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	font-weight: bold;
 }
 .custom-select-header span {
 	width: 100% !important;
