@@ -7,7 +7,7 @@
 			</div>
 			<div class="w-[1200px]">
 				<nav class="flex">
-					<HeaderMenu :menuItems="menuItems" @selectedIndex="handleSelectMenu"  />
+					<HeaderMenu :menuItems="menuItems" @selectedIndex="handleSelectMenu" />
 				</nav>
 			</div>
 			<div class="flex items-center space-x-4">
@@ -30,7 +30,7 @@
 						</div>
 					</div>
 					<!-- Main Content -->
-					<main class="flex-grow bg-white py-8">
+					<main class="flex-grow bg-white pb-8">
 						<div class="container mx-auto max-w-[1280px] flex gap-6">
 							<router-view v-slot="{ Component }">
 								<component :is="Component"></component>

@@ -1,7 +1,6 @@
 <template>
-	<div class="bg-[#262626] rounded-[8px] p-4 pb-6">
+	<div class="bg-[#262626] rounded-[8px] p-4 h-full">
 		<div class="flex justify-between items-center w-full">
-			<!-- ✅ 레이블 목록 -->
 			<div class="legend-container">
 				<div
 					v-for="(dataset, index) in chartData.datasets"
@@ -27,7 +26,13 @@ import Chart from 'chart.js/auto'
 
 export default defineComponent({
 	name: 'LineChart02',
-	setup() {
+	props: {
+		type: {
+			type: String,
+			default: '',
+		},
+	},
+	setup(props) {
 		const chartCanvas = ref(null)
 		let chartInstance = null
 
@@ -80,8 +85,8 @@ export default defineComponent({
 							//position: 'bottom',
 							ticks: {
 								callback: value => value,
-								maxRotation: -90,
-								minRotation: -90,
+								maxRotation: props.type === 'trend' ? 0 : -90,
+								minRotation: props.type === 'trend' ? 0 : -90,
 								//align: 'end',
 								//autoSkip: true,
 								color: 'white',
@@ -188,7 +193,6 @@ export default defineComponent({
 	border-radius: 8px;
 }
 
-/* ✅ 레이블 스타일 */
 .legend-container {
 	display: flex;
 	gap: 12px;

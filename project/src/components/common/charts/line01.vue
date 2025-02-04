@@ -1,6 +1,6 @@
 <template>
 	<div class="h-full">
-		<div class="flex justify-between items-center w-full">
+		<div class="flex justify-between items-center w-full mb-4">
 			<!-- ✅ 레이블 목록 -->
 			<div class="legend-container">
 				<div
@@ -16,7 +16,7 @@
 			</div>
 
 			<!-- ✅ 캘린더 (우측) -->
-			<input type="month" class="calendar-input" />
+			<Select02 :selectedMonth="selectedMonth" :months="months" @update:selectedMonth="handleMonthChange" />
 		</div>
 		<div class="chart-container">
 			<canvas ref="chartCanvas"></canvas>
@@ -69,6 +69,26 @@ export default defineComponent({
 				{ label: 'SRM', data: [16000, 15000, 20000, 27000, 22000], tension: 0, radius: 1, borderColor: '#9966FF' },
 			],
 		})
+
+		// 최근 6개월 옵션 생성
+		const getLast6Months = () => {
+			const months = []
+			const now = new Date()
+			for (let i = 0; i < 6; i++) {
+				const month = new Date(now.getFullYear(), now.getMonth() - i, 1)
+				const year = month.getFullYear()
+				const monthFormatted = String(month.getMonth() + 1).padStart(2, '0') // 두 자리 유지
+				months.push(`${year}년 ${monthFormatted}월`)
+			}
+			return months
+		}
+
+		const selectedMonth = ref(getLast6Months()[0]) // 기본값: 이번 달
+		const months = ref(getLast6Months())
+
+		const handleMonthChange = newMonth => {
+			selectedMonth.value = newMonth
+		}
 
 		onMounted(() => {
 			const ctx = chartCanvas.value.getContext('2d')
@@ -160,7 +180,7 @@ export default defineComponent({
 			return chartInstance?.getDatasetMeta(index)?.hidden ?? false
 		}
 
-		return { chartCanvas, chartData, toggleDataset, isHidden }
+		return { chartCanvas, chartData, toggleDataset, isHidden, months, handleMonthChange, selectedMonth }
 	},
 })
 </script>
@@ -185,7 +205,6 @@ export default defineComponent({
 .legend-container {
 	display: flex;
 	gap: 12px;
-	margin-bottom: 12px;
 }
 
 .legend-item {

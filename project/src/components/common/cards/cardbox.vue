@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full bg-white/10 rounded-lg border border-white/20 shadow-lg p-6 flex flex-col justify-between">
-		<div class="text-center text-lg font-bold text-green-200 flex justify-between items-center mb-6">
+		<div class="text-center text-lg font-bold text-green-200 flex justify-between items-center mb-4">
 			<span class="flex items-center">
 				<img :src="`${imageSrc('mdf', ico)}`" :alt="ico || 'default-icon'" />
 				<span class="ml-2">{{ title }}</span>
@@ -12,7 +12,7 @@
 			<div class="flex gap-0">
 				<template v-if="content">
 					<div class="flex-1 rounded-l-md text-center">
-						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base">
+						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
 							{{ subTit01 || new Date().toLocaleString('ko-KR', { month: 'long' }) }}
 						</p>
 						<p
@@ -25,12 +25,12 @@
 								{{ formatNumberWithComma(content.value) }}
 								<em class="ml-1">m3</em>
 							</template>
-							<template v-else>업데이트예정</template>
+							<template v-else><span class="text-white font-normal text-[18px]">업데이트예정</span></template>
 						</p>
 					</div>
 					<div class="w-px h-[62px] bg-gray-400 mx-3"></div>
 					<div class="flex-1 rounded-r-md text-center">
-						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base">
+						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
 							{{
 								subTit02 ||
 								new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleString('ko-KR', { month: 'long' })
@@ -47,7 +47,7 @@
 								<span class="ml-1">%</span>
 								<span class="text-sm font-light ml-1">( 6383 m3 )</span>
 							</template>
-							<template v-else>업데이트예정</template>
+							<template v-else><span class="text-white font-normal text-[18px]">업데이트예정</span></template>
 						</p>
 					</div>
 				</template>
@@ -58,11 +58,13 @@
 		<template v-else>
 			<div class="flex gap-0">
 				<div class="flex-1 rounded-md text-center">
-					<div v-for="(item, idx) in content.slice(0, 3)" :key="idx" class="h-6 flex items-center justify-center">
+					<div v-for="(item, idx) in content.slice(0, 3)" :key="idx" class="h-6 my-1 flex items-center justify-center">
 						<span class="text-gray-800 bg-white w-6 h-6 rounded-full flex items-center justify-center font-bold mr-2">
 							{{ idx + 1 }}
 						</span>
-						{{ item }}
+						<span class="text-white">
+							{{ item }}
+						</span>
 					</div>
 				</div>
 			</div>
