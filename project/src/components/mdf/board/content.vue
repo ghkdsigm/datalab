@@ -1,6 +1,6 @@
 <template>
 	<section class="flex justify-between gap-6 w-full">
-		<div class="flex flex-col gap-6 flex-[7] sticky-container">
+		<div class="flex flex-col gap-6 flex-[7] min-w-[0] sticky-container">
 			<div class="mb-2 p-4 border rounded-lg bg-white shadow-black">
 				<div class="flex justify-between items-center">
 					<strong class="text-cyan-500 font-bold">
@@ -28,8 +28,8 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col gap-6 flex-[5]">
-			<div class="p-4 border rounded-lg bg-gray-50 max-w-[527px]">
+		<div class="flex flex-col gap-6 flex-[5] min-w-[0]">
+			<div class="p-4 border rounded-lg bg-gray-50">
 				<div class="flex justify-between items-center">
 					<Select01 :options="options" :selected-options="selectedOptions" @select="handleSelectChange" />
 					<button @click="handleReset" class="text-pale p-2 font-light text-sm">
