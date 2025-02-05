@@ -31,21 +31,39 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
+		borderColor: {
+			type: Array,
+			default: ['#BEE7A2', '#FB4F4F'],
+		},
+		leftTit: {
+			type: String,
+			default: '',
+		},
+		rightTit: {
+			type: String,
+			default: '',
+		},
 	},
 	setup(props) {
 		const chartCanvas = ref(null)
 		let chartInstance = null
 
 		const chartData = reactive({
-			labels: ['2024-01', '2024-02', '2024-03', '2024-04', '2025-05'],
+			labels: ['2023-12', '2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06', '2024-07', '2024-08'],
 			datasets: [
-				{ label: 'MDF', data: [36000, 25000, 20000, 27000, 21000], tension: 0, radius: 1, borderColor: '#BEE7A2' },
 				{
-					label: '동행종합지수_변동량',
-					data: [26000, 21000, 28000, 37000, 40000],
+					label: 'MDF',
+					data: [36000, 25000, 20000, 27000, 21000, 24000, null, null, null],
 					tension: 0,
 					radius: 1,
-					borderColor: '#FB4F4F',
+					borderColor: props.borderColor[0],
+				},
+				{
+					label: '동행종합지수_변동량',
+					data: [null, null, null, null, null, 24000, 26000, 40000],
+					tension: 0,
+					radius: 1,
+					borderColor: props.borderColor[1],
 				},
 			],
 		})
@@ -101,7 +119,13 @@ export default defineComponent({
 							beginAtZero: false,
 							grid: { color: 'rgba(255, 255, 255, 0.2)' },
 							ticks: { callback: value => `${value / 1000}K`, color: 'white' },
-							title: { display: true, text: '수량(M3)', color: 'white', font: { size: 14 }, padding: { bottom: 10 } },
+							title: {
+								display: true,
+								text: props.leftTit,
+								color: 'white',
+								font: { size: 14 },
+								padding: { bottom: 10 },
+							},
 						},
 						y2: {
 							position: 'right',

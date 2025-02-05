@@ -1,24 +1,10 @@
 <template>
 	<div>
 		<!-- Header -->
-		<header class="fixed top-0 left-0 z-50 flex items-center justify-between px-6 py-4 bg-white w-full shadow-md">
-			<div class="logo cursor-pointer">
-				<img :src="imageSrc('common', 'logo')" alt="푸터 로고" @click="goToHome" />
-			</div>
-			<div class="w-[1200px]">
-				<nav class="flex">
-					<HeaderMenu :menuItems="menuItems" @selectedIndex="handleSelectMenu" />
-				</nav>
-			</div>
-			<div class="flex items-center space-x-4">
-				<div>아이콘 1</div>
-				<div>아이콘 2</div>
-				<div>아이콘 3</div>
-			</div>
-		</header>
+		<Header @menuIdx="handleSelectMenu" />
 
 		<!--Main Section-->
-		<div class="relative mt-[50px]">
+		<div class="relative mt-[64px]">
 			<div class="mx-auto h-full">
 				<div class="flex flex-col min-h-screen">
 					<!-- Top Content -->
@@ -51,14 +37,12 @@ import { ref, onBeforeMount, onMounted, computed } from 'vue'
 import router from '@/router'
 import { useRoute, useRouter } from 'vue-router'
 import { Menu } from '@/data/common.js'
-import HeaderMenu from '@/components/layout/appbar/menu.vue'
 import Footer from '@/components/layout/appbar/footer.vue'
 import { useUtilities } from '@/utils/common'
 
 export default {
 	name: 'SecondLayout',
 	components: {
-		HeaderMenu,
 		Footer,
 	},
 	setup() {

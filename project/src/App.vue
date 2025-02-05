@@ -1,5 +1,6 @@
 <template>
 	<Layout></Layout>
+	<Chatbot />
 </template>
 
 <script>
@@ -7,6 +8,7 @@ import { ref, onBeforeMount, onMounted, onUnmounted, computed } from 'vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import Layout from '@/layout/Layout.vue'
+import { useUtilities } from '@/utils/common'
 export default {
 	name: 'App',
 	components: {
@@ -29,4 +31,7 @@ export default {
 
 <style lang="scss">
 @import './assets/styles/main';
+.screenArea {
+	height: calc(100% - 10vh);
+}
 </style>

@@ -29,7 +29,7 @@
 		</div>
 
 		<div class="flex flex-col gap-6 flex-[5]">
-			<div class="p-4 border rounded-lg bg-gray-50">
+			<div class="p-4 border rounded-lg bg-gray-50 max-w-[527px]">
 				<div class="flex justify-between items-center">
 					<Select01 :options="options" :selected-options="selectedOptions" @select="handleSelectChange" />
 					<button @click="handleReset" class="text-pale p-2 font-light text-sm">
@@ -38,15 +38,27 @@
 					</button>
 				</div>
 
-				<div v-if="selectedOptions.length" class="flex flex-wrap gap-2 mt-3">
+				<!-- 가로 스크롤이 가능하도록 설정 -->
+				<div
+					v-if="selectedOptions.length"
+					ref="scrollContainer"
+					class="mt-3 flex gap-2 overflow-hidden whitespace-nowrap scrollbar-hide cursor-grab active:cursor-grabbing"
+					@mousedown="startDrag"
+					@mousemove="onDrag"
+					@mouseup="stopDrag"
+					@mouseleave="stopDrag"
+					@touchstart="startDrag"
+					@touchmove="onDrag"
+					@touchend="stopDrag"
+				>
 					<div
 						v-for="option in selectedOptions"
 						:key="option"
-						class="flex items-center px-3 py-1 border rounded-full bg-white w-[140px] text-[14px]"
+						class="flex items-center px-3 py-1 border rounded-full bg-white min-w-[140px] text-[14px] select-none"
 					>
-						<span class="text-gray-800 mr-2 w-[80%] overflow-hidden text-ellipsis line-clamp-1 text-left">{{
-							option
-						}}</span>
+						<span class="text-gray-800 mr-2 w-[80%] overflow-hidden text-ellipsis line-clamp-1 text-left block">
+							{{ option }}
+						</span>
 						<span
 							class="flex items-center justify-center text-white rounded-full cursor-pointer"
 							@click="handleRemove(option)"
@@ -61,7 +73,7 @@
 			<div class="mt-2">
 				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
 				<div class="mb-[16px]">
-					<Line02></Line02>
+					<Line02 :leftTit="'수량(M3)'" :rightTit="'영향인자'" />
 				</div>
 				<div>
 					<Table01 />
@@ -70,7 +82,7 @@
 			<div class="mt-2">
 				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
 				<div class="mb-[16px]">
-					<Line02></Line02>
+					<Line02 :leftTit="'수량(M3)'" :rightTit="'영향인자'" />
 				</div>
 				<div>
 					<Table01 />
@@ -79,7 +91,7 @@
 			<div class="mt-2">
 				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
 				<div class="mb-[16px]">
-					<Line02></Line02>
+					<Line02 :leftTit="'수량(M3)'" :rightTit="'영향인자'" />
 				</div>
 				<div>
 					<Table01 />
@@ -98,6 +110,7 @@ import { useUtilities } from '@/utils/common'
 
 export default {
 	setup() {
+		const scrollContainer = ref()
 		const options = [
 			'연립다세대매매실거래가격지수(10개월전)',
 			'선행종합지수_변동량(9개월전)',
@@ -124,6 +137,29 @@ export default {
 			selectedOptions.value = selectedOptions.value.filter(item => item !== option)
 		}
 
+		//드래그
+		let isDragging = false
+		let startX = 0
+		let scrollLeft = 0
+
+		const startDrag = event => {
+			isDragging = true
+			startX = event.type.includes('touch') ? event.touches[0].pageX : event.pageX
+			scrollLeft = scrollContainer.value.scrollLeft
+		}
+
+		const onDrag = event => {
+			if (!isDragging) return
+			event.preventDefault()
+			const x = event.type.includes('touch') ? event.touches[0].pageX : event.pageX
+			const walk = (x - startX) * 1.5 // 드래그 속도 조정
+			scrollContainer.value.scrollLeft = scrollLeft - walk
+		}
+
+		const stopDrag = () => {
+			isDragging = false
+		}
+
 		return {
 			options,
 			selectedOptions,
@@ -132,6 +168,10 @@ export default {
 			handleRemove,
 			imageSrc,
 			showPopup,
+			startDrag,
+			onDrag,
+			stopDrag,
+			scrollContainer,
 		}
 	},
 }

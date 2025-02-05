@@ -48,7 +48,12 @@
 				<!-- Left Section -->
 				<div class="flex flex-col flex-[9] h-full">
 					<div class="bg-white rounded-md h-full">
-						<Line02 :type="'trend'"></Line02>
+						<Line02
+							:type="'trend'"
+							:borderColor="['#5DB096', '#D17EB1']"
+							:leftTit="'외부지표'"
+							:rightTit="'영향인자'"
+						></Line02>
 					</div>
 				</div>
 
@@ -66,7 +71,12 @@
 				<!-- Left Section -->
 				<div class="flex flex-col flex-[9] h-full">
 					<div class="bg-white rounded-md h-full">
-						<Line02 :type="'trend'"></Line02>
+						<Line02
+							:type="'trend'"
+							:borderColor="['#5DB096', '#D17EB1']"
+							:leftTit="'외부지표'"
+							:rightTit="'영향인자'"
+						></Line02>
 					</div>
 				</div>
 

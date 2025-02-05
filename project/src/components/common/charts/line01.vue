@@ -1,7 +1,7 @@
 <template>
 	<div class="h-full">
 		<div class="flex justify-between items-center w-full mb-4">
-			<!-- ✅ 레이블 목록 -->
+			<!-- 레이블 목록 -->
 			<div class="legend-container">
 				<div
 					v-for="(dataset, index) in chartData.datasets"
@@ -15,7 +15,7 @@
 				</div>
 			</div>
 
-			<!-- ✅ 캘린더 (우측) -->
+			<!-- 캘린더 (우측) -->
 			<Select02 :selectedMonth="selectedMonth" :months="months" @update:selectedMonth="handleMonthChange" />
 		</div>
 		<div class="chart-container">

@@ -17,11 +17,11 @@ export default {
 	components: {
 		DefaultLayout,
 		SecondLayout,
-		LoginLayout
+		LoginLayout,
 	},
 	setup() {
 		const route = useRoute()
-		const layout = computed(() => route.meta.layout || 'LoginLayout' )
+		const layout = computed(() => route.meta.layout || 'LoginLayout')
 
 		const layoutReady = ref(false)
 
@@ -36,12 +36,11 @@ export default {
 
 		return {
 			layout,
-			layoutReady
+			layoutReady,
 		}
 	},
 }
 </script>
-
 
 <style>
 /*컴포넌트 이동 트랜지션*/
