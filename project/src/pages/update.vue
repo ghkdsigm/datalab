@@ -6,7 +6,7 @@
 					v-for="(tab, index) in tabs"
 					:key="index"
 					@click="activeTab = tab.name"
-					class="px-4 py-2 text-lg font-bold bg-[#F3F3F3]"
+					class="px-8 py-2 text-lg font-bold bg-[#F3F3F3]"
 					:class="activeTab === tab.name ? 'text-[#00B0B9] activeTab' : 'text-[#777777] font-normal'"
 				>
 					{{ tab.label }}

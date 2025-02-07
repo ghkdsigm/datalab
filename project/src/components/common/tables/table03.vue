@@ -20,7 +20,7 @@
 							v-if="editingIndex === index || row.board === ''"
 							v-model="row.board"
 							@blur="saveEdit"
-							class="border px-2 py-1 w-full"
+							class="border px-2 py-1 w-full rounded-sm"
 						>
 							<option value="MDF">MDF</option>
 							<option value="PB">PB</option>
@@ -33,7 +33,7 @@
 							v-model="row.yearMonth"
 							@blur="saveEdit"
 							@keyup.enter="saveEdit"
-							class="border px-2 py-1 w-full"
+							class="border px-2 py-1 w-full rounded-sm"
 							autofocus
 						/>
 						<span v-else>{{ row.yearMonth }}</span>
@@ -45,7 +45,7 @@
 							v-model="row.remarks"
 							@blur="saveEdit"
 							@keyup.enter="saveEdit"
-							class="border px-2 py-1 w-full"
+							class="border px-2 py-1 w-full rounded-sm"
 							autofocus
 						/>
 						<span v-else>{{ row.remarks }}</span>

@@ -18,7 +18,8 @@ import Table01 from './components/common/tables/table01.vue'
 import Table02 from './components/common/tables/table02.vue'
 import Table03 from './components/common/tables/table03.vue'
 import Chatbot from './components/common/chatbot/chatbot.vue'
-import Content from './components/mdf/board/content.vue'
+import Upload01 from './components/common/uploads/upload01.vue'
+import Content from './components/layout/appbody/content.vue'
 
 const pinia = createPinia()
 
@@ -38,5 +39,6 @@ createApp(App)
 	.component('Table02', Table02)
 	.component('Table03', Table03) //데이터업데이트 메뉴 특이사항, 사업계획, SRM 테이블 형태
 	.component('Chatbot', Chatbot)
+	.component('Upload01', Upload01)
 	.component('Content', Content)
 	.mount('#app')

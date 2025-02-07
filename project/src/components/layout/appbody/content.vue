@@ -42,7 +42,7 @@
 				<div
 					v-if="selectedOptions.length"
 					ref="scrollContainer"
-					class="mt-3 flex gap-2 overflow-hidden whitespace-nowrap scrollbar-hide cursor-grab active:cursor-grabbing"
+					class="mt-3 flex gap-2 overflow-hidden whitespace-nowrap scrollbar-hide cursor-grab active:cursor-grabbing min-w-[250px]"
 					@mousedown="startDrag"
 					@mousemove="onDrag"
 					@mouseup="stopDrag"
@@ -114,9 +114,9 @@ export default {
 		const options = [
 			'연립다세대매매실거래가격지수(10개월전)',
 			'선행종합지수_변동량(9개월전)',
-			'항목 3',
-			'항목 4',
-			'항목 5',
+			'가나다라마바사 선행종합지수_변동량(9개월전)',
+			'아이우에오 항목 4',
+			'유우미나니카노 항목 5',
 		]
 		const selectedOptions = ref([])
 		const { setImageSrc } = useUtilities()

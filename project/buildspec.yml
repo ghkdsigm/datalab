@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install -g yarn
+  pre_build:
+    commands:
+      - yarn install
+  build:
+    commands:
+      - yarn build_dev
+  post_build:
+    commands:
+      - echo Build_dev completed
+artifacts:
+  files:
+    - 'dist/**/*'
+    - 'appspec.yml'
+    - 'Scripts/**/*'
+  #base-directory: dist
+  #name: builds
