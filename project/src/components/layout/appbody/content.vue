@@ -23,7 +23,8 @@
 					<span class="text-sm text-gray-800 font-light px-3 py-1 border rounded-full">상세보기</span>
 				</div>
 				<div class="w-full h-[400px]">
-					<Line01></Line01>
+					<LoadingStatus v-if="isLoading" />
+					<Line01 v-show="!isLoading"></Line01>
 				</div>
 			</div>
 		</div>
@@ -110,6 +111,8 @@ import { useUtilities } from '@/utils/common'
 
 export default {
 	setup() {
+		const isLoading = ref(true)
+
 		const scrollContainer = ref()
 		const options = [
 			'연립다세대매매실거래가격지수(10개월전)',
@@ -161,6 +164,7 @@ export default {
 		}
 
 		return {
+			isLoading,
 			options,
 			selectedOptions,
 			handleSelectChange,

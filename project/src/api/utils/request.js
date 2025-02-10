@@ -1,6 +1,5 @@
 import axios from 'axios'
 import config from '@/api/config'
-import router from '@/router'
 
 const request = axios.create({
 	baseURL: config.API_BASE_URL,
@@ -8,65 +7,54 @@ const request = axios.create({
 	headers: {
 		Accept: 'application/json',
 		'Content-Type': 'application/json; charset=UTF-8',
-
-		// cache setting
-		'Cache-Control': 'no-cache',
-		// 'Access-Control-Max-Age': 3600,
-
-		'Access-Control-Allow-Origin': '*',
-		'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-		'Access-Control-Allow-Headers': '*',
-		'Access-Control-Allow-Credentials': true,
-		// Authorization: `Bearer ${this.accessToken}`,
 	},
+	withCredentials: true,
 })
 
-// 공통 에러 처리 및 타임아웃 처리
+// 공통 응답 처리
 request.interceptors.response.use(
-	response => {
-		return response
-	},
+	response => response,
 	error => {
-		// if (error.code === 'ECONNABORTED') {
-		//     // 타임아웃 에러 처리 기본5초
-		//     console.log('요청 시간이 초과되었습니다. 다시 시도해주세요.');
-		//     const currentUrl = window.location.href;
-		//     if (currentUrl.includes('customerkiosk')) {
-		//         router.push('/customerkiosk');
-		//       } else if (currentUrl.includes('inoutkiosk')) {
-		//         router.push('/inoutkiosk');
-		//       } else if (currentUrl.includes('performancestatus')) {
-		//         router.push('/performancestatus');
-		//       } else {
-		//         router.push('/');
-		//     }
-		// } else {
-		//     // 기타 에러 처리
-		//     console.log('오류가 발생했습니다. 다시 시도해주세요.');
-		// }
-		// return Promise.reject(error);
+		// 에러 처리 로직
+		console.error('API 호출 중 오류 발생:', error)
+		return Promise.reject(error)
 	},
 )
 
-// // 요청 인터셉터
-// request.interceptors.request.use(
-//     (config) => {
-//         // 토큰 추가 등의 작업 수행
-//         return config;
-//     },
-//     (error) => {
-//         return Promise.reject(error);
-//     }
-// );
+// 공통 요청 함수
+const sendRequest = (url, data = {}, method = 'POST', type = 'json') => {
+	// 기본 헤더 설정
+	const headers = {
+		Accept: 'application/json',
+		'Content-Type': type === 'form' ? 'application/x-www-form-urlencoded' : 'application/json; charset=UTF-8',
+	}
 
-// // 응답 인터셉터
-// request.interceptors.response.use(
-//     (response) => {
-//         return response.data;
-//     },
-//     (error) => {
-//         return Promise.reject(error);
-//     }
-// );
+	// 데이터를 form 형식으로 처리하는 경우
+	if (type === 'form') {
+		const formData = new URLSearchParams()
+		Object.keys(data).forEach(key => formData.append(key, data[key]))
+		data = formData
+	} else {
+		data = JSON.stringify(data) // json일 경우 string화 처리
+	}
 
-export default request
+	// HTTP 메소드에 따른 요청 처리
+	const config = { headers }
+
+	switch (method.toLowerCase()) {
+		case 'get':
+			return request.get(url, { params: data, ...config })
+		case 'post':
+			return request.post(url, data, config)
+		case 'put':
+			return request.put(url, data, config)
+		case 'delete':
+			return request.delete(url, { data, ...config })
+		default:
+			return Promise.reject(new Error(`Unsupported HTTP method: ${method}`))
+	}
+}
+
+export default {
+	sendRequest,
+}
