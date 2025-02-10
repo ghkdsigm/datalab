@@ -6,9 +6,17 @@ const request = axios.create({
 	timeout: Number(config.TIMEOUT),
 	headers: {
 		Accept: 'application/json',
-		'Content-Type': 'application/json; charset=UTF-8',
+		// cache setting
+		'Cache-Control': 'no-cache',
+		// 'Access-Control-Max-Age': 3600,
+
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+		'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+		'Access-Control-Allow-Credentials': true,
+		// Authorization: `Bearer ${this.accessToken}`,
 	},
-	withCredentials: true,
+	withCredentials: false,
 })
 
 // 공통 응답 처리
@@ -16,7 +24,7 @@ request.interceptors.response.use(
 	response => response,
 	error => {
 		// 에러 처리 로직
-		console.error('API 호출 중 오류 발생:', error)
+		console.error('API 호출 중 오류 발생', error)
 		return Promise.reject(error)
 	},
 )
@@ -41,14 +49,14 @@ const sendRequest = (url, data = {}, method = 'POST', type = 'json') => {
 	// HTTP 메소드에 따른 요청 처리
 	const config = { headers }
 
-	switch (method.toLowerCase()) {
-		case 'get':
+	switch (method) {
+		case 'GET':
 			return request.get(url, { params: data, ...config })
-		case 'post':
+		case 'POST':
 			return request.post(url, data, config)
-		case 'put':
+		case 'PUT':
 			return request.put(url, data, config)
-		case 'delete':
+		case 'DELETE':
 			return request.delete(url, { data, ...config })
 		default:
 			return Promise.reject(new Error(`Unsupported HTTP method: ${method}`))

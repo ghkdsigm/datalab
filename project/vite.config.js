@@ -22,11 +22,14 @@ export default defineConfig(({ mode }) => ({
 		port: 3000,
 		proxy: {
 			'/api': {
-				target: 'http://localhost:3000',
+				target: 'https://localhost:3000',
+				// rewrite: path => path.replace(/^\/api/, ''),
+				// target: 'https://hkpmelmjlg-vpce-0794c449beb2d4841.execute-api.ap-northeast-2.amazonaws.com',
 				changeOrigin: true,
-				rewrite: path => path.replace(/^\/api/, ''),
+				secure: false,
 			},
 		},
+		//https: true,
 	},
 	compilerOptions: {
 		isCustomElement: tag => tag.startsWith('custom-'), // 맞춤형 요소 설정

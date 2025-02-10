@@ -44,6 +44,8 @@ import Footer from '@/components/layout/appbar/footer.vue'
 import BoardSearch from '@/components/mdf/board/boardsearch.vue'
 import Board from '@/components/mdf/board/board.vue'
 
+import { useServiceStore } from '@/store/service'
+
 export default {
 	name: 'DefaultLayout',
 	components: {
@@ -58,6 +60,19 @@ export default {
 		const routers = useRouter()
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
+		const serviceStore = useServiceStore()
+		const basemonth = ref([])
+
+		const settingBasemonth = async () => {
+			const params = 'bm_retail'
+			await serviceStore.actGetBasemonth(params) // 비동기 작업 기다리기
+
+			basemonth.value = serviceStore.getBasemonth
+		}
+
+		onMounted(async () => {
+			await settingBasemonth()
+		})
 
 		const goToHome = () => {
 			routers.push('/')
@@ -67,8 +82,6 @@ export default {
 			//routes.value = router.options.routes
 			routes.value = router.options.routes.filter(route => route.meta.isMenu == true)
 		})
-
-		onMounted(() => {})
 
 		return {
 			routes,

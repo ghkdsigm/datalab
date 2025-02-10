@@ -10,11 +10,10 @@ const serviceStore = useServiceStore()
 const serviceList = ref([])
 
 const settingBasemonth = async () => {
-	const params = 'bm_retail'
-	await serviceStore.actGetBasemonth(params)
+	const params = 'mdf'
+	await serviceStore.actGetBasemonth(params) // 비동기 작업 기다리기
 
 	serviceList.value = serviceStore.getBasemonth
-	console.log(serviceList.value)
 }
 
 onMounted(async () => {

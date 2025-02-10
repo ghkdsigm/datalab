@@ -110,7 +110,13 @@ import { ref } from 'vue'
 import { useUtilities } from '@/utils/common'
 
 export default {
-	setup() {
+	props: {
+		basemonth: {
+			type: Array,
+			default: '',
+		},
+	},
+	setup(props, { emit }) {
 		const isLoading = ref(true)
 
 		const scrollContainer = ref()
