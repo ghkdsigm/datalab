@@ -11,7 +11,7 @@
 					<div class="bg-[#262626] py-[40px]">
 						<div class="container mx-auto max-w-[1280px]">
 							<div class="flex justify-between gap-6 mb-12">
-								<BoardSearch />
+								<BoardSearch :basemonth="basemonth.base_yyyymm_list" />
 							</div>
 							<div class="flex justify-between gap-6">
 								<Board />
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { ref, onBeforeMount, onMounted, computed } from 'vue'
+import { ref, onBeforeMount, onMounted, computed, watch } from 'vue'
 import router from '@/router'
 import { useRoute, useRouter } from 'vue-router'
 import { useUtilities } from '@/utils/common'
@@ -64,13 +64,26 @@ export default {
 		const basemonth = ref([])
 
 		const settingBasemonth = async () => {
-			const params = 'bm_retail'
-			await serviceStore.actGetBasemonth(params) // 비동기 작업 기다리기
+			let params
+			if (currentPath.value === '/mdf') {
+				params = 'mdf'
+			} else if (currentPath.value === '/pb') {
+				params = 'pb'
+			} else if (currentPath.value === '/dw') {
+				params = 'dw'
+			} else {
+				return
+			}
+			await serviceStore.actGetBasemonth(params)
 
 			basemonth.value = serviceStore.getBasemonth
 		}
 
 		onMounted(async () => {
+			await settingBasemonth()
+		})
+
+		watch(currentPath, async () => {
 			await settingBasemonth()
 		})
 
@@ -89,6 +102,7 @@ export default {
 			currentPath,
 			goToHome,
 			imageSrc,
+			basemonth,
 		}
 	},
 }

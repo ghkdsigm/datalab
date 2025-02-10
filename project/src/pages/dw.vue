@@ -1,5 +1,5 @@
 <template>
-	<Content basemonth />
+	<Content />
 </template>
 
 <script setup>

@@ -1,10 +1,10 @@
 <template>
 	<div class="w-full flex items-center justify-between">
 		<div>
-			<label for="product" class="mr-2 text-sm text-white"> 제품 </label>
-			<SelectBox id="product" :options="arr" />
+			<label for="product" class="mr-2 text-sm text-white">제품</label>
+			<SelectBox id="product" :options="arr" v-model="selectedProduct" />
 
-			<label for="month" class="mx-2 text-sm text-white"> 기준월 </label>
+			<label for="month" class="mx-2 text-sm text-white">기준월</label>
 			<SelectBox id="month" :options="month" v-model="selectedMonth" />
 
 			<span class="ml-5 text-white">보드 수량 예측 결과입니다.</span>
@@ -14,42 +14,52 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, onMounted } from 'vue'
 
 export default defineComponent({
 	name: 'BoardSearch',
-	setup() {
+	props: {
+		basemonth: {
+			type: Array,
+			default: () => [],
+		},
+	},
+	setup(props) {
+		// 제품 옵션 데이터
 		const arr = ref([
-			{ value: '', title: '전체' },
-			{ value: 'item1', title: 'ITEM1' },
-			{ value: 'item2', title: 'ITEM2' },
+			{ value: 'product1', title: '제품 1' },
+			{ value: 'product2', title: '제품 2' },
+			{ value: 'product3', title: '제품 3' },
 		])
 
-		const month = ref([
-			{ value: '1', title: '1월' },
-			{ value: '2', title: '2월' },
-			{ value: '3', title: '3월' },
-			{ value: '4', title: '4월' },
-			{ value: '5', title: '5월' },
-			{ value: '6', title: '6월' },
-			{ value: '7', title: '7월' },
-			{ value: '8', title: '8월' },
-			{ value: '9', title: '9월' },
-			{ value: '10', title: '10월' },
-			{ value: '11', title: '11월' },
-			{ value: '12', title: '12월' },
-		])
+		// 기준월 옵션 데이터
+		const month = ref([])
 
-		const currentMonth = computed(() => {
-			const now = new Date()
-			return now.getMonth() + 1
+		// 선택된 제품과 월을 저장할 변수
+		const selectedProduct = ref('')
+		const selectedMonth = ref(0)
+
+		// 월 정보 변환
+		onMounted(() => {
+			if (Array.isArray(props.basemonth)) {
+				props.basemonth.map((item, idx) => {
+					const monthValue = item.slice(4) // 마지막 두 자리는 월을 의미
+					const monthTitle = `${monthValue}월` // 예: "12월"로 변환
+
+					console.log(idx)
+
+					month.value.push({ value: Number(idx), title: monthTitle })
+					console.log('month.value', month.value)
+				})
+			} else {
+				console.error('basemonth는 배열이어야 합니다.')
+			}
 		})
-
-		const selectedMonth = ref(currentMonth.value)
 
 		return {
 			arr,
 			month,
+			selectedProduct,
 			selectedMonth,
 		}
 	},
