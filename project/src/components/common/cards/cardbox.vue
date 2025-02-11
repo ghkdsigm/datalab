@@ -10,7 +10,7 @@
 
 		<template v-if="type === 'section'">
 			<div class="flex gap-0">
-				<template v-if="content">
+				<template v-if="content.length !== 0">
 					<div class="flex-1 rounded-l-md text-center">
 						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
 							{{ subTit01 || new Date().toLocaleString('ko-KR', { month: 'long' }) }}
@@ -56,7 +56,7 @@
 		</template>
 
 		<template v-else>
-			<div class="flex gap-0">
+			<div class="flex gap-0" v-if="content">
 				<div class="flex-1 rounded-md text-center">
 					<div v-for="(item, idx) in content.slice(0, 3)" :key="idx" class="h-6 my-1 flex items-center justify-center">
 						<span class="text-gray-800 bg-white w-6 h-6 rounded-full flex items-center justify-center font-bold mr-2">
@@ -67,6 +67,10 @@
 						</span>
 					</div>
 				</div>
+			</div>
+
+			<div v-else class="flex gap-0 w-full h-full items-center justify-center text-white">
+				데이터가 존재하지 않습니다.
 			</div>
 		</template>
 	</div>

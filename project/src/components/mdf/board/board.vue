@@ -36,7 +36,29 @@ export default defineComponent({
 		const content3 = ref([])
 
 		onMounted(() => {
-			//content3.value = serviceStore.getPreddata.feature_information[selectMonth.value]
+			// if (serviceStore.getPreddata.feature_information[selectMonth.value]) {
+			// 	content3.value = serviceStore.getPreddata.feature_information[selectMonth.value]
+			// } else {
+			// 	content3.value = []
+			// }
+		})
+
+		watch(selectMonth, async () => {
+			if (!serviceStore.getPreddata.feature_information) {
+				return
+			}
+
+			const firstKey = Object.keys(serviceStore.getPreddata.feature_information)[0]
+
+			const firstValue = serviceStore.getPreddata.feature_information[firstKey]
+			console.log('firstValue', firstValue)
+
+			content3.value = firstValue
+			// if (serviceStore.getPreddata.feature_information[selectMonth.value] !== null) {
+			// 	content3.value = serviceStore.getPreddata.feature_information[selectMonth.value]
+			// } else {
+			// 	content3.value = []
+			// }
 		})
 
 		return {
