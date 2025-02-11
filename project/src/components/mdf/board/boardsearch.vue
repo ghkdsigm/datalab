@@ -1,11 +1,11 @@
 <template>
 	<div class="w-full flex items-center justify-between">
 		<div>
-			<label for="product" class="mr-2 text-sm text-white">제품</label>
-			<SelectBox id="product" :options="arr" v-model="selectedProduct" />
-
-			<label for="month" class="mx-2 text-sm text-white">기준월</label>
+			<label for="month" class="mr-2 text-sm text-white">기준월</label>
 			<SelectBox id="month" :options="month" v-model="selectedMonth" />
+
+			<label for="prod" class="mx-2 text-sm text-white">제품</label>
+			<SelectBox id="prod" :options="prod" v-model="selectedProduct" />
 
 			<span class="ml-5 text-white">보드 수량 예측 결과입니다.</span>
 		</div>
@@ -14,7 +14,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted } from 'vue'
+import { defineComponent, ref, watch, onMounted, computed, watchEffect, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
+import { useServiceStore } from '@/store/service'
 
 export default defineComponent({
 	name: 'BoardSearch',
@@ -25,42 +27,123 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		// 제품 옵션 데이터
-		const arr = ref([
-			{ value: 'product1', title: '제품 1' },
-			{ value: 'product2', title: '제품 2' },
-			{ value: 'product3', title: '제품 3' },
-		])
+		const route = useRoute()
+		const currentPath = computed(() => route.path)
+		const serviceStore = useServiceStore()
 
-		// 기준월 옵션 데이터
 		const month = ref([])
-
-		// 선택된 제품과 월을 저장할 변수
-		const selectedProduct = ref('')
+		const prod = ref([])
+		const selectedProduct = ref(0)
 		const selectedMonth = ref(0)
 
-		// 월 정보 변환
-		onMounted(() => {
-			if (Array.isArray(props.basemonth)) {
-				props.basemonth.map((item, idx) => {
-					const monthValue = item.slice(4) // 마지막 두 자리는 월을 의미
-					const monthTitle = `${monthValue}월` // 예: "12월"로 변환
-
-					console.log(idx)
-
-					month.value.push({ value: Number(idx), title: monthTitle })
-					console.log('month.value', month.value)
+		// 기준월 데이터 업데이트 함수
+		const updateMonth = () => {
+			if (Array.isArray(props.basemonth) && props.basemonth.length > 0) {
+				month.value = props.basemonth.map((item, idx) => {
+					const year = item.slice(0, 4)
+					const monthValue = item.slice(4)
+					const monthTitle = `${year}.${monthValue}`
+					return { value: Number(idx), title: monthTitle }
 				})
+				// 첫 번째 값 자동 선택
+				selectedMonth.value = 0
 			} else {
-				console.error('basemonth는 배열이어야 합니다.')
+				month.value = []
+			}
+		}
+
+		// 제품 타입 불러오기
+		const fetchProdType = async () => {
+			if (!props.basemonth[selectedMonth.value]) return
+
+			const params = {
+				board_category: '',
+				base_yyyymm: props.basemonth[selectedMonth.value],
+			}
+
+			if (currentPath.value === '/mdf') {
+				params.board_category = 'mdf'
+			} else if (currentPath.value === '/pb') {
+				params.board_category = 'pb'
+			} else if (currentPath.value === '/dw') {
+				params.board_category = 'bm_retail'
+			} else {
+				return
+			}
+
+			await serviceStore.actGetProdtype(params)
+			await fetchPredData(params)
+		}
+
+		// 예측데이터 불러오기
+		const fetchPredData = async params => {
+			if (params) params.prod_type = prod.value[selectedProduct.value].title
+			else return
+			await serviceStore.actGetPreddata(params)
+		}
+
+		// serviceStore.getProdtype이 변경되면 prod 업데이트
+		watchEffect(() => {
+			if (serviceStore.getProdtype && serviceStore.getProdtype.prod_type) {
+				prod.value = serviceStore.getProdtype.prod_type.map((item, idx) => ({
+					value: Number(idx),
+					title: item,
+				}))
+
+				serviceStore.selectMonthValue(props.basemonth[selectedMonth.value])
+				serviceStore.selectProdValue(prod.value[selectedProduct.value].title)
+			} else {
+				prod.value = []
 			}
 		})
 
+		// 마운트 시 초기화
+		onMounted(async () => {
+			updateMonth()
+			await fetchProdType()
+		})
+
+		// basemonth 변경 감지하여 업데이트
+		watch(
+			() => props.basemonth,
+			async () => {
+				updateMonth()
+				await fetchProdType()
+			},
+			{ deep: true },
+		)
+
+		// selectedMonth 변경 시 제품 정보 다시 불러오기
+		watch(selectedMonth, async () => {
+			await fetchProdType()
+		})
+
+		watch(selectedProduct, async () => {
+			console.log('asdf')
+			if (!props.basemonth[selectedMonth.value]) return
+
+			const params = {
+				board_category: '',
+				base_yyyymm: props.basemonth[selectedMonth.value],
+			}
+
+			if (currentPath.value === '/mdf') {
+				params.board_category = 'mdf'
+			} else if (currentPath.value === '/pb') {
+				params.board_category = 'pb'
+			} else if (currentPath.value === '/dw') {
+				params.board_category = 'bm_retail'
+			} else {
+				return
+			}
+			await fetchPredData(params)
+		})
+
 		return {
-			arr,
 			month,
 			selectedProduct,
 			selectedMonth,
+			prod,
 		}
 	},
 })

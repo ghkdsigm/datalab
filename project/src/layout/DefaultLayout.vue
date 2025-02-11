@@ -70,11 +70,13 @@ export default {
 			} else if (currentPath.value === '/pb') {
 				params = 'pb'
 			} else if (currentPath.value === '/dw') {
-				params = 'dw'
+				params = 'bm_retail'
 			} else {
 				return
 			}
 			await serviceStore.actGetBasemonth(params)
+
+			console.log('Fetched basemonth:', serviceStore.getBasemonth)
 
 			basemonth.value = serviceStore.getBasemonth
 		}

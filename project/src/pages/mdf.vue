@@ -2,8 +2,10 @@
 	<Content />
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
+<script>
+export default {
+	name: 'MDF',
+}
 </script>
 
 <style></style>

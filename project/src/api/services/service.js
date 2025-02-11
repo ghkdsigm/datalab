@@ -7,12 +7,12 @@ const getPredictBasemonth = board_category => {
 
 // 보드 종류, 기준월에 따른 제품 종류 리스트
 const getPredictProdtype = board_category => {
-	return request.sendRequest('/predict/prodtype', { board_category }, 'POST', 'json')
+	return request.sendRequest('/predict/prodtype', board_category, 'POST', 'json')
 }
 
 // 예측 데이터 (카드 섹션, 테이블, 요약)
 const getPredictPreddata = board_category => {
-	return request.sendRequest('/predict/preddata', { board_category }, 'POST', 'json')
+	return request.sendRequest('/predict/preddata', board_category, 'POST', 'json')
 }
 
 // 보드 영향인자 리스트
