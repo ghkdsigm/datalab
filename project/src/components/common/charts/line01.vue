@@ -25,19 +25,29 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, reactive } from 'vue'
+import { defineComponent, onMounted, ref, reactive, watchEffect, computed } from 'vue'
 import Chart from 'chart.js/auto'
+import { useServiceStore } from '@/store/service'
 
 export default defineComponent({
 	name: 'LineChart01',
-	setup() {
+	props: {
+		content: {
+			type: [Array, Object],
+			require: false,
+		},
+	},
+	setup(props) {
 		const chartCanvas = ref(null)
 		let chartInstance = null
 
+		const serviceStore = useServiceStore()
+		const currentMonth = computed(() => serviceStore.getselectMonth)
+
 		const chartData = reactive({
-			labels: ['2024월 1일', '2024월 2일', '2024월 3일', '2024월 4일', '2025월 5일'],
+			labels: [],
 			datasets: [
-				{ label: 'MDF', data: [12000, 18000, 45000, 22000, 17000], tension: 0, radius: 1, borderColor: '#25CFEE' },
+				{ label: 'MDF', tension: 0, radius: 1, borderColor: '#25CFEE' },
 				{
 					label: 'MDF (예측)',
 					data: [10000, 16000, 14000, 21000, 15000],
@@ -71,26 +81,97 @@ export default defineComponent({
 		})
 
 		// 최근 6개월 옵션 생성
-		const getLast6Months = () => {
+		const getLast3Months = () => {
 			const months = []
-			const now = new Date()
-			for (let i = 0; i < 6; i++) {
-				const month = new Date(now.getFullYear(), now.getMonth() - i, 1)
-				const year = month.getFullYear()
-				const monthFormatted = String(month.getMonth() + 1).padStart(2, '0') // 두 자리 유지
-				months.push(`${year}년 ${monthFormatted}월`)
+			console.log(currentMonth.value)
+			if (currentMonth.value) {
+				const currentYear = currentMonth.value.slice(0, 4)
+				const currentMonthValue = currentMonth.value.slice(4, 6)
+
+				// currentMonth 값을 'YYYY-MM-01' 형식으로 변환하여 사용
+				const now = new Date(`${currentYear}-${currentMonthValue}-01`)
+
+				console.log('나우', now)
+
+				for (let i = 0; i < 3; i++) {
+					const month = new Date(now)
+					month.setMonth(now.getMonth() - i) // 현재 월에서 i개월 전으로 설정
+					const year = month.getFullYear()
+					const monthFormatted = String(month.getMonth() + 1).padStart(2, '0') // 월은 1부터 시작
+					months.push(`${year}년 ${monthFormatted}월`)
+				}
+
+				return months
 			}
-			return months
 		}
 
-		const selectedMonth = ref(getLast6Months()[0]) // 기본값: 이번 달
-		const months = ref(getLast6Months())
+		const selectedMonth = ref() // 기본값: 이번 달
+		const months = ref()
 
 		const handleMonthChange = newMonth => {
 			selectedMonth.value = newMonth
 		}
 
 		onMounted(() => {
+			if (props.content) {
+				chartData.labels = props.content.index || []
+				chartData.datasets[0].data = props.content.real || [] //mdf
+				chartData.datasets[3].data = props.content.bzplan || [] //bzplan
+				if (chartInstance) {
+					chartInstance.update()
+				}
+			}
+			createChart()
+		})
+
+		watchEffect(() => {
+			if (props.content) {
+				chartData.labels = props.content.index || []
+				chartData.datasets[0].data = props.content.real || [] //mdf
+				chartData.datasets[3].data = props.content.bzplan || [] //bzplan
+				if (chartInstance) {
+					chartInstance.update()
+				}
+			}
+		})
+
+		const customVerticalLine = {
+			id: 'customVerticalLine',
+			afterDraw(chart) {
+				//console.log('뭐나옴1', chart)
+				if (!chart.tooltip?.active) return
+
+				const { ctx, tooltip, chartArea } = chart
+				const x = tooltip.caretX
+
+				ctx.save()
+				ctx.beginPath()
+				ctx.moveTo(x, chartArea.top)
+				ctx.lineTo(x, chartArea.bottom)
+				ctx.lineWidth = 5
+				ctx.strokeStyle = 'rgba(0, 2, 2, 1)'
+				ctx.setLineDash([5, 5])
+				ctx.stroke()
+				ctx.restore()
+			},
+		}
+
+		const customVerticalLine02 = {
+			id: 'customVerticalLine02',
+			beforeInit: function (chart) {
+				console.log('chart', chart)
+				chart.options.scales.x.ticks.callback = function (value, index, values) {
+					let label = chart.data.labels[index]
+
+					if (/^\d{4}월 \d{1,2}일/.test(label)) {
+						return label.replace(/^(\d{4}월) (\d{1,2}일)/, '$1\n$2')
+					}
+					return label
+				}
+			},
+		}
+
+		const createChart = () => {
 			const ctx = chartCanvas.value.getContext('2d')
 
 			chartInstance = new Chart(ctx, {
@@ -132,42 +213,6 @@ export default defineComponent({
 				},
 				plugins: [customVerticalLine, customVerticalLine02],
 			})
-		})
-
-		const customVerticalLine = {
-			id: 'customVerticalLine',
-			afterDraw(chart) {
-				//console.log('뭐나옴1', chart)
-				if (!chart.tooltip?.active) return
-
-				const { ctx, tooltip, chartArea } = chart
-				const x = tooltip.caretX
-
-				ctx.save()
-				ctx.beginPath()
-				ctx.moveTo(x, chartArea.top)
-				ctx.lineTo(x, chartArea.bottom)
-				ctx.lineWidth = 5
-				ctx.strokeStyle = 'rgba(0, 2, 2, 1)'
-				ctx.setLineDash([5, 5])
-				ctx.stroke()
-				ctx.restore()
-			},
-		}
-
-		const customVerticalLine02 = {
-			id: 'customVerticalLine02',
-			beforeInit: function (chart) {
-				console.log('chart', chart)
-				chart.options.scales.x.ticks.callback = function (value, index, values) {
-					let label = chart.data.labels[index]
-
-					if (/^\d{4}월 \d{1,2}일/.test(label)) {
-						return label.replace(/^(\d{4}월) (\d{1,2}일)/, '$1\n$2')
-					}
-					return label
-				}
-			},
 		}
 
 		const toggleDataset = index => {
@@ -180,7 +225,17 @@ export default defineComponent({
 			return chartInstance?.getDatasetMeta(index)?.hidden ?? false
 		}
 
-		return { chartCanvas, chartData, toggleDataset, isHidden, months, handleMonthChange, selectedMonth }
+		return {
+			chartCanvas,
+			chartData,
+			toggleDataset,
+			isHidden,
+			months,
+			handleMonthChange,
+			selectedMonth,
+			createChart,
+			currentMonth,
+		}
 	},
 })
 </script>

@@ -3,17 +3,40 @@
 		:title="'이달의 MDF 예측'"
 		:ico="'ico_bar_graph01'"
 		:subTit01="'예측값'"
-		:subTit02="'정확도'"
+		:subTit02="'실적 오차'"
 		:content="content1"
 		:type="'section'"
 		:more="false"
 	/>
-	<CardBox :title="'이달의 예측오차'" :ico="'ico_bar_graph02'" :content="content2" :type="'section'" :more="false" />
-	<CardBox :title="'이달의 영향인자 Top3'" :ico="'ico_bar_graph03'" :content="content3" :type="'list'" :more="true" />
+	<CardBox
+		:title="'과거 미래 1년간 추세'"
+		:ico="'ico_bar_graph02'"
+		:subTit01="'과거'"
+		:subTit02="'미래'"
+		:content="content1"
+		:feature="'trend'"
+		:type="'section'"
+		:more="false"
+	/>
+	<CardBox
+		:title="'이달의 영향인자 Top3'"
+		:ico="'ico_bar_graph03'"
+		:content="content2"
+		:type="'list'"
+		:more="true"
+		@openPop="openPop"
+	/>
+	<Popup01
+		:title="'이달의 영향인자 '"
+		:isVisible="showPopup"
+		@update:isVisible="showPopup = $event"
+		:width="'720'"
+		:data="content"
+	/>
 </template>
 
 <script>
-import { defineComponent, ref, watch, onMounted, computed, watchEffect } from 'vue'
+import { defineComponent, ref, watch, onMounted, computed, watchEffect, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useServiceStore } from '@/store/service'
 
@@ -25,50 +48,40 @@ export default defineComponent({
 		const serviceStore = useServiceStore()
 
 		const selectMonth = computed(() => {
-			return serviceStore.getselectMonth
+			serviceStore.getselectMonth
 		})
 		const selectProd = computed(() => {
-			return serviceStore.getselectProd
+			serviceStore.getselectProd
 		})
 
-		const content1 = ref({ value: 36209, accuracy: 150 })
-		const content2 = ref({ value: 46209, accuracy: null })
-		const content3 = ref([])
+		const content = computed(() => serviceStore.getPreddata.feature_information)
+		const content1 = computed(() => serviceStore.getPreddata.card_section)
+		const content2 = ref(null)
 
-		onMounted(() => {
-			// if (serviceStore.getPreddata.feature_information[selectMonth.value]) {
-			// 	content3.value = serviceStore.getPreddata.feature_information[selectMonth.value]
-			// } else {
-			// 	content3.value = []
-			// }
-		})
+		const showPopup = ref(false)
+		const openPop = val => {
+			showPopup.value = val
+		}
 
-		watch(selectMonth, async () => {
-			if (!serviceStore.getPreddata.feature_information) {
-				return
+		onMounted(async () => {})
+		watchEffect(() => {
+			if (serviceStore.getPreddata?.feature_information) {
+				content2.value = serviceStore.getPreddata.feature_information[serviceStore.getselectMonth]
 			}
-
-			const firstKey = Object.keys(serviceStore.getPreddata.feature_information)[0]
-
-			const firstValue = serviceStore.getPreddata.feature_information[firstKey]
-			console.log('firstValue', firstValue)
-
-			content3.value = firstValue
-			// if (serviceStore.getPreddata.feature_information[selectMonth.value] !== null) {
-			// 	content3.value = serviceStore.getPreddata.feature_information[selectMonth.value]
-			// } else {
-			// 	content3.value = []
-			// }
 		})
+
+		watch(selectMonth, async () => {})
 
 		return {
 			currentPath,
 			serviceStore,
+			content,
 			content1,
 			content2,
-			content3,
 			selectMonth,
 			selectProd,
+			showPopup,
+			openPop,
 		}
 	},
 })
