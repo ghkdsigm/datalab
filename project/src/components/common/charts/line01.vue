@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, reactive, watchEffect, computed } from 'vue'
+import { defineComponent, onMounted, ref, reactive, watch, watchEffect, computed } from 'vue'
 import Chart from 'chart.js/auto'
 import { useServiceStore } from '@/store/service'
 
@@ -40,9 +40,13 @@ export default defineComponent({
 	setup(props) {
 		const chartCanvas = ref(null)
 		let chartInstance = null
+		const isFirstChange = ref(true)
 
 		const serviceStore = useServiceStore()
 		const currentMonth = computed(() => serviceStore.getselectMonth)
+
+		const selectedMonth = ref() // 기본값: 이번 달
+		const months = ref([])
 
 		const chartData = reactive({
 			labels: [],
@@ -50,14 +54,13 @@ export default defineComponent({
 				{ label: 'MDF', tension: 0, radius: 1, borderColor: '#25CFEE' },
 				{
 					label: 'MDF (예측)',
-					data: [10000, 16000, 14000, 21000, 15000],
 					tension: 0,
 					radius: 1,
 					borderColor: '#FF9900',
 				},
 				{
 					label: '특이사항',
-					data: [{}, { x: 3, y: 25000 }], // 특이사항이 있는 날짜에 동그라미 표시
+					data: [{}, {}, { x: 3, y: 25000 }], // 특이사항이 있는 날짜에 동그라미 표시
 					borderColor: '#48B68E',
 					backgroundColor: '#48B68E',
 					radius: 6,
@@ -72,7 +75,7 @@ export default defineComponent({
 					data: [34000, 22000, 31000],
 					tension: 0,
 					radius: 1,
-					borderColor: '#66FF99',
+					borderColor: '#FF11BC',
 					fill: false,
 					borderDash: [5, 5],
 				},
@@ -80,47 +83,51 @@ export default defineComponent({
 			],
 		})
 
-		// 최근 6개월 옵션 생성
+		// 최근 3개월 옵션 생성
 		const getLast3Months = () => {
-			const months = []
-			console.log(currentMonth.value)
 			if (currentMonth.value) {
-				const currentYear = currentMonth.value.slice(0, 4)
-				const currentMonthValue = currentMonth.value.slice(4, 6)
+				const currentYear = String(currentMonth.value).slice(0, 4)
+				const currentMonthValue = String(currentMonth.value).slice(4, 6)
 
-				// currentMonth 값을 'YYYY-MM-01' 형식으로 변환하여 사용
+				// 현재 월을 기준으로 Date 객체 생성
 				const now = new Date(`${currentYear}-${currentMonthValue}-01`)
 
-				console.log('나우', now)
+				// months 배열 초기화
+				months.value = []
 
 				for (let i = 0; i < 3; i++) {
+					// 최신 달부터 추가
 					const month = new Date(now)
 					month.setMonth(now.getMonth() - i) // 현재 월에서 i개월 전으로 설정
 					const year = month.getFullYear()
-					const monthFormatted = String(month.getMonth() + 1).padStart(2, '0') // 월은 1부터 시작
-					months.push(`${year}년 ${monthFormatted}월`)
+					const monthFormatted = String(month.getMonth() + 1).padStart(2, '0') // 월을 두 자리로 맞춤
+					months.value.push(`${year}${monthFormatted}`) // 🔥 unshift 사용 (배열 앞에 추가)
 				}
-
-				return months
 			}
+			selectedMonth.value = months.value[0]
 		}
 
-		const selectedMonth = ref() // 기본값: 이번 달
-		const months = ref()
+		watch(currentMonth, (newVal, oldVal) => {
+			getLast3Months() //예측결과내 셀렉트
+			if (isFirstChange.value) {
+				selectedMonth.value = newVal
+				isFirstChange.value = false // 이후 감지 차단
+			}
+		})
 
-		const handleMonthChange = newMonth => {
-			selectedMonth.value = newMonth
+		const formatMonth = dateString => {
+			return `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}`
 		}
 
 		onMounted(() => {
-			if (props.content) {
-				chartData.labels = props.content.index || []
-				chartData.datasets[0].data = props.content.real || [] //mdf
-				chartData.datasets[3].data = props.content.bzplan || [] //bzplan
-				if (chartInstance) {
-					chartInstance.update()
-				}
-			}
+			// if (props.content) {
+			// 	chartData.labels = props.content.index || []
+			// 	chartData.datasets[0].data = props.content.real || [] //mdf
+			// 	chartData.datasets[3].data = props.content.bzplan || [] //bzplan
+			// 	if (chartInstance) {
+			// 		chartInstance.update()
+			// 	}
+			// }
 			createChart()
 		})
 
@@ -128,12 +135,19 @@ export default defineComponent({
 			if (props.content) {
 				chartData.labels = props.content.index || []
 				chartData.datasets[0].data = props.content.real || [] //mdf
+				chartData.datasets[1].data = props.content.pred[String(selectedMonth.value)] || [] //mdf-예측
 				chartData.datasets[3].data = props.content.bzplan || [] //bzplan
 				if (chartInstance) {
 					chartInstance.update()
 				}
 			}
 		})
+
+		const handleMonthChange = newMonth => {
+			console.log('zz', newMonth)
+
+			selectedMonth.value = newMonth
+		}
 
 		const customVerticalLine = {
 			id: 'customVerticalLine',
@@ -235,6 +249,8 @@ export default defineComponent({
 			selectedMonth,
 			createChart,
 			currentMonth,
+			getLast3Months,
+			isFirstChange,
 		}
 	},
 })

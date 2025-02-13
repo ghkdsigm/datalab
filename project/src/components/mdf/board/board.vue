@@ -1,6 +1,6 @@
 <template>
 	<CardBox
-		:title="'이달의 MDF 예측'"
+		:title="`이달의 ${currentPath === '/mdf' ? 'MDF' : currentPath === '/pb' ? 'PB' : '건장재 시판'} 예측`"
 		:ico="'ico_bar_graph01'"
 		:subTit01="'예측값'"
 		:subTit02="'실적 오차'"
@@ -27,7 +27,7 @@
 		@openPop="openPop"
 	/>
 	<Popup01
-		:title="'이달의 영향인자 '"
+		:title="'상세보기 '"
 		:isVisible="showPopup"
 		@update:isVisible="showPopup = $event"
 		:width="'720'"

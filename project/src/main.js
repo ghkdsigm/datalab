@@ -12,6 +12,7 @@ import Select01 from './components/common/selects/select01.vue'
 import Select02 from './components/common/selects/select02.vue'
 import Popup00 from './components/common/popups/popup00.vue'
 import Popup01 from './components/common/popups/popup01.vue'
+import Popup02 from './components/common/popups/popup02.vue'
 import CardBox from './components/common/cards/cardbox.vue'
 import Line01 from './components/common/charts/line01.vue'
 import Line02 from './components/common/charts/line02.vue'
@@ -35,6 +36,7 @@ createApp(App)
 	.component('SelectBasic', SelectBasic)
 	.component('Popup00', Popup00)
 	.component('Popup01', Popup01)
+	.component('Popup02', Popup02)
 	.component('CardBox', CardBox)
 	.component('Line01', Line01)
 	.component('Line02', Line02)

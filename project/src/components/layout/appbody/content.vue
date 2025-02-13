@@ -19,7 +19,9 @@
 			<div class="p-4 border rounded-lg bg-white shadow-black">
 				<div class="flex justify-between items-center mb-5">
 					<strong class="text-xl text-gray-800 font-bold">보드 예측 결과</strong>
-					<span class="text-sm text-gray-800 font-light px-3 py-1 border rounded-full">상세보기</span>
+					<span class="text-sm text-gray-800 font-light px-3 py-1 border rounded-full" @click="showPopup02 = true"
+						>상세보기</span
+					>
 				</div>
 				<div class="w-full h-[400px]">
 					<!-- <LoadingStatus v-if="isLoading" /> -->
@@ -103,6 +105,16 @@
 				{{ content?.summary?.full }}
 			</p>
 		</Popup00>
+
+		<Popup02
+			:title="'상세보기 '"
+			:isVisible="showPopup02"
+			@update:isVisible="showPopup02 = $event"
+			:data="content"
+			:width="'720'"
+		>
+			<p class="text-gray-600">ㅁㅇㄴㄹ</p>
+		</Popup02>
 	</section>
 </template>
 
@@ -127,6 +139,7 @@ export default {
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
 		const showPopup = ref(false)
+		const showPopup02 = ref(false)
 
 		const serviceStore = useServiceStore()
 		const content = computed(() => serviceStore.getPreddata)
@@ -177,6 +190,7 @@ export default {
 			handleRemove,
 			imageSrc,
 			showPopup,
+			showPopup02,
 			startDrag,
 			onDrag,
 			stopDrag,
