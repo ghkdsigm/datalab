@@ -17,7 +17,7 @@ const getPredictPreddata = board_category => {
 
 // 보드 영향인자 리스트
 const getPredictFeatureList = board_category => {
-	return request.sendRequest('/predict/feature_list', { board_category }, 'POST', 'json')
+	return request.sendRequest('/predict/feature_list', board_category, 'POST', 'json')
 }
 
 // 개별 영향인자 정보

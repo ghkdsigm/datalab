@@ -146,8 +146,9 @@ export default defineComponent({
 	props: {
 		title: String,
 		content: {
-			type: [Array, Object],
+			type: [Array, Object, null],
 			required: true,
+			default: () => [],
 		},
 		more: {
 			type: Boolean,

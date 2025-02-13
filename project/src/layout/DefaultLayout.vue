@@ -71,6 +71,8 @@ export default {
 				params = 'pb'
 			} else if (currentPath.value === '/dw') {
 				params = 'bm_retail'
+			} else if (currentPath.value === '/apt') {
+				params = 'apt_comp'
 			} else {
 				return
 			}

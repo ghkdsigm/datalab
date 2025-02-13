@@ -37,6 +37,7 @@ export default {
 		options: {
 			type: Array,
 			required: true,
+			default: () => [],
 		},
 		selectedOptions: {
 			type: Array,
@@ -44,7 +45,7 @@ export default {
 		},
 		width: {
 			type: String,
-			default: '280',
+			default: '330',
 		},
 		label: {
 			type: String,
@@ -66,7 +67,7 @@ export default {
 			const lastSelected = props.selectedOptions[props.selectedOptions.length - 1] || '선택'
 
 			return `
-    <span class="w-[180px] overflow-hidden text-ellipsis line-clamp-1 text-left">${lastSelected}</span>
+    <span class="w-[230px] overflow-hidden text-ellipsis line-clamp-1 text-left">${lastSelected}</span>
     ${
 			remainingCount.value > 0
 				? `<span style="margin-left: 4px; color: #fff; font-weight: bold;
@@ -148,6 +149,8 @@ export default {
 	list-style: none;
 	border-radius: 4px;
 	z-index: 10;
+	max-height: 300px;
+	overflow-y: scroll;
 }
 
 .custom-select-item {

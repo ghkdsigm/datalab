@@ -67,19 +67,29 @@ export default defineComponent({
 				params.board_category = 'pb'
 			} else if (currentPath.value === '/dw') {
 				params.board_category = 'bm_retail'
+			} else if (currentPath.value === '/apt') {
+				params.board_category = 'apt_comp'
 			} else {
 				return
 			}
 
 			await serviceStore.actGetProdtype(params)
 			await fetchPredData(params)
+			await fetchtFeatureList(params)
 		}
 
 		// 예측데이터 불러오기
 		const fetchPredData = async params => {
-			if (params) params.prod_type = prod.value[selectedProduct.value].title
+			if (params) params.prod_type = prod.value[selectedProduct.value]?.title
 			else return
 			await serviceStore.actGetPreddata(params)
+		}
+
+		// 보드 영향인자 리스트 불러오기
+		const fetchtFeatureList = async params => {
+			if (params) params.prod_type = prod.value[selectedProduct.value]?.title
+			else return
+			await serviceStore.actGetFeaturelist(params)
 		}
 
 		// serviceStore.getProdtype이 변경되면 prod 업데이트
@@ -91,7 +101,7 @@ export default defineComponent({
 				}))
 
 				serviceStore.selectMonthValue(props.basemonth[selectedMonth.value])
-				serviceStore.selectProdValue(prod.value[selectedProduct.value].title)
+				serviceStore.selectProdValue(prod.value[selectedProduct.value]?.title)
 			} else {
 				prod.value = []
 			}
@@ -119,7 +129,6 @@ export default defineComponent({
 		})
 
 		watch(selectedProduct, async () => {
-			console.log('asdf')
 			if (!props.basemonth[selectedMonth.value]) return
 
 			const params = {
@@ -137,6 +146,7 @@ export default defineComponent({
 				return
 			}
 			await fetchPredData(params)
+			await fetchtFeatureList(params)
 		})
 
 		return {

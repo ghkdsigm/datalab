@@ -1,6 +1,6 @@
 <template>
 	<CardBox
-		:title="`이달의 ${currentPath === '/mdf' ? 'MDF' : currentPath === '/pb' ? 'PB' : '건장재 시판'} 예측`"
+		:title="`이달의 ${currentPath === '/mdf' ? 'MDF' : currentPath === '/pb' ? 'PB' : currentPath === '/dw' ? '건장재 시판' : '준공실적'} 예측`"
 		:ico="'ico_bar_graph01'"
 		:subTit01="'예측값'"
 		:subTit02="'실적 오차'"
@@ -47,15 +47,11 @@ export default defineComponent({
 		const currentPath = computed(() => route.path)
 		const serviceStore = useServiceStore()
 
-		const selectMonth = computed(() => {
-			serviceStore.getselectMonth
-		})
-		const selectProd = computed(() => {
-			serviceStore.getselectProd
-		})
+		const selectMonth = computed(() => serviceStore.getselectMonth)
+		const selectProd = computed(() => serviceStore.getselectProd)
 
-		const content = computed(() => serviceStore.getPreddata.feature_information)
-		const content1 = computed(() => serviceStore.getPreddata.card_section)
+		const content = computed(() => serviceStore.getPreddata?.feature_information ?? [])
+		const content1 = computed(() => serviceStore.getPreddata?.card_section ?? [])
 		const content2 = ref(null)
 
 		const showPopup = ref(false)
@@ -64,13 +60,12 @@ export default defineComponent({
 		}
 
 		onMounted(async () => {})
+
 		watchEffect(() => {
 			if (serviceStore.getPreddata?.feature_information) {
 				content2.value = serviceStore.getPreddata.feature_information[serviceStore.getselectMonth]
 			}
 		})
-
-		watch(selectMonth, async () => {})
 
 		return {
 			currentPath,

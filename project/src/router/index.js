@@ -47,6 +47,14 @@ const router = createRouter({
 			meta: { isMenu: true, layout: 'DefaultLayout', requireAuth: true },
 		},
 		{
+			path: '/apt',
+			name: 'APTCOMP',
+			component: () => import('@/pages/apt.vue'),
+			title: '준공실적',
+			icon: 'far fa-bell fa-fw text-2xl',
+			meta: { isMenu: true, layout: 'DefaultLayout', requireAuth: false },
+		},
+		{
 			path: '/trend',
 			name: 'Trend',
 			component: () => import('@/pages/trend.vue'),

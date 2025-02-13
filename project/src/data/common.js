@@ -18,6 +18,12 @@ export const Menu = [
 		ustatesed: true,
 	},
 	{
+		ico: 'ico_apt',
+		title: '준공실적',
+		to: '/apt',
+		state: true,
+	},
+	{
 		ico: 'ico_trend',
 		title: '경기지표트렌드',
 		to: '/trend',

@@ -10,6 +10,8 @@ export const useServiceStore = defineStore('service', {
 		basemonth: [],
 		prodtype: [],
 		preddata: [],
+		featurelist: [],
+		featurevalue: [],
 	}),
 	getters: {
 		getErrorMessage: state => state.errorMessage,
@@ -19,6 +21,8 @@ export const useServiceStore = defineStore('service', {
 		getBasemonth: state => state.basemonth,
 		getProdtype: state => state.prodtype,
 		getPreddata: state => state.preddata,
+		getFeaturelist: state => state.featurelist,
+		getFeaturevalue: state => state.featurevalue,
 	},
 	actions: {
 		// 공통 에러 처리 메서드
@@ -109,6 +113,44 @@ export const useServiceStore = defineStore('service', {
 				}
 			} catch (error) {
 				this.preddata = []
+				this.errorMessage = '서버와 연결할 수 없습니다.'
+				this.status = 500
+				console.error('Failed to fetch data:', error)
+			}
+		},
+
+		async actGetFeaturelist(params) {
+			try {
+				const res = await service.getPredictFeatureList(params)
+				if (res.status !== 200) {
+					const type = 'featurelist'
+					this.handleError(type, res)
+				} else {
+					this.featurelist = res.data.body || []
+					this.errorMessage = ''
+					this.status = res.status
+				}
+			} catch (error) {
+				this.featurelist = []
+				this.errorMessage = '서버와 연결할 수 없습니다.'
+				this.status = 500
+				console.error('Failed to fetch data:', error)
+			}
+		},
+
+		async actGetFeaturevalue(params) {
+			try {
+				const res = await service.getPredictFeatureValue(params)
+				if (res.status !== 200) {
+					const type = 'featurevalue'
+					this.handleError(type, res)
+				} else {
+					this.featurevalue = res.data.body || []
+					this.errorMessage = ''
+					this.status = res.status
+				}
+			} catch (error) {
+				this.featurevalue = []
 				this.errorMessage = '서버와 연결할 수 없습니다.'
 				this.status = 500
 				console.error('Failed to fetch data:', error)
