@@ -56,7 +56,7 @@
 					<div
 						v-for="option in selectedOptions"
 						:key="option"
-						class="flex items-center px-3 py-1 border rounded-full bg-white min-w-[140px] text-[14px] select-none"
+						class="flex items-center px-3 py-1 border rounded-full bg-white min-w-[180px] text-[14px] select-none"
 					>
 						<span class="text-gray-800 mr-2 w-[80%] overflow-hidden text-ellipsis line-clamp-1 text-left block">
 							{{ option }}
