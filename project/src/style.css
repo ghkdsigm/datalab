@@ -6,6 +6,7 @@
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
 	font-weight: 400;
+	min-width: min-content;
 
 	color-scheme: light dark;
 	color: rgba(255, 255, 255, 0.87);
@@ -39,11 +40,12 @@ button, input, textarea {
 }
 body {
 	margin: 0;
-	display: flex;
-	place-items: center;
+	/* display: flex;
+	place-items: center; */
 	min-width: 320px;
 	min-height: 100vh;
 	color: #222222;
+	background:#fff;
 }
 table {
 	@apply border-collapse border-spacing-0;

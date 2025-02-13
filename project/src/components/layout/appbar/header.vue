@@ -1,5 +1,5 @@
 <template>
-	<div class="fixed top-0 left-0 z-50 flex items-center justify-between px-6 py-4 bg-white w-full shadow-md">
+	<div class="relative top-0 left-0 z-50 flex items-center justify-between px-6 py-4 bg-white w-full shadow-md">
 		<div class="logo cursor-pointer flex">
 			<img :src="imageSrc('common', 'logo')" alt="푸터 로고" @click="goToHome" class="pr-4" />
 			<span class="subName">S&OP 수량 예측</span>
@@ -9,11 +9,11 @@
 				<HeaderMenu :menuItems="menuItems" @selectedIndex="handleSelectMenu" />
 			</nav>
 		</div>
-		<div class="flex items-center space-x-4">
+		<!-- <div class="flex items-center space-x-4">
 			<div>1</div>
 			<div>2</div>
 			<div>3</div>
-		</div>
+		</div> -->
 	</div>
 </template>
 

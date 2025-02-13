@@ -4,7 +4,7 @@
 		<Header @menuIdx="handleSelectMenu" />
 
 		<!--Main Section-->
-		<div class="relative mt-[64px]">
+		<div class="relative mt-[0]">
 			<div class="mx-auto h-full">
 				<div class="flex flex-col min-h-screen">
 					<!-- Top Content -->
@@ -17,7 +17,7 @@
 					</div>
 					<!-- Main Content -->
 					<main class="flex-grow bg-white pb-8">
-						<div class="container mx-auto max-w-[1280px] flex gap-6">
+						<div class="container mx-auto w-[1280px] flex gap-6">
 							<router-view v-slot="{ Component }">
 								<component :is="Component"></component>
 							</router-view>

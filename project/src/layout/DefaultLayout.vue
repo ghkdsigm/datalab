@@ -4,12 +4,12 @@
 		<Header />
 
 		<!--Main Section-->
-		<div class="relative mt-[64px]">
+		<div class="relative mt-[0]">
 			<div class="mx-auto h-full">
 				<div class="flex flex-col min-h-screen">
 					<!-- Top Content -->
 					<div class="bg-[#262626] py-[40px]">
-						<div class="container mx-auto max-w-[1280px]">
+						<div class="container mx-auto px-[40px] w-[1360px]">
 							<div class="flex justify-between gap-6 mb-12">
 								<BoardSearch :basemonth="basemonth.base_yyyymm_list" />
 							</div>
@@ -19,8 +19,8 @@
 						</div>
 					</div>
 					<!-- Main Content -->
-					<main class="flex-grow bg-white py-8">
-						<div class="container mx-auto max-w-[1280px] flex gap-6">
+					<main class="flex-grow bg-white py-8 px-[40px] w-[1360px] mx-auto">
+						<div class="container mx-auto w-[1280px] flex gap-6">
 							<router-view v-slot="{ Component }">
 								<component :is="Component"></component>
 							</router-view>
