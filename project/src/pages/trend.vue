@@ -97,6 +97,7 @@ import { useUtilities } from '@/utils/common'
 import { useServiceStore } from '@/store/service'
 
 export default {
+	name: 'TREND',
 	setup() {
 		const serviceStore = useServiceStore()
 		const selectedOptions = ref([])
@@ -143,9 +144,13 @@ export default {
 				await serviceStore.actGetExternaltrend(params)
 				selectedOptionsAdded.value = null
 			} else if (type === 'delete') {
-				console.log('option', option)
+				console.log('option1', option)
 				selectedOptionsAdded.value = null
 				await serviceStore.removeExternalTrend(option)
+			} else {
+				console.log('option2', option)
+				selectedOptionsAdded.value = null
+				await serviceStore.removeExternalTrend('remove')
 			}
 		}
 
@@ -159,6 +164,7 @@ export default {
 		watch(
 			() => years.value,
 			async () => {
+				selectedOptions.value = []
 				if (deleteFlag.value === false) {
 					await fetchExternalTrend('create')
 				} else {
@@ -174,6 +180,7 @@ export default {
 		watch(
 			() => months.value,
 			async () => {
+				selectedOptions.value = []
 				if (deleteFlag.value === false) {
 					await fetchExternalTrend('create')
 				} else {
@@ -208,8 +215,10 @@ export default {
 			}
 		}
 
-		const handleReset = () => {
+		const handleReset = async () => {
+			deleteFlag.value = true
 			selectedOptions.value = []
+			await fetchExternalTrend('remove')
 		}
 
 		const handleRemove = async option => {

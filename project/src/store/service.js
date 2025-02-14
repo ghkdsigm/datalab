@@ -212,11 +212,16 @@ export const useServiceStore = defineStore('service', {
 		},
 		async removeExternalTrend(keyToRemove) {
 			console.log('keyToRemove', keyToRemove)
-			this.externaltrend = this.externaltrend.filter(item => {
-				if (Object.keys(item).length === 0) return false
+			if (keyToRemove !== 'remove') {
+				this.externaltrend = this.externaltrend.filter(item => {
+					if (Object.keys(item).length === 0) return false
 
-				return !Object.keys(item).includes(keyToRemove)
-			})
+					return !Object.keys(item).includes(keyToRemove)
+				})
+			} else {
+				this.externaltrend = []
+			}
+
 			//this.items = this.items.filter(item => !item.hasOwnProperty(String(keyToRemove)))
 		},
 
