@@ -5,7 +5,7 @@
 				<img :src="`${imageSrc('mdf', ico)}`" :alt="ico || 'default-icon'" />
 				<span class="ml-2">{{ title }}</span>
 			</span>
-			<span v-if="more" class="text-white text-sm font-light" @click="showPopup(true)"
+			<span v-if="more" class="text-white text-sm font-light cursor-pointer" @click="showPopup(true)"
 				>더보기 <em class="ml-1">></em>
 			</span>
 		</div>

@@ -106,6 +106,9 @@ export default {
 	list-style: none;
 	border-radius: 4px;
 	z-index: 10;
+	max-height: 410px;
+	overflow-y: scroll;
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2196078431);
 }
 
 .custom-select-item {

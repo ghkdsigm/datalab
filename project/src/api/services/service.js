@@ -31,8 +31,8 @@ const getExternalList = () => {
 }
 
 // 개별 지표 값
-const getExternalValue = board_category => {
-	return request.sendRequest('/external/value', { board_category }, 'POST', 'json')
+const getExternalTrend = board_category => {
+	return request.sendRequest('/external/value', board_category, 'POST', 'json')
 }
 // post, form
 // const getPredictFeatureValue = board_category => {
@@ -50,5 +50,5 @@ export default {
 	getPredictFeatureList,
 	getPredictFeatureValue,
 	getExternalList,
-	getExternalValue,
+	getExternalTrend,
 }

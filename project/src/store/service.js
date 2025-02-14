@@ -12,6 +12,8 @@ export const useServiceStore = defineStore('service', {
 		preddata: [],
 		featurelist: [],
 		featurevalue: [],
+		externallist: [],
+		externaltrend: [],
 	}),
 	getters: {
 		getErrorMessage: state => state.errorMessage,
@@ -23,6 +25,8 @@ export const useServiceStore = defineStore('service', {
 		getPreddata: state => state.preddata,
 		getFeaturelist: state => state.featurelist,
 		getFeaturevalue: state => state.featurevalue,
+		getExternallist: state => state.externallist,
+		getExternaltrend: state => state.externaltrend,
 	},
 	actions: {
 		// 공통 에러 처리 메서드
@@ -155,6 +159,65 @@ export const useServiceStore = defineStore('service', {
 				this.status = 500
 				console.error('Failed to fetch data:', error)
 			}
+		},
+
+		async actGetExternallist() {
+			try {
+				const res = await service.getExternalList()
+				if (res.status !== 200) {
+					const type = 'externallist'
+					this.handleError(type, res)
+				} else {
+					this.externallist = res.data.body || []
+					this.errorMessage = ''
+					this.status = res.status
+				}
+			} catch (error) {
+				this.externallist = []
+				this.errorMessage = '서버와 연결할 수 없습니다.'
+				this.status = 500
+				console.error('Failed to fetch data:', error)
+			}
+		},
+
+		async actGetExternaltrend(params) {
+			try {
+				const res = await service.getExternalTrend(params)
+
+				if (res.status !== 200) {
+					const type = 'externaltrend'
+					this.handleError(type, res)
+				} else {
+					const newTrendData = res.data.body || null
+
+					if (newTrendData && (newTrendData['index'].length !== 0 || newTrendData[params.external_name].length !== 0)) {
+						const isDuplicate = this.externaltrend.some(item => {
+							return item[params.external_name] === newTrendData[params.external_name]
+						})
+
+						if (!isDuplicate) {
+							this.externaltrend.push(newTrendData)
+						}
+					}
+
+					this.errorMessage = ''
+					this.status = res.status
+				}
+			} catch (error) {
+				this.externaltrend = []
+				this.errorMessage = '서버와 연결할 수 없습니다.'
+				this.status = 500
+				console.error('Failed to fetch data:', error)
+			}
+		},
+		async removeExternalTrend(keyToRemove) {
+			console.log('keyToRemove', keyToRemove)
+			this.externaltrend = this.externaltrend.filter(item => {
+				if (Object.keys(item).length === 0) return false
+
+				return !Object.keys(item).includes(keyToRemove)
+			})
+			//this.items = this.items.filter(item => !item.hasOwnProperty(String(keyToRemove)))
 		},
 
 		// async actAnotherAction(code) {

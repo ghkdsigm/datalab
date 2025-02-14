@@ -7,8 +7,8 @@
 				<div class="flex justify-between items-center">
 					<div class="flex gap-4">
 						<div class="flex items-center gap-4 pr-4">
-							<SelectBasic v-model="years" :options="yearsList" :width="'160'" :label="'시작 기준월'" />
-							<SelectBasic v-model="months" :options="monthsList" :width="'160'" />
+							<SelectBasic v-model="years" :options="yearsList || []" :width="'160'" :label="'시작 기준월'" />
+							<SelectBasic v-model="months" :options="monthsList || []" :width="'160'" />
 						</div>
 						<Select01
 							:options="options"
@@ -92,42 +92,115 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { defineComponent, ref, watch, onMounted, computed, watchEffect, nextTick } from 'vue'
 import { useUtilities } from '@/utils/common'
+import { useServiceStore } from '@/store/service'
 
 export default {
 	setup() {
-		const options = [
-			'연립다세대매매실거래가격지수(10개월전)',
-			'선행종합지수_변동량(9개월전)',
-			'항목 3',
-			'항목 4',
-			'항목 5',
-		]
+		const serviceStore = useServiceStore()
 		const selectedOptions = ref([])
+		const selectedOptionsAdded = ref(null)
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
 
+		const options = computed(() => serviceStore.getExternallist.column_name)
 		const selectedValue = ref('')
-		const optionsList = ref([
-			{ label: '옵션 1', value: 'option1' },
-			{ label: '옵션 2', value: 'option2' },
-			{ label: '옵션 3', value: 'option3' },
-		])
+		const years = ref(String(new Date().getFullYear()))
 
-		const years = ref('')
-		const yearsList = ref([
-			{ label: '옵션 1', value: 'option1' },
-			{ label: '옵션 2', value: 'option2' },
-			{ label: '옵션 3', value: 'option3' },
-		])
+		const yearsList = computed(() =>
+			serviceStore.getExternallist?.year
+				?.slice()
+				.reverse()
+				.map(item => ({ label: String(item), value: String(item) })),
+		)
 
-		const months = ref('')
-		const monthsList = ref([
-			{ label: '옵션 1', value: 'option1' },
-			{ label: '옵션 2', value: 'option2' },
-			{ label: '옵션 3', value: 'option3' },
-		])
+		const months = ref(String(new Date().getMonth() + 1).padStart(2, '0'))
+		const monthsList = computed(() =>
+			serviceStore.getExternallist?.month?.map(item => ({ label: String(item), value: String(item) })),
+		)
+
+		const deleteFlag = ref(false)
+		const deleteItem = ref(null)
+
+		// 외부 경기지표 리스트 불러오기
+		const fetchtExternalList = async () => {
+			await serviceStore.actGetExternallist()
+		}
+
+		// 개별 지표 값 불러오기
+		const fetchExternalTrend = async (type, option) => {
+			console.log('type', type)
+			if (!years.value || !months.value) return
+
+			if (type === 'create') {
+				const params = {
+					start_year: years.value,
+					start_month: months.value,
+					external_name: selectedOptionsAdded.value,
+				}
+
+				await serviceStore.actGetExternaltrend(params)
+				selectedOptionsAdded.value = null
+			} else if (type === 'delete') {
+				console.log('option', option)
+				selectedOptionsAdded.value = null
+				await serviceStore.removeExternalTrend(option)
+			}
+		}
+
+		onMounted(async () => {
+			await fetchtExternalList()
+			// if (deleteFlag.value === false) {
+			// 	await fetchExternalTrend('create')
+			// }
+		})
+
+		watch(
+			() => years.value,
+			async () => {
+				if (deleteFlag.value === false) {
+					await fetchExternalTrend('create')
+				} else {
+					if (deleteFlag.value) {
+						await fetchExternalTrend('delete', deleteItem.value)
+						deleteFlag.value = false
+					}
+				}
+			},
+			{ deep: true },
+		)
+
+		watch(
+			() => months.value,
+			async () => {
+				if (deleteFlag.value === false) {
+					await fetchExternalTrend('create')
+				} else {
+					if (deleteFlag.value) {
+						await fetchExternalTrend('delete', deleteItem.value)
+					}
+					deleteFlag.value = false
+				}
+			},
+			{ deep: true },
+		)
+
+		watch(
+			() => selectedOptions.value,
+			async () => {
+				selectedOptionsAdded.value = selectedOptions.value[selectedOptions.value.length - 1] || null
+				if (deleteFlag.value === false) {
+					await fetchExternalTrend('create')
+				} else {
+					if (deleteFlag.value) {
+						await fetchExternalTrend('delete', deleteItem.value)
+					}
+					deleteFlag.value = false
+				}
+			},
+			{ deep: true },
+		)
 
 		const handleSelectChange = value => {
 			if (value && !selectedOptions.value.includes(value)) {
@@ -139,30 +212,30 @@ export default {
 			selectedOptions.value = []
 		}
 
-		const handleRemove = option => {
+		const handleRemove = async option => {
 			selectedOptions.value = selectedOptions.value.filter(item => item !== option)
+			deleteItem.value = option
+			deleteFlag.value = true
 		}
 
 		return {
 			options,
 			selectedOptions,
+			selectedOptionsAdded,
 			handleSelectChange,
 			handleReset,
 			handleRemove,
 			imageSrc,
 			selectedValue,
-			optionsList,
 			years,
 			yearsList,
 			months,
 			monthsList,
+			deleteFlag,
+			deleteItem,
 		}
 	},
 }
-
-// export default {
-// 	name: 'PB',
-// }
 </script>
 
 <style></style>

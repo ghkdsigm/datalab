@@ -23,15 +23,17 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { defineComponent, ref, watch, onMounted, computed, watchEffect, nextTick } from 'vue'
 import Industry from '@/components/update/industry.vue'
 import Plan from '@/components/update/plan.vue'
 import Significant from '@/components/update/significant.vue'
 import Srm from '@/components/update/srm.vue'
+import { useServiceStore } from '@/store/service'
 
 export default {
-	name: 'PB',
+	name: 'UPDATE',
 	setup() {
+		const serviceStore = useServiceStore()
 		const activeTab = ref('Significant')
 		const tabs = [
 			{ name: 'Significant', label: '특이사항', component: Significant },

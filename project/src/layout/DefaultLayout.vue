@@ -41,8 +41,8 @@ import router from '@/router'
 import { useRoute, useRouter } from 'vue-router'
 import { useUtilities } from '@/utils/common'
 import Footer from '@/components/layout/appbar/footer.vue'
-import BoardSearch from '@/components/mdf/board/boardsearch.vue'
-import Board from '@/components/mdf/board/board.vue'
+import BoardSearch from '@/components/predict/board/boardsearch.vue'
+import Board from '@/components/predict/board/board.vue'
 
 import { useServiceStore } from '@/store/service'
 
