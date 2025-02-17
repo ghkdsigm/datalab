@@ -10,7 +10,7 @@
 			<thead>
 				<tr class="text-center bg-[#F8F8F8]">
 					<th class="px-4 py-2 cursor-pointer" colspan="2" @click="sortTable('value')">
-						값
+						{{ title }}
 						<span v-if="sortKey === 'value'">{{ sortOrder === 'asc' ? '▲' : sortOrder === 'desc' ? '▼' : '' }}</span>
 					</th>
 					<th
@@ -35,8 +35,11 @@
 						:key="index"
 						class="border-t border-b border-[#E6E6E6] text-center"
 					>
+						<td class="px-4 py-2">
+							{{ row.year }}
+						</td>
 						<!-- 값 변경 가능 -->
-						<td class="px-4 py-2" @dblclick="editValue(index)">
+						<!-- <td class="px-4 py-2" @dblclick="editValue(index)">
 							<template v-if="editingIndex === index">
 								<input
 									v-model="editInput"
@@ -50,11 +53,9 @@
 							<template v-else>
 								{{ row.value }}
 							</template>
-						</td>
-						<td class="px-4 py-2">
-							<span class="plus" v-if="row.change === '1'">
-								<img :src="imageSrc('common', 'ico_plus')" alt="상승" class="inline-block mr-1" />
-							</span>
+						</td> -->
+						<td>
+							{{ row.value }}
 						</td>
 						<td class="px-4 py-2">
 							<span class="flex items-center justify-center">{{ row.importance }}</span>
@@ -72,18 +73,33 @@ import { useUtilities } from '@/utils/common'
 
 export default {
 	name: 'Table01',
-	setup() {
+	props: {
+		content: {
+			type: Object,
+			default: () => [],
+		},
+		title: {
+			type: String,
+			default: '',
+		},
+	},
+	setup(props) {
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
 
 		// 원본 테이블 데이터
-		const tableData = ref([
-			{ value: '0.2', importance: '544', change: '1' },
-			{ value: '1.5', importance: '210', change: '1' },
-			{ value: '0.8', importance: '312', change: '1' },
-			{ value: '2.0', importance: '111', change: '1' },
-			{ value: '0.3', importance: '632', change: '1' },
-		])
+		const keys = Object.keys(props.content)
+		const indexKey = keys[0] // "index"
+		const valueKey = keys[1] // "건설경기실사지수매출전망"
+
+		// 테이블 데이터 변환
+		const tableData = ref(
+			props.content[indexKey].map((year, i) => ({
+				value: String(props.content[valueKey][i]),
+				importance: '구분',
+				year: String(year),
+			})),
+		)
 
 		const originalData = ref([...tableData.value]) // 원래 순서 저장
 

@@ -42,50 +42,42 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex flex-col gap-6">
-			<h2 class="text-[#262626] text-[16px] font-bold flex justify-start">연립다세대매매실거래가격지수</h2>
-			<div class="flex gap-x-6 h-[205px] overflow-hidden">
-				<!-- Left Section -->
-				<div class="flex flex-col flex-[9] h-full">
-					<div class="bg-white rounded-md h-full">
-						<Line02
-							:type="'trend'"
-							:borderColor="['#5DB096', '#D17EB1']"
-							:leftTit="'외부지표'"
-							:rightTit="'영향인자'"
-						></Line02>
-					</div>
-				</div>
+		<div>
+			<!-- 데이터가 있을 경우 -->
+			<div v-if="content.length !== 0" class="flex flex-col gap-6 pb-[100px]">
+				<div class="flex flex-col gap-6" v-for="(item, idx) in content" :key="idx">
+					<h2 class="text-[#262626] text-[16px] font-bold flex justify-start">
+						{{ Object.keys(item)[1] }}
+					</h2>
+					<div class="flex gap-x-6 h-[205px] overflow-hidden">
+						<!-- Left Section -->
+						<div class="flex flex-col flex-[9] h-full">
+							<div class="bg-white rounded-md h-full">
+								<Line02
+									:type="'trend'"
+									:borderColor="['#5DB096', '#D17EB1']"
+									:leftTit="'외부지표'"
+									:rightTit="'영향인자'"
+									:idx="item[Object.keys(item)[0]]"
+									:content="item[Object.keys(item)[1]]"
+								/>
+							</div>
+						</div>
 
-				<!-- Right Section -->
-				<div class="flex flex-col flex-[3]">
-					<div class="bg-white rounded-md">
-						<Table02 :type="'trend'" />
+						<!-- Right Section -->
+						<div class="flex flex-col flex-[3]">
+							<div class="bg-white rounded-md">
+								<Table02 :type="'trend'" :title="Object.keys(item)[1]" :content="item" />
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="flex flex-col gap-6">
-			<h2 class="text-[#262626] text-[16px] font-bold flex justify-start">연립다세대매매실거래가격지수</h2>
-			<div class="flex gap-x-6 h-[205px] overflow-hidden">
-				<!-- Left Section -->
-				<div class="flex flex-col flex-[9] h-full">
-					<div class="bg-white rounded-md h-full">
-						<Line02
-							:type="'trend'"
-							:borderColor="['#5DB096', '#D17EB1']"
-							:leftTit="'외부지표'"
-							:rightTit="'영향인자'"
-						></Line02>
-					</div>
-				</div>
+			<!-- 데이터가 없을 경우 -->
+			<div v-else-if="!isLoading" class="py-[100px] text-center text-gray-500">외부 지표를 선택해주세요.</div>
 
-				<!-- Right Section -->
-				<div class="flex flex-col flex-[3]">
-					<div class="bg-white rounded-md">
-						<Table02 :type="'trend'" />
-					</div>
-				</div>
+			<div v-if="isLoading" class="py-[100px] text-center text-gray-500">
+				<LoadingStatus :comment="'지표를 불러오고있습니다'" />
 			</div>
 		</div>
 	</div>
@@ -104,10 +96,13 @@ export default {
 		const selectedOptionsAdded = ref(null)
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
+		const isLoading = ref(false)
 
 		const options = computed(() => serviceStore.getExternallist.column_name)
 		const selectedValue = ref('')
 		const years = ref(String(new Date().getFullYear()))
+
+		const content = computed(() => serviceStore.getExternaltrend ?? [])
 
 		const yearsList = computed(() =>
 			serviceStore.getExternallist?.year
@@ -132,25 +127,33 @@ export default {
 		// 개별 지표 값 불러오기
 		const fetchExternalTrend = async (type, option) => {
 			console.log('type', type)
-			if (!years.value || !months.value) return
+			if (!years.value || !months.value || !selectedOptions.value) return
 
-			if (type === 'create') {
-				const params = {
-					start_year: years.value,
-					start_month: months.value,
-					external_name: selectedOptionsAdded.value,
+			if (selectedOptions.value.length) isLoading.value = true
+
+			try {
+				if (type === 'create') {
+					const params = {
+						start_year: years.value,
+						start_month: months.value,
+						external_name: selectedOptionsAdded.value,
+					}
+
+					await serviceStore.actGetExternaltrend(params)
+					selectedOptionsAdded.value = null
+				} else if (type === 'delete') {
+					console.log('option1', option)
+					selectedOptionsAdded.value = null
+					await serviceStore.removeExternalTrend(option)
+				} else {
+					console.log('option2', option)
+					selectedOptionsAdded.value = null
+					await serviceStore.removeExternalTrend('remove')
 				}
-
-				await serviceStore.actGetExternaltrend(params)
-				selectedOptionsAdded.value = null
-			} else if (type === 'delete') {
-				console.log('option1', option)
-				selectedOptionsAdded.value = null
-				await serviceStore.removeExternalTrend(option)
-			} else {
-				console.log('option2', option)
-				selectedOptionsAdded.value = null
-				await serviceStore.removeExternalTrend('remove')
+			} catch (error) {
+				console.error('Error fetching external trend:', error)
+			} finally {
+				isLoading.value = false
 			}
 		}
 
@@ -164,8 +167,10 @@ export default {
 		watch(
 			() => years.value,
 			async () => {
-				selectedOptions.value = []
-				if (deleteFlag.value === false) {
+				//selectedOptions.value = []
+				handleReset()
+				console.log('selectedOptions.value.length', selectedOptions.value.length)
+				if (deleteFlag.value === false && selectedOptions.value.length !== 0) {
 					await fetchExternalTrend('create')
 				} else {
 					if (deleteFlag.value) {
@@ -180,8 +185,10 @@ export default {
 		watch(
 			() => months.value,
 			async () => {
-				selectedOptions.value = []
-				if (deleteFlag.value === false) {
+				//selectedOptions.value = []
+				handleReset()
+				console.log('selectedOptions.value.length', selectedOptions.value.length)
+				if (deleteFlag.value === false && selectedOptions.value.length !== 0) {
 					await fetchExternalTrend('create')
 				} else {
 					if (deleteFlag.value) {
@@ -197,7 +204,7 @@ export default {
 			() => selectedOptions.value,
 			async () => {
 				selectedOptionsAdded.value = selectedOptions.value[selectedOptions.value.length - 1] || null
-				if (deleteFlag.value === false) {
+				if (deleteFlag.value === false && selectedOptions.value.length !== 0) {
 					await fetchExternalTrend('create')
 				} else {
 					if (deleteFlag.value) {
@@ -242,6 +249,8 @@ export default {
 			monthsList,
 			deleteFlag,
 			deleteItem,
+			content,
+			isLoading,
 		}
 	},
 }

@@ -210,6 +210,7 @@ export const useServiceStore = defineStore('service', {
 				console.error('Failed to fetch data:', error)
 			}
 		},
+
 		async removeExternalTrend(keyToRemove) {
 			console.log('keyToRemove', keyToRemove)
 			if (keyToRemove !== 'remove') {

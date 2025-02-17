@@ -43,28 +43,36 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
+		content: {
+			type: [Array, Object],
+			require: false,
+		},
+		idx: {
+			type: [Array, Object],
+			require: false,
+		},
 	},
 	setup(props) {
 		const chartCanvas = ref(null)
 		let chartInstance = null
 
 		const chartData = reactive({
-			labels: ['2023-12', '2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06', '2024-07', '2024-08'],
+			labels: props.idx,
 			datasets: [
 				{
 					label: 'MDF',
-					data: [36000, 25000, 20000, 27000, 21000, 24000, null, null, null],
+					data: props.content,
 					tension: 0,
 					radius: 1,
 					borderColor: props.borderColor[0],
 				},
-				{
-					label: '동행종합지수_변동량',
-					data: [null, null, null, null, null, 24000, 26000, 40000],
-					tension: 0,
-					radius: 1,
-					borderColor: props.borderColor[1],
-				},
+				// {
+				// 	label: '동행종합지수_변동량',
+				// 	data: [null, null, null, null, null, 24000, 26000, 40000],
+				// 	tension: 0,
+				// 	radius: 1,
+				// 	borderColor: props.borderColor[1],
+				// },
 			],
 		})
 
