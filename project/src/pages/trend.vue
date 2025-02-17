@@ -1,8 +1,8 @@
 <template>
 	<!-- Center Section -->
-	<div class="flex flex-col flex-[12] gap-6">
-		<div class="mb-4">
-			<h2 class="text-left text-[#777777] py-[40px] text-[18px] font-bold">트렌드를 확인할 외부 지표를 선택하세요.</h2>
+	<div class="flex flex-col flex-[12] gap-6 w-full">
+		<h2 class="text-left text-[#777777] py-[40px] text-[18px] font-bold">트렌드를 확인할 외부 지표를 선택하세요.</h2>
+		<div class="flex flex-col gap-6 flex-[5] min-w-[0]">
 			<div class="p-4 border rounded-lg bg-gray-50">
 				<div class="flex justify-between items-center">
 					<div class="flex gap-4">
@@ -23,11 +23,22 @@
 					</button>
 				</div>
 
-				<div v-if="selectedOptions.length" class="flex flex-wrap gap-2 mt-3">
+				<div
+					v-if="selectedOptions.length"
+					class="flex gap-2 mt-3 overflow-hidden whitespace-nowrap scrollbar-hide cursor-grab active:cursor-grabbing min-w-[250px]"
+					ref="scrollContainer"
+					@mousedown="startDrag"
+					@mousemove="onDrag"
+					@mouseup="stopDrag"
+					@mouseleave="stopDrag"
+					@touchstart="startDrag"
+					@touchmove="onDrag"
+					@touchend="stopDrag"
+				>
 					<div
 						v-for="option in selectedOptions"
 						:key="option"
-						class="flex items-center px-3 py-1 border rounded-full bg-white w-[140px] text-[14px]"
+						class="flex items-center px-3 py-1 border rounded-full bg-white min-w-[180px] text-[14px] select-none"
 					>
 						<span class="text-gray-800 mr-2 w-[80%] overflow-hidden text-ellipsis line-clamp-1 text-left">{{
 							option
@@ -42,6 +53,7 @@
 				</div>
 			</div>
 		</div>
+
 		<div>
 			<!-- 데이터가 있을 경우 -->
 			<div v-if="content.length !== 0" class="flex flex-col gap-6 pb-[100px]">
@@ -91,6 +103,7 @@ import { useServiceStore } from '@/store/service'
 export default {
 	name: 'TREND',
 	setup() {
+		const scrollContainer = ref()
 		const serviceStore = useServiceStore()
 		const selectedOptions = ref([])
 		const selectedOptionsAdded = ref(null)
@@ -234,6 +247,29 @@ export default {
 			deleteFlag.value = true
 		}
 
+		//드래그
+		let isDragging = false
+		let startX = 0
+		let scrollLeft = 0
+
+		const startDrag = event => {
+			isDragging = true
+			startX = event.type.includes('touch') ? event.touches[0].pageX : event.pageX
+			scrollLeft = scrollContainer.value.scrollLeft
+		}
+
+		const onDrag = event => {
+			if (!isDragging) return
+			event.preventDefault()
+			const x = event.type.includes('touch') ? event.touches[0].pageX : event.pageX
+			const walk = (x - startX) * 1.5 // 드래그 속도 조정
+			scrollContainer.value.scrollLeft = scrollLeft - walk
+		}
+
+		const stopDrag = () => {
+			isDragging = false
+		}
+
 		return {
 			options,
 			selectedOptions,
@@ -251,6 +287,10 @@ export default {
 			deleteItem,
 			content,
 			isLoading,
+			startDrag,
+			onDrag,
+			scrollContainer,
+			stopDrag,
 		}
 	},
 }
