@@ -1,6 +1,6 @@
 <template>
 	<!-- Center Section -->
-	<div class="flex flex-col flex-[12] gap-6 w-full">
+	<div class="flex flex-col flex-[12] w-full">
 		<h2 class="text-left text-[#777777] py-[40px] text-[18px] font-bold">트렌드를 확인할 외부 지표를 선택하세요.</h2>
 		<div class="flex flex-col gap-6 flex-[5] min-w-[0]">
 			<div class="p-4 border rounded-lg bg-gray-50">
@@ -56,7 +56,7 @@
 
 		<div>
 			<!-- 데이터가 있을 경우 -->
-			<div v-if="content.length !== 0" class="flex flex-col gap-6 pb-[100px]">
+			<div v-if="content.length !== 0" class="flex flex-col gap-6 pb-[100px] mt-8">
 				<div class="flex flex-col gap-6" v-for="(item, idx) in content" :key="idx">
 					<h2 class="text-[#262626] text-[16px] font-bold flex justify-start">
 						{{ Object.keys(item)[1] }}
