@@ -141,15 +141,44 @@ export const useServiceStore = defineStore('service', {
 				console.error('Failed to fetch data:', error)
 			}
 		},
-
+		//주요영향인자 분석 추가
 		async actGetFeaturevalue(params) {
+			// try {
+			// 	const res = await service.getPredictFeatureValue(params)
+			// 	if (res.status !== 200) {
+			// 		const type = 'featurevalue'
+			// 		this.handleError(type, res)
+			// 	} else {
+			// 		this.featurevalue = res.data.body || []
+			// 		this.errorMessage = ''
+			// 		this.status = res.status
+			// 	}
+			// } catch (error) {
+			// 	this.featurevalue = []
+			// 	this.errorMessage = '서버와 연결할 수 없습니다.'
+			// 	this.status = 500
+			// 	console.error('Failed to fetch data:', error)
+			// }
 			try {
 				const res = await service.getPredictFeatureValue(params)
+
 				if (res.status !== 200) {
 					const type = 'featurevalue'
 					this.handleError(type, res)
 				} else {
-					this.featurevalue = res.data.body || []
+					const newValueData = res.data.body || null
+					console.log('newValueData', newValueData.graph_data['index'])
+
+					if (newValueData && newValueData?.graph_data['index'].length !== 0) {
+						const isDuplicate = this.featurevalue.some(item => {
+							return item[params.feature_name] === newValueData.graph_data[params.feature_name]
+						})
+
+						if (!isDuplicate) {
+							this.featurevalue.push(newValueData)
+						}
+					}
+
 					this.errorMessage = ''
 					this.status = res.status
 				}
@@ -159,6 +188,21 @@ export const useServiceStore = defineStore('service', {
 				this.status = 500
 				console.error('Failed to fetch data:', error)
 			}
+		},
+		//주요영향인자 분석 삭제
+		async removeFeatureValue(keyToRemove) {
+			console.log('keyToRemove', keyToRemove)
+			if (keyToRemove !== 'remove') {
+				this.featurevalue = this.featurevalue.filter(item => {
+					if (Object.keys(item).length === 0) return false
+
+					return !Object.keys(item.graph_data).includes(keyToRemove)
+				})
+			} else {
+				this.featurevalue = []
+			}
+
+			//this.items = this.items.filter(item => !item.hasOwnProperty(String(keyToRemove)))
 		},
 
 		async actGetExternallist() {
@@ -180,6 +224,7 @@ export const useServiceStore = defineStore('service', {
 			}
 		},
 
+		//외부 경기지표 추가
 		async actGetExternaltrend(params) {
 			try {
 				const res = await service.getExternalTrend(params)
@@ -211,6 +256,7 @@ export const useServiceStore = defineStore('service', {
 			}
 		},
 
+		//외부 경기지표 삭제
 		async removeExternalTrend(keyToRemove) {
 			console.log('keyToRemove', keyToRemove)
 			if (keyToRemove !== 'remove') {

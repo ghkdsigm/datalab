@@ -27,7 +27,7 @@
 		@openPop="openPop"
 	/>
 	<Popup01
-		:title="'상세보기 '"
+		:title="'이달의 영향인자'"
 		:isVisible="showPopup"
 		@update:isVisible="showPopup = $event"
 		:width="'720'"

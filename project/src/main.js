@@ -16,6 +16,7 @@ import Popup02 from './components/common/popups/popup02.vue'
 import CardBox from './components/common/cards/cardbox.vue'
 import Line01 from './components/common/charts/line01.vue'
 import Line02 from './components/common/charts/line02.vue'
+import Line03 from './components/common/charts/line03.vue'
 import Table01 from './components/common/tables/table01.vue'
 import Table02 from './components/common/tables/table02.vue'
 import Table03 from './components/common/tables/table03.vue'
@@ -40,6 +41,7 @@ createApp(App)
 	.component('CardBox', CardBox)
 	.component('Line01', Line01)
 	.component('Line02', Line02)
+	.component('Line03', Line03)
 	.component('Table01', Table01)
 	.component('Table02', Table02)
 	.component('Table03', Table03) //데이터업데이트 메뉴 특이사항, 사업계획, SRM 테이블 형태

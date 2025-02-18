@@ -25,7 +25,7 @@ import { defineComponent, onMounted, ref, reactive } from 'vue'
 import Chart from 'chart.js/auto'
 
 export default defineComponent({
-	name: 'LineChart02',
+	name: 'LineChart03',
 	props: {
 		type: {
 			type: String,
@@ -45,11 +45,19 @@ export default defineComponent({
 		},
 		content: {
 			type: [Array, Object],
-			require: false,
+			default: () => [],
 		},
 		idx: {
 			type: [Array, Object],
-			require: false,
+			default: () => [],
+		},
+		allcontent: {
+			type: [Array, Object],
+			default: () => [],
+		},
+		title: {
+			type: String,
+			default: '',
 		},
 	},
 	setup(props) {
@@ -61,19 +69,22 @@ export default defineComponent({
 			datasets: [
 				{
 					label: 'MDF',
-					data: props.content,
+					data: props.allcontent,
 					tension: 0,
 					radius: 1,
 					borderColor: props.borderColor[0],
-					borderWidth: 2,
+					borderWidth: 1,
+					yAxisID: 'y1',
 				},
-				// {
-				// 	label: '동행종합지수_변동량',
-				// 	data: [null, null, null, null, null, 24000, 26000, 40000],
-				// 	tension: 0,
-				// 	radius: 1,
-				// 	borderColor: props.borderColor[1],
-				// },
+				{
+					label: props.title,
+					data: props.content,
+					tension: 0,
+					radius: 1,
+					borderColor: props.borderColor[1],
+					borderWidth: 1,
+					yAxisID: 'y2',
+				},
 			],
 		})
 
@@ -123,7 +134,7 @@ export default defineComponent({
 							},
 							//title: { display: true, text: '수량', color: 'white', font: { size: 14 } },
 						},
-						y: {
+						y1: {
 							position: 'left',
 							beginAtZero: false,
 							grid: { color: 'rgba(255, 255, 255, 0.2)' },
@@ -138,11 +149,54 @@ export default defineComponent({
 						},
 						y2: {
 							position: 'right',
-							beginAtZero: true,
 							grid: { drawOnChartArea: false },
-							ticks: { callback: value => `${value / 0.5}`, stepSize: 0.5, color: 'white' },
-							title: { display: true, text: '영향인자', color: 'white', font: { size: 14 }, padding: { bottom: 10 } },
+							title: { display: true, text: '전체', color: 'white' },
+							suggestedMin: Math.min(...props.content) * 0.9,
+							suggestedMax: Math.max(...props.content) * 1.1,
+							ticks: { color: 'white' },
 						},
+						// y2: {
+						// 	position: 'right',
+						// 	//beginAtZero: true,
+						// 	grid: { drawOnChartArea: false },
+						// 	//ticks: { callback: value => `${value / 0.5}`, stepSize: 0.5, color: 'white' },
+						// 	ticks: {
+						// 		callback: value => value,
+						// 		//align: 'end',
+						// 		//autoSkip: true,
+						// 		color: 'white',
+						// 		autoSkip: true, // 일부 레이블 자동 생략
+						// 		padding: 40, // 간격 조정
+						// 		align: 'end', // 레이블 정렬 변경
+						// 	},
+						// 	title: { display: true, text: '영향인자', color: 'white', font: { size: 14 }, padding: { bottom: 10 } },
+						// },
+						// y2: {
+						// 	position: 'right',
+						// 	grid: { drawOnChartArea: false },
+						// 	ticks: {
+						// 		callback: value => value,
+						// 		color: 'white',
+						// 		autoSkip: true,
+						// 		padding: 40,
+						// 		align: 'end',
+						// 	},
+						// 	suggestedMin: Math.min(...props.content) * 0.9, // 최소값을 약간 낮게 설정
+						// 	suggestedMax: Math.max(...props.content) * 1.1, // 최대값을 약간 높게 설정
+						// 	title: {
+						// 		display: true,
+						// 		text: '영향인자',
+						// 		color: 'white',
+						// 		font: { size: 14 },
+						// 		padding: { bottom: 10 },
+						// 	},
+						// },
+						// y: {
+						// 	position: 'left',
+						// 	title: { display: true, text: '가구판매액', color: 'white' },
+						// 	suggestedMin: Math.min(...data['가구판매액(5개월전)']) * 0.9,
+						// 	suggestedMax: Math.max(...data['가구판매액(5개월전)']) * 1.1,
+						// },
 					},
 					plugins: {
 						legend: { display: false },

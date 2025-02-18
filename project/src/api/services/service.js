@@ -22,7 +22,7 @@ const getPredictFeatureList = board_category => {
 
 // 개별 영향인자 정보
 const getPredictFeatureValue = board_category => {
-	return request.sendRequest('/predict/feature_value', { board_category }, 'POST', 'form')
+	return request.sendRequest('/predict/feature_value', board_category, 'POST', 'json')
 }
 
 // 외부 경기지표 리스트

@@ -171,6 +171,7 @@ export default {
 		}
 
 		onMounted(async () => {
+			handleReset()
 			await fetchtExternalList()
 			// if (deleteFlag.value === false) {
 			// 	await fetchExternalTrend('create')

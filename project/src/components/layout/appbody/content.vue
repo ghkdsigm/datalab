@@ -19,7 +19,9 @@
 			<div class="p-4 border rounded-lg bg-white shadow-black">
 				<div class="flex justify-between items-center mb-5">
 					<strong class="text-xl text-gray-800 font-bold">보드 예측 결과</strong>
-					<span class="text-sm text-gray-800 font-light px-3 py-1 border rounded-full" @click="showPopup02 = true"
+					<span
+						class="text-sm text-gray-800 font-light px-3 py-1 border rounded-full cursor-pointer"
+						@click="showPopup02 = true"
 						>상세보기</span
 					>
 				</div>
@@ -72,38 +74,39 @@
 			</div>
 
 			<!-- <div class="p-4 border rounded-lg bg-gray-50 h-[3200px]">주요 영향인자 분석을 선택해주세요.</div> -->
-			<div class="mt-2">
-				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
-				<div class="mb-[16px]">
-					<Line02 :leftTit="'수량(M3)'" :rightTit="'영향인자'" />
-				</div>
-				<div>
-					<Table01 />
+			<div v-if="content02.length !== 0">
+				<div class="mb-6" v-for="(item, idx) in content02" :key="idx">
+					<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">
+						{{ Object.keys(item.graph_data)[1] }}
+					</h2>
+					<div class="mb-[16px]">
+						<Line03
+							:borderColor="['#BEE7A2', '#FB4F4F']"
+							:leftTit="'수량(M3)'"
+							:rightTit="'영향인자'"
+							:idx="item.graph_data['index']"
+							:content="item.graph_data[selectedOptions[idx]]"
+							:allcontent="item.graph_data['전체']"
+							:title="selectedOptions[idx]"
+						/>
+					</div>
+					<div>
+						<Table01 :content="item.table_data" />
+					</div>
 				</div>
 			</div>
-			<div class="mt-2">
-				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
-				<div class="mb-[16px]">
-					<Line02 :leftTit="'수량(M3)'" :rightTit="'영향인자'" />
-				</div>
-				<div>
-					<Table01 />
-				</div>
-			</div>
-			<div class="mt-2">
-				<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">동행종합지수_변동량(3개월전)</h2>
-				<div class="mb-[16px]">
-					<Line02 :leftTit="'수량(M3)'" :rightTit="'영향인자'" />
-				</div>
-				<div>
-					<Table01 />
-				</div>
+			<div v-else class="p-4 border rounded-lg bg-gray-50 h-[545px] flex flex-col justify-center items-center">
+				<p>주요 영향인자 분석을</p>
+				<p>선택해주세요.</p>
 			</div>
 		</div>
-		<Popup00 :title="'이달의 영향인자 '" :isVisible="showPopup" @update:isVisible="showPopup = $event" :width="'720'">
-			<p class="text-gray-600">
-				{{ content?.summary?.full }}
-			</p>
+		<Popup00
+			:title="'예측 결과 상세보기 '"
+			:isVisible="showPopup"
+			@update:isVisible="showPopup = $event"
+			:width="'720'"
+		>
+			<p class="text-gray-600 text-left" v-html="formatSummaryText(content?.summary?.full)"></p>
 		</Popup00>
 
 		<Popup02
@@ -119,25 +122,102 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useUtilities } from '@/utils/common'
 import { useServiceStore } from '@/store/service'
 
 export default {
 	setup(props, { emit }) {
-		const isLoading = ref(true)
-
+		const currentRoutes = useRoute()
+		const currentPath = computed(() => currentRoutes.path)
 		const scrollContainer = ref()
-
 		const selectedOptions = ref([])
+		const selectedOptionsAdded = ref(null)
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
 		const showPopup = ref(false)
 		const showPopup02 = ref(false)
+		const isLoading = ref(false)
 
 		const serviceStore = useServiceStore()
 		const content = computed(() => serviceStore.getPreddata)
+		const content02 = computed(() => serviceStore.getFeaturevalue ?? [])
 		const options = computed(() => serviceStore.getFeaturelist.feature_list)
+
+		const month = computed(() => serviceStore.getselectMonth)
+		const prod = computed(() => serviceStore.getselectProd)
+
+		const deleteFlag = ref(false)
+		const deleteItem = ref(null)
+
+		onMounted(() => {
+			handleReset()
+		})
+
+		// 주요영향인자분석 불러오기
+		const fetchFeatureValue = async (type, option) => {
+			console.log('type', type)
+			if (!selectedOptions.value) return
+
+			if (selectedOptions.value.length) isLoading.value = true
+
+			try {
+				if (type === 'create') {
+					const params = {
+						board_category: checkCurrentPath(currentPath.value),
+						base_yyyymm: month.value,
+						prod_type: prod.value,
+						feature_name: selectedOptionsAdded.value,
+					}
+
+					await serviceStore.actGetFeaturevalue(params)
+					selectedOptionsAdded.value = null
+				} else if (type === 'delete') {
+					console.log('option1', option)
+					selectedOptionsAdded.value = null
+					await serviceStore.removeFeatureValue(option)
+				} else {
+					console.log('option2', option)
+					selectedOptionsAdded.value = null
+					await serviceStore.removeFeatureValue('remove')
+				}
+			} catch (error) {
+				console.error('Error fetching external trend:', error)
+			} finally {
+				isLoading.value = false
+			}
+		}
+
+		watch(
+			() => selectedOptions.value,
+			async () => {
+				selectedOptionsAdded.value = selectedOptions.value[selectedOptions.value.length - 1] || null
+				if (deleteFlag.value === false && selectedOptions.value.length !== 0) {
+					await fetchFeatureValue('create')
+				} else {
+					if (deleteFlag.value) {
+						await fetchFeatureValue('delete', deleteItem.value)
+					}
+					deleteFlag.value = false
+				}
+			},
+			{ deep: true },
+		)
+
+		const checkCurrentPath = val => {
+			if (val === '/mdf') {
+				return 'mdf'
+			} else if (val === '/pb') {
+				return 'pb'
+			} else if (val === '/dw') {
+				return 'bm_retail'
+			} else if (val === '/apt') {
+				return 'apt_comp'
+			} else {
+				return
+			}
+		}
 
 		const handleSelectChange = value => {
 			if (value && !selectedOptions.value.includes(value)) {
@@ -145,12 +225,16 @@ export default {
 			}
 		}
 
-		const handleReset = () => {
+		const handleReset = async () => {
+			deleteFlag.value = true
 			selectedOptions.value = []
+			await fetchFeatureValue('remove')
 		}
 
 		const handleRemove = option => {
 			selectedOptions.value = selectedOptions.value.filter(item => item !== option)
+			deleteItem.value = option
+			deleteFlag.value = true
 		}
 
 		//드래그
@@ -176,7 +260,20 @@ export default {
 			isDragging = false
 		}
 
+		const formatSummaryText = text => {
+			if (!text) return ''
+
+			text = text.replace(
+				/(\d+)\.\s/,
+				'</p><h2 class="text-xl font-bold mt-6 mb-4">주요 상승 요인</h2><p class="mt-4">$1. ',
+			)
+
+			return text.replace(/(\d+)\.\s/g, '</p><p class="mt-4">$1. ')
+		}
+
 		return {
+			currentRoutes,
+			currentPath,
 			isLoading,
 			options,
 			selectedOptions,
@@ -190,7 +287,13 @@ export default {
 			onDrag,
 			stopDrag,
 			scrollContainer,
+			selectedOptionsAdded,
 			content,
+			content02,
+			checkCurrentPath,
+			deleteFlag,
+			deleteItem,
+			formatSummaryText,
 		}
 	},
 }
