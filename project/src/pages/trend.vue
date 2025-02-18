@@ -55,7 +55,6 @@
 		</div>
 
 		<div>
-			<!-- 데이터가 있을 경우 -->
 			<div v-if="content.length !== 0" class="flex flex-col gap-6 pb-[100px] mt-8">
 				<div class="flex flex-col gap-6" v-for="(item, idx) in content" :key="idx">
 					<h2 class="text-[#262626] text-[16px] font-bold flex justify-start">
@@ -85,7 +84,6 @@
 					</div>
 				</div>
 			</div>
-			<!-- 데이터가 없을 경우 -->
 			<div v-else-if="!isLoading" class="py-[100px] text-center text-gray-500">외부 지표를 선택해주세요.</div>
 
 			<div v-if="isLoading" class="py-[100px] text-center text-gray-500">

@@ -3,12 +3,12 @@
 		<div class="bg-gray-700 bg-opacity-50 absolute inset-0" @click="closePopup"></div>
 		<div class="bg-white rounded-lg relative overflow-hidden pop" :style="`width:${width}px`">
 			<div class="flex justify-between items-center bg-[#F8F8F8]">
-				<h3 class="text-lg p-2 pl-4 font-bold">{{ title }}</h3>
+				<h3 class="text-lg p-4 pl-8 font-bold">{{ title }}</h3>
 				<button @click="closePopup" class="p-2 pr-4 text-gray-500 hover:text-gray-700">
 					<img :src="imageSrc('common', 'ico_close_pop')" alt="" />
 				</button>
 			</div>
-			<div class="p-4">
+			<div class="p-8">
 				<slot></slot>
 				<!-- 내용 삽입 위치 -->
 			</div>

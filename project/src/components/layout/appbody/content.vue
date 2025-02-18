@@ -1,7 +1,7 @@
 <template>
 	<section class="flex justify-between gap-6 w-full">
 		<div class="flex flex-col gap-6 flex-[7] min-w-[0] sticky-container">
-			<div class="mb-2 p-4 border rounded-lg bg-white shadow-black">
+			<div class="mb-2 px-4 py-3 border rounded-lg bg-white shadow-black">
 				<div class="flex justify-between items-center">
 					<strong class="text-cyan-500 font-bold">
 						<img :src="imageSrc('mdf', 'ico_talk')" alt="초기화" class="inline-block mr-1" />
@@ -12,7 +12,7 @@
 					>
 				</div>
 				<p class="max-w-full mt-1 text-sm overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack">
-					{{ content?.summary?.short }}
+					{{ content?.summary?.short ? content.summary.short : '' }}
 				</p>
 			</div>
 
@@ -95,9 +95,14 @@
 					</div>
 				</div>
 			</div>
-			<div v-else class="p-4 border rounded-lg bg-gray-50 h-[545px] flex flex-col justify-center items-center">
-				<p>주요 영향인자 분석을</p>
-				<p>선택해주세요.</p>
+			<div
+				v-else-if="!isLoading"
+				class="p-4 border rounded-lg bg-gray-50 h-[545px] flex flex-col justify-center items-center text-[14px]"
+			>
+				주요 영향인자 분석을<br />선택해주세요.
+			</div>
+			<div v-if="isLoading" class="py-[100px] text-center text-gray-500">
+				<LoadingStatus :comment="'주요 영향인자를 불러오고있습니다'" />
 			</div>
 		</div>
 		<Popup00

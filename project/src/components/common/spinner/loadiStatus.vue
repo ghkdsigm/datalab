@@ -5,21 +5,18 @@
 			<div class="w-16 h-16 border-1 border-t-transparent border-primary rounded-full animate-spin"></div>
 
 			<!-- 텍스트와 점 애니메이션 -->
-			<div class="text-center text-[14px] text-gray-700" v-if="comment">
+			<div class="text-center text-[14px] text-gray-700">
 				{{ comment }}<span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span>
 			</div>
 		</div>
 		<div v-else>
 			<!-- 스피너 -->
-			<div
-				class="w-8 h-8 border-2 border-t-transparent border-white rounded-full animate-spin"
-				:class="comment !== '' ? 'mb-4' : ''"
-			></div>
+			<div class="w-8 h-8 border-2 border-t-transparent border-white rounded-full animate-spin mb-4"></div>
 
 			<!-- 텍스트와 점 애니메이션 -->
-			<div class="text-center text-[14px] text-gray-700" v-if="comment">
+			<!-- <div class="text-center text-[14px] text-gray-700">
 				{{ comment }}<span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
