@@ -12,115 +12,132 @@
 		<template v-if="type === 'section'">
 			<!-- 이달의  예측 -->
 			<div class="flex gap-0 justify-center items-center" v-if="feature !== 'trend'">
-				<template v-if="!isLoading">
-					<div class="flex-1 rounded-l-md text-center">
-						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
-							{{ subTit01 }}
-						</p>
-						<p
-							:class="[
-								'mt-2 h-8 flex justify-center items-center text-white',
-								content.base_pred ? 'text-base font-normal' : 'text-2xl font-bold',
-							]"
+				<div class="flex-1 rounded-l-md text-center">
+					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
+						{{ subTit01 }}
+					</p>
+					<p
+						:class="[
+							'mt-2 h-8 flex justify-center items-center text-white',
+							cardContent.base_pred ? 'text-base font-normal' : 'text-2xl font-bold',
+						]"
+					>
+						<template v-if="!loadingContent01">
+							{{ cardContent?.base_pred }}
+							<!-- <em class="ml-1">m3</em> -->
+						</template>
+						<template v-else-if="!loadingContent01 && !cardContent.base_pred"
+							><span class="text-white font-normal text-[18px]">업데이트예정</span></template
 						>
-							<template v-if="content.base_pred">
-								{{ content.base_pred }}
-								<!-- <em class="ml-1">m3</em> -->
-							</template>
-							<template v-else><span class="text-white font-normal text-[18px]">업데이트예정</span></template>
-						</p>
-					</div>
-					<div class="w-px h-[62px] bg-gray-400 mx-3"></div>
-					<div class="flex-1 rounded-r-md text-center">
-						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
-							{{
-								subTit02 ||
-								new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleString('ko-KR', { month: 'long' })
-							}}
-						</p>
-						<p
-							:class="[
-								'mt-2 h-8 flex justify-center items-center text-white',
-								content.abs_error ? 'text-base font-normal' : 'text-2xl font-bold',
-							]"
-						>
-							<template v-if="content.abs_error">
-								{{ content.abs_error }}
-								<!-- <span class="ml-1">%</span>
+						<template v-else>
+							<div class="pt-6">
+								<LoadingStatus />
+							</div>
+						</template>
+					</p>
+				</div>
+				<div class="w-px h-[62px] bg-gray-400 mx-3"></div>
+				<div class="flex-1 rounded-r-md text-center">
+					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
+						{{
+							subTit02 ||
+							new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleString('ko-KR', { month: 'long' })
+						}}
+					</p>
+					<p
+						:class="[
+							'mt-2 h-8 flex justify-center items-center text-white',
+							cardContent.abs_error ? 'text-base font-normal' : 'text-2xl font-bold',
+						]"
+					>
+						<template v-if="!loadingContent01">
+							{{ cardContent?.abs_error }}
+							<!-- <span class="ml-1">%</span>
 								<span class="text-sm font-light ml-1">( 6383 m3 )</span> -->
-							</template>
-							<template v-else><span class="text-white font-normal text-[18px]">업데이트예정</span></template>
-						</p>
-					</div>
-				</template>
-				<div v-else class="text-center text-red-500 flex justify-center items-center">
-					<LoadingStatus v-if="isLoading" />
+						</template>
+						<template v-else-if="!loadingContent01 && !cardContent.abs_error"
+							><span class="text-white font-normal text-[18px]">업데이트예정</span></template
+						>
+						<template v-else>
+							<div class="pt-6">
+								<LoadingStatus />
+							</div>
+						</template>
+					</p>
 				</div>
 			</div>
 			<!-- 과거 미래 1년간 추세 -->
 			<div class="flex gap-0 justify-center items-center" v-else>
-				<template v-if="!isLoading">
-					<div class="flex-1 rounded-l-md text-center">
-						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
-							{{ subTit01 }}
-						</p>
-						<p
-							:class="[
-								'mt-2 h-8 flex justify-center items-center',
-								content.trend_sale ? 'text-base font-normal' : 'text-2xl font-bold',
-							]"
+				<div class="flex-1 rounded-l-md text-center">
+					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
+						{{ subTit01 }}
+					</p>
+					<p
+						:class="[
+							'mt-2 h-8 flex justify-center items-center',
+							cardContent.trend_sale ? 'text-base font-normal' : 'text-2xl font-bold',
+						]"
+					>
+						<template v-if="!loadingContent01">
+							<span v-if="cardContent.trend_sale === '1'" class="text-white font-bold text-[18px]"
+								>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
+							/></span>
+							<span v-else-if="cardContent.trend_sale === '0'" class="text-white font-bold text-[18px]">보합</span>
+							<span v-else class="flex text-white font-bold text-[18px]"
+								>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
+						></template>
+						<template v-else-if="!loadingContent01 && !cardContent.trend_sale"
+							><span class="text-white font-normal text-[18px]">업데이트예정</span></template
 						>
-							<template v-if="content.trend_sale === '1'">
-								<span class="text-white font-bold text-[18px]"
-									>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
-								/></span>
-							</template>
-							<template v-else-if="content.trend_sale === '0'">
-								<span class="text-white font-bold text-[18px]">보합</span>
-							</template>
-							<template v-else
-								><span class="flex text-white font-bold text-[18px]"
-									>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
-							></template>
-						</p>
-					</div>
-					<div class="w-px h-[62px] bg-gray-400 mx-3"></div>
-					<div class="flex-1 rounded-r-md text-center">
-						<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
-							{{ subTit02 }}
-						</p>
-						<p
-							:class="[
-								'mt-2 h-8 flex justify-center items-center',
-								content.trend_pred ? 'text-base font-normal' : 'text-2xl font-bold',
-							]"
+						<template v-else>
+							<div class="pt-6">
+								<LoadingStatus />
+							</div>
+						</template>
+					</p>
+				</div>
+				<div class="w-px h-[62px] bg-gray-400 mx-3"></div>
+				<div class="flex-1 rounded-r-md text-center">
+					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
+						{{ subTit02 }}
+					</p>
+					<p
+						:class="[
+							'mt-2 h-8 flex justify-center items-center',
+							cardContent.trend_pred ? 'text-base font-normal' : 'text-2xl font-bold',
+						]"
+					>
+						<template v-if="!loadingContent01">
+							<span v-if="cardContent.trend_pred === '1'" class="text-white font-bold text-[18px]"
+								>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
+							/></span>
+
+							<span v-else-if="cardContent.trend_pred === '0'" class="text-white font-bold text-[18px]">보합</span>
+							<span v-else class="flex text-white font-bold text-[18px]"
+								>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
+						></template>
+						<template v-else-if="!loadingContent01 && !cardContent.trend_pred"
+							><span class="text-white font-normal text-[18px]">업데이트예정</span></template
 						>
-							<template v-if="content.trend_pred === '1'">
-								<span class="text-white font-bold text-[18px]"
-									>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
-								/></span>
-							</template>
-							<template v-else-if="content.trend_pred === '0'">
-								<span class="text-white font-bold text-[18px]">보합</span>
-							</template>
-							<template v-else
-								><span class="flex text-white font-bold text-[18px]"
-									>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
-							></template>
-						</p>
-					</div>
-				</template>
-				<div v-else class="text-center text-red-500 flex justify-center items-center">
-					<LoadingStatus v-if="isLoading" />
+						<template v-else>
+							<div class="pt-6">
+								<LoadingStatus />
+							</div>
+						</template>
+					</p>
 				</div>
 			</div>
 		</template>
 
 		<!-- 영향인자 -->
 		<template v-else>
-			<div class="flex gap-0" v-if="!isLoading && content !== undefined && content">
+			<div class="flex gap-0" v-if="!loadingContent01">
 				<div class="flex-1 rounded-md text-center">
-					<div v-for="(item, idx) in content.slice(0, 3)" :key="idx" class="h-6 my-1 flex items-center justify-center">
+					<div
+						v-for="(item, idx) in cardContent.slice(0, 3)"
+						:key="idx"
+						class="h-6 my-1 flex items-center justify-center"
+					>
 						<span class="text-gray-800 bg-white w-6 h-6 rounded-full flex items-center justify-center font-bold mr-2">
 							{{ idx + 1 }}
 						</span>
@@ -130,21 +147,30 @@
 					</div>
 				</div>
 			</div>
-			<div v-else class="flex gap-0 w-full h-full items-center justify-center text-white items-center">
-				<LoadingStatus v-if="isLoading" />
+			<div class="flex gap-0 justify-center" v-else-if="!loadingContent01 && cardContent.length === 0">
+				<div class="pt-6">업데이트예정</div>
+			</div>
+			<div class="flex gap-0 justify-center" v-else>
+				<div class="pt-6">
+					<LoadingStatus />
+				</div>
 			</div>
 		</template>
 	</div>
 </template>
 
 <script>
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, computed, watchEffect } from 'vue'
 import { useUtilities } from '@/utils/common'
+import { useServiceStore } from '@/store/service'
 
 export default defineComponent({
-	name: 'Card',
+	name: 'CardBox',
 	props: {
-		title: String,
+		title: {
+			type: String,
+			default: '',
+		},
 		content: {
 			type: [Array, Object, null],
 			required: true,
@@ -162,21 +188,44 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
-		subTit01: String,
-		subTit02: String,
-		ico: String,
+		subTit01: {
+			type: String,
+			default: '',
+		},
+		subTit02: {
+			type: String,
+			default: '',
+		},
+		ico: {
+			type: String,
+			default: '',
+		},
 	},
 	setup(props, { emit }) {
+		const serviceStore = useServiceStore()
 		const { formatNumberWithComma, setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
+		const cardContent = ref([])
 
-		const isLoading = ref(true)
+		const loadingContent01 = computed(() => serviceStore.getLoadingpreddata)
+
+		// watch(
+		// 	() => props.content,
+		// 	(newValue, oldValue) => {
+		// 		if (newValue !== oldValue) {
+		// 			isLoading.value = false
+		// 		}
+		// 	},
+		// 	{ deep: true },
+		// )
 
 		watch(
 			() => props.content,
 			(newValue, oldValue) => {
 				if (newValue !== oldValue) {
-					isLoading.value = false
+					cardContent.value = newValue
+				} else {
+					cardContent.value = oldValues
 				}
 			},
 			{ deep: true },
@@ -189,8 +238,9 @@ export default defineComponent({
 		return {
 			formatNumberWithComma,
 			imageSrc,
-			isLoading,
 			showPopup,
+			cardContent,
+			loadingContent01,
 		}
 	},
 })

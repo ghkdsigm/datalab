@@ -11,8 +11,17 @@
 						>더보기 <em class="ml-1">+</em></span
 					>
 				</div>
-				<p class="max-w-full mt-1 text-sm overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack">
-					{{ content?.summary?.short ? content.summary.short : '' }}
+				<p
+					class="max-w-full mt-1 text-sm overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack"
+					v-if="!loadingContent01"
+				>
+					{{ content?.summary?.short }}
+				</p>
+				<p
+					class="max-w-full mt-1 text-sm overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack"
+					v-else
+				>
+					정보를 불러오고있습니다<span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span>
 				</p>
 			</div>
 
@@ -25,9 +34,17 @@
 						>상세보기</span
 					>
 				</div>
-				<div class="w-full h-[400px]">
-					<!-- <LoadingStatus v-if="isLoading" /> -->
+				<div class="w-full h-[400px]" v-if="!loadingContent01">
 					<Line01 :content="content?.table_data"></Line01>
+				</div>
+				<div
+					class="w-full h-[400px] flex justify-center items-center"
+					v-else-if="!loadingContent01 && !content.table_data"
+				>
+					업데이트 예정
+				</div>
+				<div class="w-full h-[400px] flex justify-center items-center" v-else>
+					<LoadingStatus :comment="'보드 예측 결과를 불러오고있습니다'" />
 				</div>
 			</div>
 		</div>
@@ -35,7 +52,12 @@
 		<div class="flex flex-col gap-6 flex-[5] min-w-[0]">
 			<div class="p-4 border rounded-lg bg-gray-50">
 				<div class="flex justify-between items-center">
-					<Select01 :options="options" :selected-options="selectedOptions" @select="handleSelectChange" />
+					<Select01
+						:disabled="loadingContent01 ? true : false"
+						:options="options"
+						:selected-options="selectedOptions"
+						@select="handleSelectChange"
+					/>
 					<button @click="handleReset" class="text-pale p-2 font-light text-sm">
 						<img :src="imageSrc('mdf', 'ico_refresh')" alt="초기화" class="inline-block mr-1" />
 						초기화
@@ -77,21 +99,21 @@
 			<div v-if="content02.length !== 0">
 				<div class="mb-6" v-for="(item, idx) in content02" :key="idx">
 					<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">
-						{{ Object.keys(item.graph_data)[1] }}
+						{{ Object.keys(item?.graph_data)[1] }}
 					</h2>
 					<div class="mb-[16px]">
 						<Line03
 							:borderColor="['#BEE7A2', '#FB4F4F']"
 							:leftTit="'수량(M3)'"
 							:rightTit="'영향인자'"
-							:idx="item.graph_data['index']"
-							:content="item.graph_data[selectedOptions[idx]]"
-							:allcontent="item.graph_data['전체']"
+							:idx="item?.graph_data['index']"
+							:content="item?.graph_data[selectedOptions[idx]]"
+							:allcontent="item?.graph_data['전체']"
 							:title="selectedOptions[idx]"
 						/>
 					</div>
 					<div>
-						<Table01 :content="item.table_data" />
+						<Table01 :content="item?.table_data" />
 					</div>
 				</div>
 			</div>
@@ -111,7 +133,12 @@
 			@update:isVisible="showPopup = $event"
 			:width="'720'"
 		>
-			<p class="text-gray-600 text-left" v-html="formatSummaryText(content?.summary?.full)"></p>
+			<p
+				class="text-gray-600 text-left"
+				v-if="content?.summary?.full"
+				v-html="formatSummaryText(content?.summary?.full)"
+			></p>
+			<p class="text-gray-600 text-center" v-else>예측 결과가 존재하지않습니다.</p>
 		</Popup00>
 
 		<Popup02
@@ -121,7 +148,6 @@
 			:data="content"
 			:width="'720'"
 		>
-			<p class="text-gray-600">ㅁㅇㄴㄹ</p>
 		</Popup02>
 	</section>
 </template>
@@ -155,6 +181,8 @@ export default {
 
 		const deleteFlag = ref(false)
 		const deleteItem = ref(null)
+
+		const loadingContent01 = computed(() => serviceStore.getLoadingpreddata)
 
 		onMounted(() => {
 			handleReset()
@@ -242,6 +270,14 @@ export default {
 			deleteFlag.value = true
 		}
 
+		watch(month, () => {
+			handleReset()
+		})
+
+		watch(prod, () => {
+			handleReset()
+		})
+
 		//드래그
 		let isDragging = false
 		let startX = 0
@@ -299,6 +335,7 @@ export default {
 			deleteFlag,
 			deleteItem,
 			formatSummaryText,
+			loadingContent01,
 		}
 	},
 }
@@ -309,5 +346,36 @@ export default {
 	max-height: 80vh;
 	position: sticky !important;
 	top: 80px;
+}
+
+/* 점들에 애니메이션 적용 */
+.dot-1,
+.dot-2,
+.dot-3 {
+	opacity: 0;
+	animation: blink 1.5s infinite;
+}
+
+.dot-1 {
+	animation-delay: 0s;
+}
+
+.dot-2 {
+	animation-delay: 0.3s;
+}
+
+.dot-3 {
+	animation-delay: 0.6s;
+}
+
+/* 애니메이션 효과 */
+@keyframes blink {
+	0%,
+	100% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
 }
 </style>

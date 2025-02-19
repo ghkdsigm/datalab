@@ -6,7 +6,7 @@
 		</div>
 
 		<!-- Dropdown -->
-		<div class="relative">
+		<div class="relative" ref="dropdownRef">
 			<button
 				class="px-4 py-2 rounded-md flex items-center space-x-2 justify-between w-[140px] border border-[#CCCCCC]"
 				@click="toggleDropdown"
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps, defineEmits, onMounted, onUnmounted } from 'vue'
 import { useUtilities } from '@/utils/common'
 
 const props = defineProps({
@@ -49,9 +49,12 @@ const imageSrc = (folder, img) => setImageSrc(folder, img)
 
 const emit = defineEmits(['update:selectedMonth'])
 
+const dropdownRef = ref(null)
+
 const isDropdownOpen = ref(false)
 
-const toggleDropdown = () => {
+const toggleDropdown = event => {
+	event.stopPropagation()
 	isDropdownOpen.value = !isDropdownOpen.value
 }
 
@@ -59,4 +62,19 @@ const selectMonth = month => {
 	emit('update:selectedMonth', month) // 부모에게 선택된 월 전달
 	isDropdownOpen.value = false // 드롭다운 닫기
 }
+
+// 드롭다운 외부 클릭 시 닫기
+const onClickOutside = event => {
+	if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+		isDropdownOpen.value = false
+	}
+}
+
+// 이벤트 리스너 추가 및 제거
+onMounted(() => {
+	document.addEventListener('click', onClickOutside)
+})
+onUnmounted(() => {
+	document.removeEventListener('click', onClickOutside)
+})
 </script>

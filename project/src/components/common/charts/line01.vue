@@ -8,7 +8,7 @@
 					:key="index"
 					class="legend-item"
 					@click="toggleDataset(index)"
-					:class="{ active: isHidden(index) }"
+					:class="{ active: hiddenDatasets[index] }"
 				>
 					<span class="legend-text">{{ dataset.label }}</span>
 					<span class="legend-color" :style="{ backgroundColor: dataset.borderColor }"></span>
@@ -41,12 +41,14 @@ export default defineComponent({
 		const chartCanvas = ref(null)
 		let chartInstance = null
 		const isFirstChange = ref(true)
+		const checkLabel = ref(false)
 
 		const serviceStore = useServiceStore()
 		const currentMonth = computed(() => serviceStore.getselectMonth)
 
 		const selectedMonth = ref() // 기본값: 이번 달
 		const months = ref([])
+		const hiddenDatasets = reactive([])
 
 		const chartData = reactive({
 			labels: [],
@@ -79,7 +81,7 @@ export default defineComponent({
 					fill: false,
 					borderDash: [5, 5],
 				},
-				{ label: 'SRM', data: [16000, 15000, 20000, 27000, 22000], tension: 0, radius: 1, borderColor: '#9966FF' },
+				{ label: 'SRM 표시', tension: 0, radius: 1, borderColor: '#9966FF' },
 			],
 		})
 
@@ -101,7 +103,7 @@ export default defineComponent({
 					month.setMonth(now.getMonth() - i) // 현재 월에서 i개월 전으로 설정
 					const year = month.getFullYear()
 					const monthFormatted = String(month.getMonth() + 1).padStart(2, '0') // 월을 두 자리로 맞춤
-					months.value.push(`${year}${monthFormatted}`) // 🔥 unshift 사용 (배열 앞에 추가)
+					months.value.push(`${year}${monthFormatted}`) // unshift 사용 (배열 앞에 추가)
 				}
 			}
 			selectedMonth.value = months.value[0]
@@ -120,6 +122,7 @@ export default defineComponent({
 		}
 
 		onMounted(() => {
+			getLast3Months()
 			// if (props.content) {
 			// 	chartData.labels = props.content.index || []
 			// 	chartData.datasets[0].data = props.content.real || [] //mdf
@@ -128,15 +131,20 @@ export default defineComponent({
 			// 		chartInstance.update()
 			// 	}
 			// }
+
 			createChart()
 		})
 
 		watchEffect(() => {
 			if (props.content) {
-				chartData.labels = props.content.index || []
-				chartData.datasets[0].data = props.content.real || [] //mdf
-				chartData.datasets[1].data = props.content.pred[String(selectedMonth.value)] || [] //mdf-예측
-				chartData.datasets[3].data = props.content.bzplan || [] //bzplan
+				chartData.labels = props.content.index || [] //레이블연도
+				chartData.datasets[0].data = props.content.real || [] //MDF
+				chartData.datasets[1].data = props.content.pred[String(selectedMonth.value)] || [] //MDF-예측
+				chartData.datasets[3].data = props.content.bzplan || [] //사업계획
+				if (selectedMonth.value && props.content.srm) {
+					chartData.datasets[4].data = Object.values(props.content.srm) || [] //SRM
+				}
+
 				if (chartInstance) {
 					chartInstance.update()
 				}
@@ -144,15 +152,13 @@ export default defineComponent({
 		})
 
 		const handleMonthChange = newMonth => {
-			console.log('zz', newMonth)
-
 			selectedMonth.value = newMonth
 		}
 
 		const customVerticalLine = {
 			id: 'customVerticalLine',
 			afterDraw(chart) {
-				//console.log('뭐나옴1', chart)
+				//console.log('chart??', chart)
 				if (!chart.tooltip?.active) return
 
 				const { ctx, tooltip, chartArea } = chart
@@ -227,23 +233,28 @@ export default defineComponent({
 				},
 				plugins: [customVerticalLine, customVerticalLine02],
 			})
+			hiddenDatasets.length = chartData.datasets.length
+			hiddenDatasets.fill(false)
 		}
 
 		const toggleDataset = index => {
 			const datasetMeta = chartInstance.getDatasetMeta(index)
 			datasetMeta.hidden = !datasetMeta.hidden
+			hiddenDatasets[index] = datasetMeta.hidden
 			chartInstance.update()
 		}
 
-		const isHidden = index => {
-			return chartInstance?.getDatasetMeta(index)?.hidden ?? false
-		}
+		// const isHidden = index => {
+		// 	// console.log('chartInstancechartInstance', chartInstance)
+		// 	return chartInstance?.getDatasetMeta(index)?.hidden ?? false
+		// 	//checkLabel.value = chartInstance?.getDatasetMeta(index)?.hidden ?? false
+		// }
 
 		return {
 			chartCanvas,
 			chartData,
 			toggleDataset,
-			isHidden,
+			hiddenDatasets,
 			months,
 			handleMonthChange,
 			selectedMonth,
@@ -251,6 +262,7 @@ export default defineComponent({
 			currentMonth,
 			getLast3Months,
 			isFirstChange,
+			checkLabel,
 		}
 	},
 })
@@ -282,15 +294,28 @@ export default defineComponent({
 	display: flex;
 	align-items: center;
 	background: #262626;
-	border-radius: 6px;
+	border-radius: 100px;
 	padding: 6px 10px;
 	cursor: pointer;
 }
 
 .legend-color {
-	width: 10px;
-	height: 10px;
+	width: 15px;
+	height: 3px;
+	margin-left: 6px;
+}
+
+.legend-color-accident {
+	width: 10px !important;
+	height: 10px !important;
 	border-radius: 50%;
+	margin-left: 6px;
+}
+
+.legend-color-bzplan {
+	width: 15px !important;
+	border: 1px dotted green !important;
+	border-width: 2px !important;
 	margin-left: 6px;
 }
 

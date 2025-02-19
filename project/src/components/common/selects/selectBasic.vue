@@ -2,7 +2,7 @@
 	<span v-if="label" class="font-bold">
 		{{ label }}
 	</span>
-	<div class="custom-select-wrapper">
+	<div class="custom-select-wrapper" ref="dropdownRef">
 		<!-- 드롭다운 헤더 -->
 		<div class="custom-select-header" :style="`width:${width}px`" @click="toggleDropdown">
 			<span class="selected-value">{{ selectedLabel }}</span>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 export default {
 	name: 'CustomSelect',
@@ -44,9 +44,11 @@ export default {
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const isOpen = ref(false)
+		const dropdownRef = ref(null)
 
 		// 드롭다운 열기/닫기
-		const toggleDropdown = () => {
+		const toggleDropdown = event => {
+			event.stopPropagation() // 클릭 이벤트 전파 방지
 			isOpen.value = !isOpen.value
 		}
 
@@ -62,11 +64,27 @@ export default {
 			isOpen.value = false
 		}
 
+		// 드롭다운 외부 클릭 시 닫기
+		const onClickOutside = event => {
+			if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+				isOpen.value = false
+			}
+		}
+
+		// 이벤트 리스너 추가 및 제거
+		onMounted(() => {
+			document.addEventListener('click', onClickOutside)
+		})
+		onUnmounted(() => {
+			document.removeEventListener('click', onClickOutside)
+		})
+
 		return {
 			isOpen,
 			toggleDropdown,
 			selectedLabel,
 			handleOptionClick,
+			dropdownRef,
 		}
 	},
 }

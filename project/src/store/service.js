@@ -14,6 +14,9 @@ export const useServiceStore = defineStore('service', {
 		featurevalue: [],
 		externallist: [],
 		externaltrend: [],
+		loading: {
+			preddata: false,
+		},
 	}),
 	getters: {
 		getErrorMessage: state => state.errorMessage,
@@ -27,6 +30,7 @@ export const useServiceStore = defineStore('service', {
 		getFeaturevalue: state => state.featurevalue,
 		getExternallist: state => state.externallist,
 		getExternaltrend: state => state.externaltrend,
+		getLoadingpreddata: state => state.loading.preddata,
 	},
 	actions: {
 		// 공통 에러 처리 메서드
@@ -105,11 +109,11 @@ export const useServiceStore = defineStore('service', {
 		},
 
 		async actGetPreddata(params) {
+			this.loading.preddata = true
 			try {
 				const res = await service.getPredictPreddata(params)
 				if (res.status !== 200) {
-					const type = 'preddata'
-					this.handleError(type, res)
+					this.handleError('preddata', res)
 				} else {
 					this.preddata = res.data || []
 					this.errorMessage = ''
@@ -120,6 +124,8 @@ export const useServiceStore = defineStore('service', {
 				this.errorMessage = '서버와 연결할 수 없습니다.'
 				this.status = 500
 				console.error('Failed to fetch data:', error)
+			} finally {
+				this.loading.preddata = false
 			}
 		},
 
@@ -167,7 +173,7 @@ export const useServiceStore = defineStore('service', {
 					this.handleError(type, res)
 				} else {
 					const newValueData = res.data.body || null
-					console.log('newValueData', newValueData.graph_data['index'])
+					//console.log('newValueData', newValueData?.graph_data['index'])
 
 					if (newValueData && newValueData?.graph_data['index'].length !== 0) {
 						const isDuplicate = this.featurevalue.some(item => {
@@ -191,7 +197,7 @@ export const useServiceStore = defineStore('service', {
 		},
 		//주요영향인자 분석 삭제
 		async removeFeatureValue(keyToRemove) {
-			console.log('keyToRemove', keyToRemove)
+			//console.log('keyToRemove', keyToRemove)
 			if (keyToRemove !== 'remove') {
 				this.featurevalue = this.featurevalue.filter(item => {
 					if (Object.keys(item).length === 0) return false
@@ -258,7 +264,7 @@ export const useServiceStore = defineStore('service', {
 
 		//외부 경기지표 삭제
 		async removeExternalTrend(keyToRemove) {
-			console.log('keyToRemove', keyToRemove)
+			//console.log('keyToRemove', keyToRemove)
 			if (keyToRemove !== 'remove') {
 				this.externaltrend = this.externaltrend.filter(item => {
 					if (Object.keys(item).length === 0) return false

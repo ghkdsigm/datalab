@@ -3,7 +3,7 @@
 		<span v-if="label" class="font-bold pr-4">
 			{{ label }}
 		</span>
-		<div class="custom-select-wrapper">
+		<div class="custom-select-wrapper" :class="{ disabled: disabled }" ref="dropdownRef">
 			<!-- 드롭다운 헤더 -->
 			<div class="custom-select-header" @click="toggleDropdown" :style="`width:${width}px`">
 				<span v-html="getSelectDisplayValue"></span>
@@ -14,11 +14,12 @@
 			</div>
 
 			<!-- 드롭다운 리스트 -->
-			<ul v-if="isOpen" class="custom-select-list">
+			<ul v-if="isOpen && !disabled" class="custom-select-list">
 				<li
 					v-for="(option, index) in options"
 					:key="index"
 					class="custom-select-item"
+					:class="{ 'selected-item': selectedOptions.includes(option) }"
 					@click="handleOptionClick(option)"
 				>
 					{{ option }}
@@ -29,7 +30,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 export default {
 	name: 'CustomSelect',
@@ -51,15 +52,23 @@ export default {
 			type: String,
 			default: '',
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['select'],
 	setup(props, { emit }) {
 		const isOpen = ref(false)
+		const dropdownRef = ref(null)
 		const remainingCount = computed(() => props.selectedOptions.length - 1)
 
 		// 드롭다운 열기/닫기
-		const toggleDropdown = () => {
-			isOpen.value = !isOpen.value
+		const toggleDropdown = event => {
+			event.stopPropagation()
+			if (!props.disabled) {
+				isOpen.value = !isOpen.value
+			}
 		}
 
 		// 마지막 선택된 값과 나머지 개수 계산
@@ -81,9 +90,26 @@ export default {
 
 		// 항목 클릭 시 선택
 		const handleOptionClick = option => {
-			emit('select', option)
-			isOpen.value = false
+			if (!props.disabled) {
+				emit('select', option)
+				isOpen.value = false
+			}
 		}
+
+		// 드롭다운 외부 클릭 시 닫기
+		const onClickOutside = event => {
+			if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+				isOpen.value = false
+			}
+		}
+
+		// 이벤트 리스너 추가 및 제거
+		onMounted(() => {
+			document.addEventListener('click', onClickOutside)
+		})
+		onUnmounted(() => {
+			document.removeEventListener('click', onClickOutside)
+		})
 
 		return {
 			isOpen,
@@ -91,6 +117,8 @@ export default {
 			getSelectDisplayValue,
 			handleOptionClick,
 			remainingCount,
+			handleOptionClick,
+			dropdownRef,
 		}
 	},
 }
@@ -104,6 +132,12 @@ export default {
 	> span:first-child {
 		padding-right: 10px;
 	}
+}
+
+/* disabled 상태일 때 스타일 */
+.custom-select-wrapper.disabled {
+	opacity: 0.5;
+	pointer-events: none;
 }
 
 .custom-select-header {
@@ -161,5 +195,8 @@ export default {
 
 .custom-select-item:hover {
 	background-color: #f0f0f0;
+}
+.selected-item {
+	background-color: #e1e1e1;
 }
 </style>

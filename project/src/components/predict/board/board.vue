@@ -5,6 +5,7 @@
 		:subTit01="'예측값'"
 		:subTit02="'실적 오차'"
 		:content="content1"
+		:feature="''"
 		:type="'section'"
 		:more="false"
 	/>
@@ -22,6 +23,7 @@
 		:title="'이달의 영향인자 Top3'"
 		:ico="'ico_bar_graph03'"
 		:content="content2"
+		:feature="''"
 		:type="'list'"
 		:more="true"
 		@openPop="openPop"
@@ -31,7 +33,7 @@
 		:isVisible="showPopup"
 		@update:isVisible="showPopup = $event"
 		:width="'720'"
-		:data="content"
+		:data="content3"
 	/>
 </template>
 
@@ -50,7 +52,7 @@ export default defineComponent({
 		const selectMonth = computed(() => serviceStore.getselectMonth)
 		const selectProd = computed(() => serviceStore.getselectProd)
 
-		const content = computed(() => serviceStore.getPreddata?.feature_information ?? [])
+		const content3 = computed(() => serviceStore.getPreddata?.feature_information ?? [])
 		const content1 = computed(() => serviceStore.getPreddata?.card_section ?? [])
 		const content2 = ref(null)
 
@@ -70,9 +72,9 @@ export default defineComponent({
 		return {
 			currentPath,
 			serviceStore,
-			content,
 			content1,
 			content2,
+			content3,
 			selectMonth,
 			selectProd,
 			showPopup,

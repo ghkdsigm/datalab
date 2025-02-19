@@ -1,8 +1,8 @@
 <template>
 	<div class="flex flex-col justify-center items-center w-full h-full">
-		<div v-if="comment">
+		<div v-if="comment" class="flex flex-col justify-center items-center">
 			<!-- 스피너 -->
-			<div class="w-16 h-16 border-1 border-t-transparent border-primary rounded-full animate-spin"></div>
+			<div class="w-8 h-8 border-2 border-t-transparent border-primary rounded-full animate-spin mb-2"></div>
 
 			<!-- 텍스트와 점 애니메이션 -->
 			<div class="text-center text-[14px] text-gray-700">

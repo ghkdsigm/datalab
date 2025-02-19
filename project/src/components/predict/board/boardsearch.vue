@@ -35,6 +35,7 @@ export default defineComponent({
 		const prod = ref([])
 		const selectedProduct = ref(0)
 		const selectedMonth = ref(0)
+		const isLoading = ref(false)
 
 		// 기준월 데이터 업데이트 함수
 		const updateMonth = () => {
@@ -47,6 +48,7 @@ export default defineComponent({
 				})
 				// 첫 번째 값 자동 선택
 				selectedMonth.value = 0
+				selectedProduct.value = 0
 			} else {
 				month.value = []
 			}
@@ -56,26 +58,34 @@ export default defineComponent({
 		const fetchProdType = async () => {
 			if (!props.basemonth[selectedMonth.value]) return
 
-			const params = {
-				board_category: '',
-				base_yyyymm: props.basemonth[selectedMonth.value],
-			}
+			isLoading.value = true
 
-			if (currentPath.value === '/mdf') {
-				params.board_category = 'mdf'
-			} else if (currentPath.value === '/pb') {
-				params.board_category = 'pb'
-			} else if (currentPath.value === '/dw') {
-				params.board_category = 'bm_retail'
-			} else if (currentPath.value === '/apt') {
-				params.board_category = 'apt_comp'
-			} else {
-				return
-			}
+			try {
+				const params = {
+					board_category: '',
+					base_yyyymm: props.basemonth[selectedMonth.value],
+				}
 
-			await serviceStore.actGetProdtype(params)
-			await fetchPredData(params)
-			await fetchtFeatureList(params)
+				if (currentPath.value === '/mdf') {
+					params.board_category = 'mdf'
+				} else if (currentPath.value === '/pb') {
+					params.board_category = 'pb'
+				} else if (currentPath.value === '/dw') {
+					params.board_category = 'bm_retail'
+				} else if (currentPath.value === '/apt') {
+					params.board_category = 'apt_comp'
+				} else {
+					return
+				}
+
+				await serviceStore.actGetProdtype(params)
+				await fetchPredData(params)
+				await fetchtFeatureList(params)
+			} catch (error) {
+				console.log('error', error)
+			} finally {
+				isLoading.value = false
+			}
 		}
 
 		// 예측데이터 불러오기
@@ -118,6 +128,7 @@ export default defineComponent({
 			() => props.basemonth,
 			async () => {
 				updateMonth()
+				isLoading.value = true
 				await fetchProdType()
 			},
 			{ deep: true },
@@ -131,22 +142,29 @@ export default defineComponent({
 		watch(selectedProduct, async () => {
 			if (!props.basemonth[selectedMonth.value]) return
 
-			const params = {
-				board_category: '',
-				base_yyyymm: props.basemonth[selectedMonth.value],
-			}
+			isLoading.value = true
+			try {
+				const params = {
+					board_category: '',
+					base_yyyymm: props.basemonth[selectedMonth.value],
+				}
 
-			if (currentPath.value === '/mdf') {
-				params.board_category = 'mdf'
-			} else if (currentPath.value === '/pb') {
-				params.board_category = 'pb'
-			} else if (currentPath.value === '/dw') {
-				params.board_category = 'bm_retail'
-			} else {
-				return
+				if (currentPath.value === '/mdf') {
+					params.board_category = 'mdf'
+				} else if (currentPath.value === '/pb') {
+					params.board_category = 'pb'
+				} else if (currentPath.value === '/dw') {
+					params.board_category = 'bm_retail'
+				} else {
+					return
+				}
+				await fetchPredData(params)
+				await fetchtFeatureList(params)
+			} catch (error) {
+				console.log('error', error)
+			} finally {
+				isLoading.value = false
 			}
-			await fetchPredData(params)
-			await fetchtFeatureList(params)
 		})
 
 		return {
@@ -154,6 +172,7 @@ export default defineComponent({
 			selectedProduct,
 			selectedMonth,
 			prod,
+			isLoading,
 		}
 	},
 })
