@@ -23,7 +23,7 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							{{ cardContent?.base_pred }}
+							{{ truncateNumber(Number(cardContent?.base_pred)) + ' m3' }}
 							<!-- <em class="ml-1">m3</em> -->
 						</template>
 						<template v-else-if="!loadingContent01 && !cardContent.base_pred"
@@ -51,7 +51,7 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							{{ cardContent?.abs_error }}
+							{{ truncateNumber(Number(cardContent?.abs_error)) + ' m3' }}
 							<!-- <span class="ml-1">%</span>
 								<span class="text-sm font-light ml-1">( 6383 m3 )</span> -->
 						</template>
@@ -203,7 +203,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const serviceStore = useServiceStore()
-		const { formatNumberWithComma, setImageSrc } = useUtilities()
+		const { formatNumberWithComma, setImageSrc, truncateNumber } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
 		const cardContent = ref([])
 
@@ -241,6 +241,7 @@ export default defineComponent({
 			showPopup,
 			cardContent,
 			loadingContent01,
+			truncateNumber,
 		}
 	},
 })

@@ -42,10 +42,16 @@ export function useUtilities() {
 		return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 	}
 
+	//소수점제거
+	const truncateNumber = num => {
+		return Math.floor(num)
+	}
+
 	return {
 		formatStringWithNewlines,
 		getImageSrc,
 		setImageSrc,
 		formatNumberWithComma,
+		truncateNumber,
 	}
 }

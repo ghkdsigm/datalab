@@ -272,7 +272,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .chart-container {
 	width: 100%;
-	height: 85%;
+	height: calc(100% - 44px);
 	position: relative;
 	display: flex;
 	flex-direction: column;

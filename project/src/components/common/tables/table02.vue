@@ -15,7 +15,7 @@
 					</th>
 					<th
 						class="px-4 py-2 cursor-pointer"
-						:style="tableData.length > 4 ? 'padding-left:0; padding-right:20px' : 'padding-left:10px;'"
+						:style="tableData.length > 4 ? 'padding-left:0; padding-right:10px' : 'padding-left:10px;'"
 						@click="sortTable('importance')"
 					>
 						구분

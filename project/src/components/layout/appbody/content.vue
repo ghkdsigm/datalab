@@ -25,7 +25,7 @@
 				</p>
 			</div>
 
-			<div class="p-4 border rounded-lg bg-white shadow-black">
+			<div class="h-full p-4 border rounded-lg bg-white shadow-black">
 				<div class="flex justify-between items-center mb-5">
 					<strong class="text-xl text-gray-800 font-bold">보드 예측 결과</strong>
 					<span
@@ -34,16 +34,16 @@
 						>상세보기</span
 					>
 				</div>
-				<div class="w-full h-[400px]" v-if="!loadingContent01">
+				<div class="w-full chartWrap" v-if="!loadingContent01">
 					<Line01 :content="content?.table_data"></Line01>
 				</div>
 				<div
-					class="w-full h-[400px] flex justify-center items-center"
+					class="w-full chartWrap flex justify-center items-center"
 					v-else-if="!loadingContent01 && !content.table_data"
 				>
 					업데이트 예정
 				</div>
-				<div class="w-full h-[400px] flex justify-center items-center" v-else>
+				<div class="w-full chartWrap flex justify-center items-center" v-else>
 					<LoadingStatus :comment="'보드 예측 결과를 불러오고있습니다'" />
 				</div>
 			</div>
@@ -343,9 +343,14 @@ export default {
 
 <style scoped>
 .sticky-container {
-	max-height: 80vh;
+	max-height: 630px;
+	height: 630px;
 	position: sticky !important;
 	top: 80px;
+}
+
+.chartWrap {
+	height: 88%;
 }
 
 /* 점들에 애니메이션 적용 */

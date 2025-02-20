@@ -271,7 +271,7 @@ export default defineComponent({
 <style scoped>
 .chart-container {
 	width: 100%;
-	height: 85%;
+	height: calc(100% - 44px);
 	background: white;
 	position: relative;
 	display: flex;
@@ -295,7 +295,7 @@ export default defineComponent({
 	align-items: center;
 	background: #262626;
 	border-radius: 100px;
-	padding: 6px 10px;
+	padding: 8px 10px;
 	cursor: pointer;
 }
 
