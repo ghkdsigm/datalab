@@ -1,6 +1,8 @@
 <template>
-	<div class="relative top-0 left-0 z-50 flex items-center justify-between px-6 py-4 bg-white w-full shadow-md">
-		<div class="logo cursor-pointer flex">
+	<div
+		class="relative h-[56px] top-0 left-0 z-50 flex items-center justify-between px-6 py-4 bg-white w-full shadow-md"
+	>
+		<div class="logo cursor-pointer flex absolute 3xl:hidden block">
 			<img :src="imageSrc('common', 'logo')" alt="푸터 로고" @click="goToHome" class="pr-4" />
 			<span class="subName">S&OP 수량 예측</span>
 		</div>

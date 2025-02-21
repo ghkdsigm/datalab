@@ -3,22 +3,22 @@
 		<div class="flex flex-col gap-6 flex-[7] min-w-[0] sticky-container">
 			<div class="mb-2 px-4 py-3 border rounded-lg bg-white shadow-black">
 				<div class="flex justify-between items-center">
-					<strong class="text-cyan-500 font-bold">
+					<strong class="text-cyan-500 font-bold flex">
 						<img :src="imageSrc('mdf', 'ico_talk')" alt="초기화" class="inline-block mr-1" />
-						<span class="font-bold">예측 결과 요약</span>
+						<span class="font-bold text-xl">예측 결과 요약</span>
 					</strong>
-					<span class="text-sm text-gray-800 font-light cursor-pointer" @click="showPopup = true"
-						>더보기 <em class="ml-1">+</em></span
+					<span class="text-md text-gray-800 font-light cursor-pointer flex items-center" @click="showPopup = true"
+						><span>더보기</span> <em class="ml-1 text-md flex">+</em></span
 					>
 				</div>
 				<p
-					class="max-w-full mt-1 text-sm overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack"
+					class="max-w-full mt-1 text-md overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack"
 					v-if="!loadingContent01"
 				>
 					{{ content?.summary?.short }}
 				</p>
 				<p
-					class="max-w-full mt-1 text-sm overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack"
+					class="max-w-full mt-1 text-md overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack"
 					v-else
 				>
 					정보를 불러오고있습니다<span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span>
@@ -58,7 +58,7 @@
 						:selected-options="selectedOptions"
 						@select="handleSelectChange"
 					/>
-					<button @click="handleReset" class="text-pale p-2 font-light text-sm">
+					<button @click="handleReset" class="text-pale p-2 font-light text-md">
 						<img :src="imageSrc('mdf', 'ico_refresh')" alt="초기화" class="inline-block mr-1" />
 						초기화
 					</button>
@@ -119,7 +119,7 @@
 			</div>
 			<div
 				v-else-if="!isLoading"
-				class="p-4 border rounded-lg bg-gray-50 h-[545px] flex flex-col justify-center items-center text-[14px]"
+				class="p-4 border rounded-lg bg-gray-50 h-[545px] flex flex-col justify-center items-center text-[16px]"
 			>
 				주요 영향인자 분석을<br />선택해주세요.
 			</div>
@@ -138,7 +138,8 @@
 				v-if="content?.summary?.full"
 				v-html="formatSummaryText(content?.summary?.full)"
 			></p>
-			<p class="text-gray-600 text-center" v-else>예측 결과가 존재하지않습니다.</p>
+			<p class="text-gray-600 text-center" v-else="isLoading">예측 결과 요약 정보가 존재하지않습니다.</p>
+			<!-- <p class="text-gray-600 text-center" v-if="isLoading">예측 결과 요약 상세 정보를 불러오고 있습니다.</p> -->
 		</Popup00>
 
 		<Popup02
@@ -306,10 +307,15 @@ export default {
 
 			text = text.replace(
 				/(\d+)\.\s/,
-				'</p><h2 class="text-xl font-bold mt-6 mb-4">주요 상승 요인</h2><p class="mt-4">$1. ',
+				'</p><h2 class="text-[16px] font-bold mt-6 mb-4">주요 상승 요인</h2><p class="mt-4 flex items-start gap-0 ext-[16px]"><span class="min-w-[24px] font-bold ext-[16px]">$1.</span><span class="flex-1">',
 			)
 
-			return text.replace(/(\d+)\.\s/g, '</p><p class="mt-4">$1. ')
+			return (
+				text.replace(
+					/(\d+)\.\s/g,
+					'</p><p class="mt-4 flex items-start gap-0"><span class="min-w-[24px] font-bold text-xl">$1.</span><span class="flex-1">',
+				) + '</span>'
+			)
 		}
 
 		return {

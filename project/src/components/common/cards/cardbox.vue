@@ -3,7 +3,7 @@
 		<div class="text-center text-lg font-bold text-green-200 flex justify-between items-center mb-4">
 			<span class="flex items-center">
 				<img :src="`${imageSrc('mdf', ico)}`" :alt="ico || 'default-icon'" />
-				<span class="ml-2">{{ title }}</span>
+				<span class="ml-2 text-[20px]">{{ title }}</span>
 			</span>
 			<span v-if="more" class="text-white text-sm font-light cursor-pointer" @click="showPopup(true)"
 				>더보기 <em class="ml-1">></em>
@@ -11,7 +11,7 @@
 		</div>
 		<template v-if="type === 'section'">
 			<!-- 이달의  예측 -->
-			<div class="flex gap-0 justify-center items-center" v-if="feature !== 'trend'">
+			<div class="flex gap-0 justify-center items-center mb-2" v-if="feature !== 'trend'">
 				<div class="flex-1 rounded-l-md text-center">
 					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
 						{{ subTit01 }}
@@ -19,15 +19,15 @@
 					<p
 						:class="[
 							'mt-2 h-8 flex justify-center items-center text-white',
-							cardContent.base_pred ? 'text-base font-normal' : 'text-2xl font-bold',
+							cardContent.base_pred ? 'text-base font-bold' : 'text-2xl font-bold',
 						]"
 					>
 						<template v-if="!loadingContent01">
-							{{ truncateNumber(Number(cardContent?.base_pred)) + ' m3' }}
+							<span class="text-[26px] font-bold">{{ truncateNumber(Number(cardContent?.base_pred)) + ' m3' }}</span>
 							<!-- <em class="ml-1">m3</em> -->
 						</template>
 						<template v-else-if="!loadingContent01 && !cardContent.base_pred"
-							><span class="text-white font-normal text-[18px]">업데이트예정</span></template
+							><span class="text-white font-bold text-[18px]">업데이트예정</span></template
 						>
 						<template v-else>
 							<div class="pt-6">
@@ -47,16 +47,16 @@
 					<p
 						:class="[
 							'mt-2 h-8 flex justify-center items-center text-white',
-							cardContent.abs_error ? 'text-base font-normal' : 'text-2xl font-bold',
+							cardContent.abs_error ? 'text-base font-bold' : 'text-2xl font-bold',
 						]"
 					>
 						<template v-if="!loadingContent01">
-							{{ truncateNumber(Number(cardContent?.abs_error)) + ' m3' }}
+							<span class="text-[26px] font-bold">{{ truncateNumber(Number(cardContent?.abs_error)) + ' m3' }}</span>
 							<!-- <span class="ml-1">%</span>
 								<span class="text-sm font-light ml-1">( 6383 m3 )</span> -->
 						</template>
 						<template v-else-if="!loadingContent01 && !cardContent.abs_error"
-							><span class="text-white font-normal text-[18px]">업데이트예정</span></template
+							><span class="text-white font-bold text-[18px]">업데이트예정</span></template
 						>
 						<template v-else>
 							<div class="pt-6">
@@ -67,7 +67,7 @@
 				</div>
 			</div>
 			<!-- 과거 미래 1년간 추세 -->
-			<div class="flex gap-0 justify-center items-center" v-else>
+			<div class="flex gap-0 justify-center items-center mb-2" v-else>
 				<div class="flex-1 rounded-l-md text-center">
 					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
 						{{ subTit01 }}
@@ -79,15 +79,17 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							<span v-if="cardContent.trend_sale === '1'" class="text-white font-bold text-[18px]"
+							<span v-if="cardContent.trend_sale === '1'" class="text-white font-bold text-[26px]"
 								>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
 							/></span>
-							<span v-else-if="cardContent.trend_sale === '0'" class="text-white font-bold text-[18px]">보합</span>
-							<span v-else class="flex text-white font-bold text-[18px]"
+							<span v-else-if="cardContent.trend_sale === '0'" class="text-white font-bold text-[26px]"
+								>보합 <img :src="`${imageSrc('common', 'ico_middle')}`" class="pl-2 w-[22px]"
+							/></span>
+							<span v-else class="flex text-white font-bold text-[26px]"
 								>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
 						></template>
 						<template v-else-if="!loadingContent01 && !cardContent.trend_sale"
-							><span class="text-white font-normal text-[18px]">업데이트예정</span></template
+							><span class="text-white font-normal text-[26px]">업데이트예정</span></template
 						>
 						<template v-else>
 							<div class="pt-6">
@@ -108,16 +110,16 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							<span v-if="cardContent.trend_pred === '1'" class="text-white font-bold text-[18px]"
+							<span v-if="cardContent.trend_pred === '1'" class="text-white font-bold text-[26px]"
 								>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
 							/></span>
 
-							<span v-else-if="cardContent.trend_pred === '0'" class="text-white font-bold text-[18px]">보합</span>
-							<span v-else class="flex text-white font-bold text-[18px]"
+							<span v-else-if="cardContent.trend_pred === '0'" class="text-white font-bold text-[26px]">보합</span>
+							<span v-else class="flex text-white font-bold text-[26px]"
 								>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
 						></template>
 						<template v-else-if="!loadingContent01 && !cardContent.trend_pred"
-							><span class="text-white font-normal text-[18px]">업데이트예정</span></template
+							><span class="text-white font-normal text-[26px]">업데이트예정</span></template
 						>
 						<template v-else>
 							<div class="pt-6">
@@ -136,12 +138,12 @@
 					<div
 						v-for="(item, idx) in cardContent.slice(0, 3)"
 						:key="idx"
-						class="h-6 my-1 flex items-center justify-center"
+						class="h-6 my-2 flex items-center justify-center"
 					>
 						<span class="text-gray-800 bg-white w-6 h-6 rounded-full flex items-center justify-center font-bold mr-2">
 							{{ idx + 1 }}
 						</span>
-						<span class="text-white">
+						<span class="text-white text-lg">
 							{{ item }}
 						</span>
 					</div>

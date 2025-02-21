@@ -5,7 +5,7 @@
 			<div class="w-8 h-8 border-2 border-t-transparent border-primary rounded-full animate-spin mb-2"></div>
 
 			<!-- 텍스트와 점 애니메이션 -->
-			<div class="text-center text-[14px] text-gray-700">
+			<div class="text-center text-[16px] text-gray-700">
 				{{ comment }}<span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span>
 			</div>
 		</div>

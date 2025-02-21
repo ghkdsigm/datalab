@@ -1,3 +1,4 @@
+<!-- 경기지표트렌드 -->
 <template>
 	<div class="bg-[#262626] rounded-[8px] p-4 h-full">
 		<div class="flex justify-between items-center w-full">
@@ -66,6 +67,8 @@ export default defineComponent({
 					radius: 1,
 					borderColor: props.borderColor[0],
 					borderWidth: 2,
+					pointRadius: 0,
+					pointHoverRadius: 5,
 				},
 				// {
 				// 	label: '동행종합지수_변동량',
@@ -127,7 +130,7 @@ export default defineComponent({
 							position: 'left',
 							beginAtZero: false,
 							grid: { color: 'rgba(255, 255, 255, 0.2)' },
-							ticks: { callback: value => `${value / 1000}K`, color: 'white' },
+							ticks: { callback: value => (value >= 1000 ? `${value / 1000}K` : value), color: 'white' },
 							title: {
 								display: true,
 								text: props.leftTit,
@@ -147,6 +150,14 @@ export default defineComponent({
 					plugins: {
 						legend: { display: false },
 						tooltip: {
+							callbacks: {
+								label: function (tooltipItem) {
+									console.log('tooltipItem', tooltipItem)
+									const value = tooltipItem.raw
+									const label = tooltipItem.dataset.label
+									return value !== undefined ? `${label}: ${value}` : 'No Data'
+								},
+							},
 							enabled: true,
 							mode: 'nearest',
 							intersect: false,

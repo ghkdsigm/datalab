@@ -1,7 +1,7 @@
 <template>
 	<CardBox
 		:title="`이달의 ${currentPath === '/mdf' ? 'MDF' : currentPath === '/pb' ? 'PB' : currentPath === '/dw' ? '건장재 시판' : '준공실적'} 예측`"
-		:ico="'ico_bar_graph01'"
+		:ico="'ico_bar_graph02'"
 		:subTit01="'예측값'"
 		:subTit02="'실적 오차'"
 		:content="content1"
@@ -11,7 +11,7 @@
 	/>
 	<CardBox
 		:title="'과거 미래 1년간 추세'"
-		:ico="'ico_bar_graph02'"
+		:ico="'ico_bar_graph01'"
 		:subTit01="'과거'"
 		:subTit02="'미래'"
 		:content="content1"

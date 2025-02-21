@@ -84,7 +84,7 @@ export default {
 		}
 
 		onMounted(async () => {
-			await settingBasemonth()
+			//await settingBasemonth()
 		})
 
 		watch(currentPath, async () => {
@@ -95,9 +95,10 @@ export default {
 			routers.push('/')
 		}
 
-		onBeforeMount(() => {
+		onBeforeMount(async () => {
 			//routes.value = router.options.routes
 			routes.value = router.options.routes.filter(route => route.meta.isMenu == true)
+			await settingBasemonth()
 		})
 
 		return {

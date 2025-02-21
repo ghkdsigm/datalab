@@ -1,3 +1,4 @@
+<!-- 주요 영향인자 분석 -->
 <template>
 	<div class="bg-[#262626] rounded-[8px] p-4 h-full">
 		<div class="flex justify-between items-center w-full">
@@ -7,7 +8,7 @@
 					:key="index"
 					class="legend-item"
 					@click="toggleDataset(index)"
-					:class="{ active: isHidden(index) }"
+					:class="[{ active: isHidden(index) }]"
 				>
 					<span class="legend-color" :style="{ backgroundColor: dataset.borderColor }"></span>
 					<span class="legend-text">{{ dataset.label }}</span>
@@ -74,6 +75,8 @@ export default defineComponent({
 					radius: 1,
 					borderColor: props.borderColor[0],
 					borderWidth: 1,
+					pointRadius: 0,
+					pointHoverRadius: 5,
 					yAxisID: 'y1',
 				},
 				{
@@ -83,6 +86,8 @@ export default defineComponent({
 					radius: 1,
 					borderColor: props.borderColor[1],
 					borderWidth: 1,
+					pointRadius: 0,
+					pointHoverRadius: 5,
 					yAxisID: 'y2',
 				},
 			],
@@ -198,9 +203,30 @@ export default defineComponent({
 						// 	suggestedMax: Math.max(...data['가구판매액(5개월전)']) * 1.1,
 						// },
 					},
+					// 2개 동시비교
+					// interaction: {
+					// 	mode: 'index', // 같은 x축 값에 해당하는 모든 데이터 표시
+					// 	intersect: false, // 마우스가 꼭 데이터 포인트 위에 있지 않아도 툴팁 표시
+					// },
 					plugins: {
 						legend: { display: false },
 						tooltip: {
+							callbacks: {
+								label: function (tooltipItem) {
+									console.log('tooltipItem', tooltipItem)
+									const value = tooltipItem.raw
+									const label = tooltipItem.dataset.label
+									return value !== undefined ? `${label}: ${value}` : 'No Data'
+								},
+							},
+							// 2개 동시비교
+							// callbacks: {
+							// 	label: function (tooltipItem) {
+							// 		let dataset = tooltipItem.chart.data.datasets
+							// 		let labels = dataset.map(ds => `${ds.label}: ${ds.data[tooltipItem.dataIndex]}`)
+							// 		return labels
+							// 	},
+							// },
 							enabled: true,
 							mode: 'nearest',
 							intersect: false,

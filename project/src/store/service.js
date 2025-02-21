@@ -16,6 +16,7 @@ export const useServiceStore = defineStore('service', {
 		externaltrend: [],
 		loading: {
 			preddata: false,
+			trend: false,
 		},
 	}),
 	getters: {
@@ -31,6 +32,7 @@ export const useServiceStore = defineStore('service', {
 		getExternallist: state => state.externallist,
 		getExternaltrend: state => state.externaltrend,
 		getLoadingpreddata: state => state.loading.preddata,
+		getLoadingtrend: state => state.loading.trend,
 	},
 	actions: {
 		// 공통 에러 처리 메서드
@@ -70,6 +72,7 @@ export const useServiceStore = defineStore('service', {
 		},
 
 		async actGetBasemonth(code) {
+			this.loading.preddata = true
 			try {
 				const res = await service.getPredictBasemonth(code)
 				console.log('response', res.data)
@@ -109,7 +112,6 @@ export const useServiceStore = defineStore('service', {
 		},
 
 		async actGetPreddata(params) {
-			this.loading.preddata = true
 			try {
 				const res = await service.getPredictPreddata(params)
 				if (res.status !== 200) {
@@ -130,6 +132,7 @@ export const useServiceStore = defineStore('service', {
 		},
 
 		async actGetFeaturelist(params) {
+			this.loading.trend = true
 			try {
 				const res = await service.getPredictFeatureList(params)
 				if (res.status !== 200) {
@@ -145,6 +148,8 @@ export const useServiceStore = defineStore('service', {
 				this.errorMessage = '서버와 연결할 수 없습니다.'
 				this.status = 500
 				console.error('Failed to fetch data:', error)
+			} finally {
+				this.loading.trend = false
 			}
 		},
 		//주요영향인자 분석 추가

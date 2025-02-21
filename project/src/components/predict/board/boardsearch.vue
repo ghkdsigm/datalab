@@ -1,15 +1,16 @@
 <template>
 	<div class="w-full flex items-center justify-between">
 		<div>
-			<label for="month" class="mr-2 text-sm text-white">기준월</label>
+			<label for="month" class="mr-2 text-md text-white">기준월</label>
 			<SelectBox id="month" :options="month" v-model="selectedMonth" />
 
-			<label for="prod" class="mx-2 text-sm text-white">제품</label>
+			<label for="prod" class="mx-2 text-md text-white">제품</label>
 			<SelectBox id="prod" :options="prod" v-model="selectedProduct" />
 
-			<span class="ml-5 text-white">보드 수량 예측 결과입니다.</span>
+			<span class="ml-5 text-white text-[20px] font-medium">보드 수량 예측 결과입니다.</span>
 		</div>
-		<div class="text-sm text-white">(2024 12월 ~ 25년 5월 월별 예측 예상)</div>
+		<div class="text-md text-white">{{ `( ${formatMonthRange(basemonth)} )` }}</div>
+		<!-- (2024 12월 ~ 25년 5월 월별 예측 예상) -->
 	</div>
 </template>
 
@@ -17,6 +18,7 @@
 import { defineComponent, ref, watch, onMounted, computed, watchEffect, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useServiceStore } from '@/store/service'
+import { useUtilities } from '@/utils/common'
 
 export default defineComponent({
 	name: 'BoardSearch',
@@ -30,6 +32,7 @@ export default defineComponent({
 		const route = useRoute()
 		const currentPath = computed(() => route.path)
 		const serviceStore = useServiceStore()
+		const { formatMonthRange } = useUtilities()
 
 		const month = ref([])
 		const prod = ref([])
@@ -173,6 +176,7 @@ export default defineComponent({
 			selectedMonth,
 			prod,
 			isLoading,
+			formatMonthRange,
 		}
 	},
 })

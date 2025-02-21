@@ -1,3 +1,4 @@
+<!-- 보드예측결과 -->
 <template>
 	<div class="h-full">
 		<div class="flex justify-between items-center w-full mb-4">
@@ -8,7 +9,11 @@
 					:key="index"
 					class="legend-item"
 					@click="toggleDataset(index)"
-					:class="{ active: hiddenDatasets[index] }"
+					:class="[
+						{ active: hiddenDatasets[index] },
+						{ srm: hasSRM(dataset.label) },
+						{ bzplan: hasBZPLAN(dataset.label) },
+					]"
 				>
 					<span class="legend-text">{{ dataset.label }}</span>
 					<span class="legend-color" :style="{ backgroundColor: dataset.borderColor }"></span>
@@ -25,7 +30,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, reactive, watch, watchEffect, computed } from 'vue'
+import { defineComponent, onMounted, ref, reactive, watch, watchEffect, computed, nextTick } from 'vue'
 import Chart from 'chart.js/auto'
 import { useServiceStore } from '@/store/service'
 
@@ -53,12 +58,23 @@ export default defineComponent({
 		const chartData = reactive({
 			labels: [],
 			datasets: [
-				{ label: 'MDF', tension: 0, radius: 1, borderColor: '#25CFEE' },
+				{
+					label: 'MDF',
+					tension: 0,
+					radius: 1,
+					borderColor: '#25CFEE',
+					borderWidth: 3,
+					pointRadius: 0,
+					pointHoverRadius: 5,
+				},
 				{
 					label: 'MDF (예측)',
 					tension: 0,
 					radius: 1,
 					borderColor: '#FF9900',
+					borderWidth: 3,
+					pointRadius: 0,
+					pointHoverRadius: 5,
 				},
 				{
 					label: '특이사항',
@@ -71,6 +87,7 @@ export default defineComponent({
 					// pointHoverRadius: 15,
 					fill: false,
 					type: 'scatter',
+					borderWidth: 3,
 				},
 				{
 					label: '사업계획',
@@ -80,8 +97,19 @@ export default defineComponent({
 					borderColor: '#FF11BC',
 					fill: false,
 					borderDash: [5, 5],
+					borderWidth: 3,
+					pointRadius: 0,
+					pointHoverRadius: 5,
 				},
-				{ label: 'SRM 표시', tension: 0, radius: 1, borderColor: '#9966FF' },
+				{
+					label: 'SRM 표시',
+					tension: 0,
+					radius: 1,
+					borderColor: '#9966FF',
+					borderWidth: 3,
+					pointRadius: 0,
+					pointHoverRadius: 5,
+				},
 			],
 		})
 
@@ -218,6 +246,14 @@ export default defineComponent({
 					plugins: {
 						legend: { display: false },
 						tooltip: {
+							callbacks: {
+								label: function (tooltipItem) {
+									console.log('tooltipItem', tooltipItem)
+									const value = tooltipItem.raw
+									const label = tooltipItem.dataset.label
+									return value !== undefined ? `${label}: ${value}` : 'No Data'
+								},
+							},
 							enabled: true,
 							mode: 'nearest',
 							intersect: false,
@@ -250,6 +286,20 @@ export default defineComponent({
 		// 	//checkLabel.value = chartInstance?.getDatasetMeta(index)?.hidden ?? false
 		// }
 
+		const hasSRM = val => {
+			if (typeof val === 'string' && val.includes('SRM')) {
+				return true
+			}
+			return false
+		}
+
+		const hasBZPLAN = val => {
+			if (typeof val === 'string' && val.includes('사업계획')) {
+				return true
+			}
+			return false
+		}
+
 		return {
 			chartCanvas,
 			chartData,
@@ -263,6 +313,8 @@ export default defineComponent({
 			getLast3Months,
 			isFirstChange,
 			checkLabel,
+			hasSRM,
+			hasBZPLAN,
 		}
 	},
 })
@@ -305,6 +357,14 @@ export default defineComponent({
 	margin-left: 6px;
 }
 
+.bzplan .legend-color {
+	width: 15px;
+	height: 3px;
+	margin-left: 6px;
+	background: linear-gradient(to right, #ff11bc 50%, currentColor 50%); /* 여기서 currentColor는 borderColor와 같음 */
+	background-size: 5px 5px; /* 점선의 크기 */
+}
+
 .legend-color-accident {
 	width: 10px !important;
 	height: 10px !important;
@@ -333,5 +393,14 @@ export default defineComponent({
 .active .legend-text {
 	text-decoration: line-through;
 	color: #ccc;
+}
+
+.srm {
+	background: white !important;
+	color: #262626 !important;
+	border: 1px solid #cccccc;
+}
+.srm .legend-text {
+	color: #262626 !important;
 }
 </style>

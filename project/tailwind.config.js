@@ -79,10 +79,15 @@ module.exports = {
 					'38vh': '38vh',
 					'39vh': '39vh',
 					'40vh': '40vh',
+					lg: '16px',
+					md: '14px',
 				},
 			},
 		},
 		screens: {
+			'3xl': { max: '1780px' },
+			// => @media (max-width: 1535px) { ... }
+
 			'2xl': { max: '1535px' },
 			// => @media (max-width: 1535px) { ... }
 

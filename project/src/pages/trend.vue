@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch, onMounted, computed, watchEffect, nextTick } from 'vue'
+import { defineComponent, ref, watch, onBeforeMount, onMounted, computed, watchEffect, nextTick } from 'vue'
 import { useUtilities } from '@/utils/common'
 import { useServiceStore } from '@/store/service'
 
@@ -108,6 +108,8 @@ export default {
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
 		const isLoading = ref(false)
+
+		const loadingContent01 = computed(() => serviceStore.getLoadingtrend)
 
 		const options = computed(() => serviceStore.getExternallist.column_name)
 		const selectedValue = ref('')
@@ -168,9 +170,13 @@ export default {
 			}
 		}
 
+		onBeforeMount(async () => {
+			await fetchtExternalList()
+		})
+
 		onMounted(async () => {
 			handleReset()
-			await fetchtExternalList()
+
 			// if (deleteFlag.value === false) {
 			// 	await fetchExternalTrend('create')
 			// }
@@ -290,6 +296,7 @@ export default {
 			onDrag,
 			scrollContainer,
 			stopDrag,
+			loadingContent01,
 		}
 	},
 }

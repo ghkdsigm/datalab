@@ -47,11 +47,29 @@ export function useUtilities() {
 		return Math.floor(num)
 	}
 
+	const formatMonthRange = months => {
+		if (!months.length) return ''
+
+		// YYYYMM을 연도와 월로 변환
+		const parsedMonths = months.map(m => ({
+			year: m.slice(0, 4),
+			shortYear: m.slice(2, 4),
+			month: m.slice(4, 6).replace(/^0/, ''),
+		}))
+
+		// 가장 오래된 날짜와 최신 날짜 추출
+		const start = parsedMonths[parsedMonths.length - 1]
+		const end = parsedMonths[0]
+
+		return `${start.year} ${start.month}월 ~ ${end.shortYear}년 ${end.month}월 월별 예측 예상`
+	}
+
 	return {
 		formatStringWithNewlines,
 		getImageSrc,
 		setImageSrc,
 		formatNumberWithComma,
 		truncateNumber,
+		formatMonthRange,
 	}
 }
