@@ -3,7 +3,7 @@
 		<div class="text-center text-lg font-bold text-green-200 flex justify-between items-center mb-4">
 			<span class="flex items-center">
 				<img :src="`${imageSrc('mdf', ico)}`" :alt="ico || 'default-icon'" />
-				<span class="ml-2 text-[20px]">{{ title }}</span>
+				<span class="ml-2 text-[18px]">{{ title }}</span>
 			</span>
 			<span v-if="more" class="text-white text-sm font-light cursor-pointer" @click="showPopup(true)"
 				>더보기 <em class="ml-1">></em>
@@ -26,7 +26,7 @@
 							<span class="text-[26px] font-bold">{{ truncateNumber(Number(cardContent?.base_pred)) + ' m3' }}</span>
 							<!-- <em class="ml-1">m3</em> -->
 						</template>
-						<template v-else-if="!loadingContent01 && !cardContent.base_pred"
+						<template v-else-if="(!loadingContent01 && !cardContent.base_pred) || cardContent.length === 0"
 							><span class="text-white font-bold text-[18px]">업데이트예정</span></template
 						>
 						<template v-else>

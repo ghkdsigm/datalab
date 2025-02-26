@@ -44,7 +44,7 @@ export default defineComponent({
 	border-radius: 4px;
 	border: 1px solid #ffffff87;
 	box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.5);
-	font-size: 20px;
+	font-size: 18px;
 	font-weight: 600;
 	min-width: 140px;
 }

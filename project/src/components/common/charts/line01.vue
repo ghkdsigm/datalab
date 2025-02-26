@@ -13,6 +13,7 @@
 						{ active: hiddenDatasets[index] },
 						{ srm: hasSRM(dataset.label) },
 						{ bzplan: hasBZPLAN(dataset.label) },
+						{ insane: hasINSANE(dataset.label) },
 					]"
 				>
 					<span class="legend-text">{{ dataset.label }}</span>
@@ -105,7 +106,7 @@ export default defineComponent({
 					label: 'SRM 표시',
 					tension: 0,
 					radius: 1,
-					borderColor: '#9966FF',
+					borderColor: '#23A400',
 					borderWidth: 3,
 					pointRadius: 0,
 					pointHoverRadius: 5,
@@ -300,6 +301,13 @@ export default defineComponent({
 			return false
 		}
 
+		const hasINSANE = val => {
+			if (typeof val === 'string' && val.includes('특이사항')) {
+				return true
+			}
+			return false
+		}
+
 		return {
 			chartCanvas,
 			chartData,
@@ -315,6 +323,7 @@ export default defineComponent({
 			checkLabel,
 			hasSRM,
 			hasBZPLAN,
+			hasINSANE,
 		}
 	},
 })
@@ -363,6 +372,11 @@ export default defineComponent({
 	margin-left: 6px;
 	background: linear-gradient(to right, #ff11bc 50%, currentColor 50%); /* 여기서 currentColor는 borderColor와 같음 */
 	background-size: 5px 5px; /* 점선의 크기 */
+}
+.insane .legend-color {
+	border-radius: 50px;
+	width: 9px;
+	height: 9px;
 }
 
 .legend-color-accident {
