@@ -77,10 +77,10 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							<span v-if="cardContent?.trend_sale === '1'" class="text-white font-bold text-[24px]"
+							<span v-if="cardContent?.trend_sale === 1" class="flex text-white font-bold text-[24px]"
 								>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
 							/></span>
-							<span v-else-if="cardContent?.trend_sale === '0'" class="text-white font-bold text-[24px]"
+							<span v-else-if="cardContent?.trend_sale === 0" class="flex text-white font-bold text-[24px]"
 								>보합 <img :src="`${imageSrc('common', 'ico_middle')}`" class="pl-2 w-[22px]"
 							/></span>
 							<span v-else class="flex text-white font-bold text-[24px]"
@@ -108,11 +108,13 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							<span v-if="cardContent.trend_pred === '1'" class="text-white font-bold text-[24px]"
+							<span v-if="cardContent.trend_pred === 1" class="flex text-white font-bold text-[24px]"
 								>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
 							/></span>
 
-							<span v-else-if="cardContent.trend_pred === '0'" class="text-white font-bold text-[24px]">보합</span>
+							<span v-else-if="cardContent.trend_pred === 0" class="flex text-white font-bold text-[24px]"
+								>보합 <img :src="`${imageSrc('common', 'ico_middle')}`" class="pl-2 w-[22px]"
+							/></span>
 							<span v-else class="flex text-white font-bold text-[24px]"
 								>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
 						></template>
@@ -236,7 +238,7 @@ export default defineComponent({
 		}
 
 		onMounted(() => {
-			//cardContent.value = props.content
+			cardContent.value = props.content
 		})
 
 		return {

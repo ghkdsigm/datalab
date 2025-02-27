@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, onMounted, onUnmounted } from 'vue'
+import { ref, defineEmits, onMounted, onUnmounted } from 'vue'
 import { useUtilities } from '@/utils/common'
 
 const props = defineProps({
