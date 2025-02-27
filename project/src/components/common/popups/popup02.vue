@@ -25,7 +25,7 @@
 									{{ key }} 예측
 								</th>
 								<th class="w-[120px] border-b border-gray-300 px-4 py-2">실적</th>
-								<th class="w-[120px] border-b border-gray-300 px-4 py-2">차이</th>
+								<th class="w-[120px] border-b border-gray-300 px-4 py-2">{{ predKeys[2] }} 차이</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -88,7 +88,9 @@ const rank = computed(() => props.data || [])
 const predKeys = computed(() => Object.keys(props.data.table_data.pred) || [])
 
 const formatNumber = value => {
-	return value != null ? value.toLocaleString() : '-'
+	return value != null && !isNaN(value)
+		? Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+		: '-'
 }
 </script>
 

@@ -19,8 +19,8 @@
 			<!-- 바디 -->
 			<tbody>
 				<tr v-for="(row, index) in tableData" :key="index" class="border-t border-b border-[#E6E6E6] text-center">
-					<td class="px-4 py-2">{{ row.value }}</td>
-					<td class="px-4 py-2">{{ row.importance }}</td>
+					<td class="px-4 py-2">{{ formatNumberWithCommaAndTwoDecimals(value) }}</td>
+					<td class="px-4 py-2">{{ formatToTwoDecimals(row.importance) }}</td>
 					<td class="px-4 py-2">
 						<span class="plus">
 							{{ row.change_from_last_month
@@ -34,9 +34,18 @@
 						</span>
 					</td>
 					<td class="px-4 py-2">
-						<span class="plus flex items-center justify-center"
-							>{{ row.change_from_last_month }}
-							<img
+						<span class="flex items-center justify-center"
+							><span
+								:class="
+									categorizeNumber(Number(row.iconValue)) === 'Positive'
+										? 'plus'
+										: categorizeNumber(Number(row.iconValue)) === 'Negative'
+											? 'minus'
+											: ''
+								"
+								>{{ formatNumberWithCommaAndTwoDecimals(row.iconValue) }}</span
+							>
+							<!-- <img
 								v-if="row.relation === '+'"
 								:src="imageSrc('common', 'ico_up')"
 								alt="상승"
@@ -45,7 +54,29 @@
 								:src="imageSrc('common', 'ico_down')"
 								alt="하락"
 								class="inline-block ml-1"
-						/></span>
+							/>-->
+							<!-- {{ categorizeNumber(row.iconValue) }} -->
+							<img
+								v-if="categorizeNumber(Number(row.iconValue)) === 'Positive'"
+								:src="imageSrc('common', 'ico_up')"
+								alt="상승"
+								class="inline-block ml-1"
+							/>
+							<!-- <img
+								v-else-if="categorizeNumber(Number(row.iconValue)) === 'Zero'"
+								:src="imageSrc('common', 'ico_down')"
+								alt="보합"
+								class="inline-block ml-1"
+							/> -->
+							<span v-else-if="categorizeNumber(Number(row.iconValue)) === 'Zero'" class="pl-2 font-bold"> - </span>
+							<img
+								v-else-if="categorizeNumber(Number(row.iconValue)) === 'Negative'"
+								:src="imageSrc('common', 'ico_down')"
+								alt="하락"
+								class="inline-block ml-1"
+							/>
+							<span v-else></span>
+						</span>
 					</td>
 				</tr>
 			</tbody>
@@ -55,12 +86,18 @@
 
 <script>
 import { useUtilities } from '@/utils/common'
+const { formatNumberWithCommaAndTwoDecimals, formatToTwoDecimals } = useUtilities()
+
 export default {
 	name: 'Table01',
 	props: {
 		content: {
 			type: Object,
 			default: () => null,
+		},
+		value: {
+			type: [Number, String],
+			default: '',
 		},
 	},
 	setup(props) {
@@ -75,7 +112,21 @@ export default {
 			},
 		]
 
-		return { tableData, imageSrc }
+		const categorizeNumber = num => {
+			if (typeof num !== 'number' || isNaN(num)) {
+				return 'Invalid input' // 숫자가 아닌 경우 처리
+			}
+
+			if (num < 0) {
+				return 'Negative' // 음수인 경우
+			} else if (num === 0) {
+				return 'Zero' // 0인 경우
+			} else {
+				return 'Positive' // 양수인 경우 (소수 포함)
+			}
+		}
+
+		return { tableData, imageSrc, formatNumberWithCommaAndTwoDecimals, formatToTwoDecimals, categorizeNumber }
 	},
 }
 </script>
@@ -83,5 +134,8 @@ export default {
 <style scoped>
 .plus {
 	color: #fb4f4f;
+}
+.minus {
+	color: #006ff1;
 }
 </style>

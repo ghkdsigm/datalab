@@ -113,7 +113,7 @@
 						/>
 					</div>
 					<div>
-						<Table01 :content="item?.table_data" />
+						<Table01 :content="item?.table_data" :value="item?.graph_data[selectedOptions[idx]]?.slice(-1)[0]" />
 					</div>
 				</div>
 			</div>

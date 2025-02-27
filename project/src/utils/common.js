@@ -44,7 +44,33 @@ export function useUtilities() {
 
 	//소수점제거
 	const truncateNumber = num => {
-		return Math.floor(num)
+		if (!num) return '업데이트예정'
+		const formattedNumber = Math.floor(num)
+			.toString()
+			.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+		return `${formattedNumber}m³`
+	}
+
+	//소수점 뒤 3자리
+	const formatToFourDecimals = num => {
+		if (typeof num !== 'number' || isNaN(num)) return 0 // 숫자가 아니면 기본값 0 반환
+		return Math.round(num * 10000) / 10000
+	}
+
+	//소수점 뒤 1자리
+	const formatToTwoDecimals = num => {
+		if (typeof num !== 'number' || isNaN(num)) return 0 // 숫자가 아니면 기본값 0 반환
+		return Math.round(num * 10) / 10 // 첫째 자리에서 반올림
+	}
+
+	//소수점 뒤1자리 & 3자리 콤마
+	const formatNumberWithCommaAndTwoDecimals = num => {
+		if (typeof num !== 'number' || isNaN(num)) return '0' // 숫자가 아니면 "0" 반환
+
+		const roundedNum = (Math.round(num * 10) / 10).toFixed(1) // 첫째 자리 반올림 후 고정
+		const formattedNum = roundedNum.replace(/\B(?=(\d{3})+(?!\d))/g, ',') // 세 자리마다 콤마 추가
+
+		return formattedNum.endsWith('.0') ? formattedNum.slice(0, -2) : formattedNum // ".0"이면 제거
 	}
 
 	const formatMonthRange = months => {
@@ -64,12 +90,27 @@ export function useUtilities() {
 		return `${start.year} ${start.month}월 ~ ${end.shortYear}년 ${end.month}월 월별 예측 예상`
 	}
 
+	const getStartEndDate = dates => {
+		if (!Array.isArray(dates) || dates.length === 0) return null
+
+		const start = dates[0]
+		const year = parseInt(start.substring(0, 4)) // 연도 추출
+		const month = start.substring(4, 6) // 월 추출
+		const end = `${year + 1}${month}` // 1년 뒤 생성
+
+		return `${year} ${month}월 ~ ${year + 1}년 ${month}월 월별 예측 예상`
+	}
+
 	return {
 		formatStringWithNewlines,
 		getImageSrc,
 		setImageSrc,
 		formatNumberWithComma,
 		truncateNumber,
+		formatToFourDecimals,
+		formatToTwoDecimals,
 		formatMonthRange,
+		getStartEndDate,
+		formatNumberWithCommaAndTwoDecimals,
 	}
 }

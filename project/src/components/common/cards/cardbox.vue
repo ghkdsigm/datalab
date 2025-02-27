@@ -13,7 +13,7 @@
 			<!-- 이달의  예측 -->
 			<div class="flex gap-0 justify-center items-center mb-2" v-if="feature !== 'trend'">
 				<div class="flex-1 rounded-l-md text-center">
-					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
+					<p class="bg-white text-gray-800 px-3 py-1 rounded-full font-bold text-base inline-block">
 						{{ subTit01 }}
 					</p>
 					<p
@@ -23,12 +23,11 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							<span class="text-[26px] font-bold">{{ truncateNumber(Number(cardContent?.base_pred)) + ' m3' }}</span>
+							<span class="text-[24px] font-bold">{{
+								formatNumberWithCommaAndTwoDecimals(Number(cardContent?.base_pred))
+							}}</span>
 							<!-- <em class="ml-1">m3</em> -->
 						</template>
-						<template v-else-if="(!loadingContent01 && !cardContent.base_pred) || cardContent.length === 0"
-							><span class="text-white font-bold text-[18px]">업데이트예정</span></template
-						>
 						<template v-else>
 							<div class="pt-6">
 								<LoadingStatus />
@@ -38,7 +37,7 @@
 				</div>
 				<div class="w-px h-[62px] bg-gray-400 mx-3"></div>
 				<div class="flex-1 rounded-r-md text-center">
-					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
+					<p class="bg-white text-gray-800 px-3 py-1 rounded-full font-bold text-base inline-block">
 						{{
 							subTit02 ||
 							new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleString('ko-KR', { month: 'long' })
@@ -51,13 +50,12 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							<span class="text-[26px] font-bold">{{ truncateNumber(Number(cardContent?.abs_error)) + ' m3' }}</span>
+							<span class="text-[24px] font-bold">{{
+								formatNumberWithCommaAndTwoDecimals(Number(cardContent?.abs_error))
+							}}</span>
 							<!-- <span class="ml-1">%</span>
 								<span class="text-sm font-light ml-1">( 6383 m3 )</span> -->
 						</template>
-						<template v-else-if="!loadingContent01 && !cardContent.abs_error"
-							><span class="text-white font-bold text-[18px]">업데이트예정</span></template
-						>
 						<template v-else>
 							<div class="pt-6">
 								<LoadingStatus />
@@ -69,7 +67,7 @@
 			<!-- 과거 미래 1년간 추세 -->
 			<div class="flex gap-0 justify-center items-center mb-2" v-else>
 				<div class="flex-1 rounded-l-md text-center">
-					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
+					<p class="bg-white text-gray-800 px-3 py-1 rounded-full font-bold text-base inline-block">
 						{{ subTit01 }}
 					</p>
 					<p
@@ -79,17 +77,17 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							<span v-if="cardContent.trend_sale === '1'" class="text-white font-bold text-[26px]"
+							<span v-if="cardContent?.trend_sale === '1'" class="text-white font-bold text-[24px]"
 								>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
 							/></span>
-							<span v-else-if="cardContent.trend_sale === '0'" class="text-white font-bold text-[26px]"
+							<span v-else-if="cardContent?.trend_sale === '0'" class="text-white font-bold text-[24px]"
 								>보합 <img :src="`${imageSrc('common', 'ico_middle')}`" class="pl-2 w-[22px]"
 							/></span>
-							<span v-else class="flex text-white font-bold text-[26px]"
+							<span v-else class="flex text-white font-bold text-[24px]"
 								>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
 						></template>
 						<template v-else-if="!loadingContent01 && !cardContent.trend_sale"
-							><span class="text-white font-normal text-[26px]">업데이트예정</span></template
+							><span class="text-white font-normal text-[24px]">업데이트예정</span></template
 						>
 						<template v-else>
 							<div class="pt-6">
@@ -100,7 +98,7 @@
 				</div>
 				<div class="w-px h-[62px] bg-gray-400 mx-3"></div>
 				<div class="flex-1 rounded-r-md text-center">
-					<p class="bg-white text-gray-800 px-5 py-1 rounded-full font-bold text-base inline-block">
+					<p class="bg-white text-gray-800 px-3 py-1 rounded-full font-bold text-base inline-block">
 						{{ subTit02 }}
 					</p>
 					<p
@@ -110,16 +108,16 @@
 						]"
 					>
 						<template v-if="!loadingContent01">
-							<span v-if="cardContent.trend_pred === '1'" class="text-white font-bold text-[26px]"
+							<span v-if="cardContent.trend_pred === '1'" class="text-white font-bold text-[24px]"
 								>상승 <img :src="`${imageSrc('common', 'ico_rising')}`" class="pl-2 w-[22px]"
 							/></span>
 
-							<span v-else-if="cardContent.trend_pred === '0'" class="text-white font-bold text-[26px]">보합</span>
-							<span v-else class="flex text-white font-bold text-[26px]"
+							<span v-else-if="cardContent.trend_pred === '0'" class="text-white font-bold text-[24px]">보합</span>
+							<span v-else class="flex text-white font-bold text-[24px]"
 								>하락 <img :src="`${imageSrc('common', 'ico_degradation')}`" class="pl-2 w-[22px]" /></span
 						></template>
 						<template v-else-if="!loadingContent01 && !cardContent.trend_pred"
-							><span class="text-white font-normal text-[26px]">업데이트예정</span></template
+							><span class="text-white font-normal text-[24px]">업데이트예정</span></template
 						>
 						<template v-else>
 							<div class="pt-6">
@@ -162,7 +160,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch, computed, watchEffect } from 'vue'
+import { defineComponent, ref, watch, computed, watchEffect, onMounted } from 'vue'
 import { useUtilities } from '@/utils/common'
 import { useServiceStore } from '@/store/service'
 
@@ -205,7 +203,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const serviceStore = useServiceStore()
-		const { formatNumberWithComma, setImageSrc, truncateNumber } = useUtilities()
+		const { formatNumberWithComma, setImageSrc, formatNumberWithCommaAndTwoDecimals } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
 		const cardContent = ref([])
 
@@ -237,13 +235,17 @@ export default defineComponent({
 			emit('openPop', option)
 		}
 
+		onMounted(() => {
+			//cardContent.value = props.content
+		})
+
 		return {
 			formatNumberWithComma,
 			imageSrc,
 			showPopup,
 			cardContent,
 			loadingContent01,
-			truncateNumber,
+			formatNumberWithCommaAndTwoDecimals,
 		}
 	},
 })

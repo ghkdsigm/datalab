@@ -34,6 +34,9 @@
 import { defineComponent, onMounted, ref, reactive, watch, watchEffect, computed, nextTick } from 'vue'
 import Chart from 'chart.js/auto'
 import { useServiceStore } from '@/store/service'
+import zoomPlugin from 'chartjs-plugin-zoom'
+
+Chart.register(zoomPlugin)
 
 export default defineComponent({
 	name: 'LineChart01',
@@ -246,6 +249,19 @@ export default defineComponent({
 					},
 					plugins: {
 						legend: { display: false },
+						zoom: {
+							pan: {
+								enabled: true, // 드래그 이동 가능
+								mode: 'x', // X, Y축 모두 이동
+								threshold: 10, // 드래그 시작 감지 민감도 (10픽셀 이상 이동시 반응)
+							},
+							zoom: {
+								wheel: {
+									enabled: true, // 마우스 휠 확대/축소
+								},
+								mode: 'x', // X, Y축 모두 확대/축소
+							},
+						},
 						tooltip: {
 							callbacks: {
 								label: function (tooltipItem) {

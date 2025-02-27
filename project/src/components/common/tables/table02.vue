@@ -55,7 +55,7 @@
 							</template>
 						</td> -->
 						<td>
-							{{ row.value }}
+							{{ formatNumberWithCommaAndTwoDecimals(Number(row.value)) }}
 						</td>
 						<td class="px-4 py-2">
 							<span class="flex items-center justify-center">{{ row.importance }}</span>
@@ -70,6 +70,7 @@
 <script>
 import { ref, computed, nextTick } from 'vue'
 import { useUtilities } from '@/utils/common'
+const { formatNumberWithCommaAndTwoDecimals } = useUtilities()
 
 export default {
 	name: 'Table01',
@@ -175,6 +176,7 @@ export default {
 			editValue,
 			saveValue,
 			cancelEdit,
+			formatNumberWithCommaAndTwoDecimals,
 		}
 	},
 }

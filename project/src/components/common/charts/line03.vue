@@ -22,8 +22,12 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, reactive } from 'vue'
+import { defineComponent, computed, onMounted, ref, reactive } from 'vue'
 import Chart from 'chart.js/auto'
+import zoomPlugin from 'chartjs-plugin-zoom'
+import { useServiceStore } from '@/store/service'
+
+Chart.register(zoomPlugin)
 
 export default defineComponent({
 	name: 'LineChart03',
@@ -60,10 +64,16 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
+		value: {
+			type: [Array, String, Number],
+			default: () => [],
+		},
 	},
 	setup(props) {
 		const chartCanvas = ref(null)
 		let chartInstance = null
+		const serviceStore = useServiceStore()
+		const prod = computed(() => serviceStore.getselectProd)
 
 		const chartData = reactive({
 			labels: props.idx,
@@ -155,7 +165,7 @@ export default defineComponent({
 						y2: {
 							position: 'right',
 							grid: { drawOnChartArea: false },
-							title: { display: true, text: '전체', color: 'white' },
+							title: { display: true, text: prod.value, color: 'white' },
 							suggestedMin: Math.min(...props.content) * 0.9,
 							suggestedMax: Math.max(...props.content) * 1.1,
 							ticks: { color: 'white' },
@@ -204,12 +214,25 @@ export default defineComponent({
 						// },
 					},
 					// 2개 동시비교
-					// interaction: {
-					// 	mode: 'index', // 같은 x축 값에 해당하는 모든 데이터 표시
-					// 	intersect: false, // 마우스가 꼭 데이터 포인트 위에 있지 않아도 툴팁 표시
-					// },
+					interaction: {
+						mode: 'index', // 같은 x축 값에 해당하는 모든 데이터 표시
+						intersect: false, // 마우스가 꼭 데이터 포인트 위에 있지 않아도 툴팁 표시
+					},
 					plugins: {
 						legend: { display: false },
+						zoom: {
+							pan: {
+								enabled: true, // 드래그 이동 가능
+								mode: 'x', // X, Y축 모두 이동
+								threshold: 10, // 드래그 시작 감지 민감도 (10픽셀 이상 이동시 반응)
+							},
+							zoom: {
+								wheel: {
+									enabled: true, // 마우스 휠 확대/축소
+								},
+								mode: 'x', // X, Y축 모두 확대/축소
+							},
+						},
 						tooltip: {
 							callbacks: {
 								label: function (tooltipItem) {
@@ -220,13 +243,14 @@ export default defineComponent({
 								},
 							},
 							// 2개 동시비교
-							// callbacks: {
-							// 	label: function (tooltipItem) {
-							// 		let dataset = tooltipItem.chart.data.datasets
-							// 		let labels = dataset.map(ds => `${ds.label}: ${ds.data[tooltipItem.dataIndex]}`)
-							// 		return labels
-							// 	},
-							// },
+							callbacks: {
+								label: function (tooltipItem) {
+									let dataset = tooltipItem.chart.data.datasets
+									let labels = dataset.map(ds => `${ds.label}: ${ds.data[tooltipItem.dataIndex]}`)
+									return labels
+								},
+							},
+
 							enabled: true,
 							mode: 'nearest',
 							intersect: false,
@@ -238,7 +262,7 @@ export default defineComponent({
 							padding: 10,
 						},
 					},
-					hover: { mode: 'nearest', intersect: false },
+					//hover: { mode: 'nearest', intersect: false },
 				},
 				plugins: [customVerticalLine, customVerticalLine02],
 			})
@@ -290,7 +314,7 @@ export default defineComponent({
 			return chartInstance?.getDatasetMeta(index)?.hidden ?? false
 		}
 
-		return { chartCanvas, chartData, toggleDataset, isHidden }
+		return { chartCanvas, chartData, toggleDataset, isHidden, prod }
 	},
 })
 </script>
