@@ -24,7 +24,7 @@
 					>
 						<template v-if="!loadingContent01">
 							<span class="text-[24px] font-bold">{{
-								formatNumberWithCommaAndTwoDecimals(Number(cardContent?.base_pred))
+								formatNumberWithCommaAndTwoDecimals(Number(cardContent?.base_pred)) + ' m3'
 							}}</span>
 							<!-- <em class="ml-1">m3</em> -->
 						</template>
@@ -51,7 +51,7 @@
 					>
 						<template v-if="!loadingContent01">
 							<span class="text-[24px] font-bold">{{
-								formatNumberWithCommaAndTwoDecimals(Number(cardContent?.abs_error))
+								formatNumberWithCommaAndTwoDecimals(Number(cardContent?.abs_error)) + ' m3'
 							}}</span>
 							<!-- <span class="ml-1">%</span>
 								<span class="text-sm font-light ml-1">( 6383 m3 )</span> -->

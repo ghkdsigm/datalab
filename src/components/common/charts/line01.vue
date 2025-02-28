@@ -1,24 +1,33 @@
 <!-- 보드예측결과 -->
 <template>
 	<div class="h-full">
-		<div class="flex justify-between items-center w-full mb-4">
+		<div class="flex justify-between items-start w-full mb-4">
 			<!-- 레이블 목록 -->
-			<div class="legend-container">
-				<div
-					v-for="(dataset, index) in chartData.datasets"
-					:key="index"
-					class="legend-item"
-					@click="toggleDataset(index)"
-					:class="[
-						{ active: hiddenDatasets[index] },
-						{ srm: hasSRM(dataset.label) },
-						{ bzplan: hasBZPLAN(dataset.label) },
-						{ insane: hasINSANE(dataset.label) },
-					]"
-				>
-					<span class="legend-text">{{ dataset.label }}</span>
-					<span class="legend-color" :style="{ backgroundColor: dataset.borderColor }"></span>
-				</div>
+			<div class="legend-container flex-wrap">
+				<template v-for="(dataset, index) in chartData.datasets" :key="index">
+					<div
+						:key="index"
+						v-if="!dataset?.label?.includes('월')"
+						class="legend-item"
+						@click="toggleDataset(index)"
+						:class="[
+							{ active: hiddenDatasets[index] },
+							{ srm: hasSRM(dataset.label) },
+							{ bzplan: hasBZPLAN(dataset.label) },
+							{ insane: hasINSANE(dataset.label) },
+						]"
+					>
+						<span class="legend-text">{{ dataset.label }}</span>
+						<span class="legend-color" :style="[{ backgroundColor: dataset.borderColor }]"></span>
+					</div>
+				</template>
+
+				<template v-for="(dataset, index) in chartData.datasets" :key="index">
+					<div v-if="dataset?.label?.includes('월') && !hiddenDatasets[index]" class="legend-item02">
+						<span class="legend-text">{{ dataset.label }}</span>
+						<span class="legend-color" :style="{ backgroundColor: dataset.borderColor }"></span>
+					</div>
+				</template>
 			</div>
 
 			<!-- 캘린더 (우측) -->
@@ -59,6 +68,10 @@ export default defineComponent({
 		const months = ref([])
 		const hiddenDatasets = reactive([])
 
+		const subLabels = reactive({
+			MDF: [5, 6, 7],
+		})
+
 		const chartData = reactive({
 			labels: [],
 			datasets: [
@@ -75,14 +88,14 @@ export default defineComponent({
 					label: 'MDF (예측)',
 					tension: 0,
 					radius: 1,
-					borderColor: '#FF9900',
+					borderColor: '#4B1DBF',
 					borderWidth: 3,
 					pointRadius: 0,
 					pointHoverRadius: 5,
 				},
 				{
 					label: '특이사항',
-					data: [{}, {}, { x: 3, y: 25000 }], // 특이사항이 있는 날짜에 동그라미 표시
+					data: [{}, {}, { x: 3, y: 25000 }],
 					borderColor: '#48B68E',
 					backgroundColor: '#48B68E',
 					radius: 6,
@@ -113,6 +126,26 @@ export default defineComponent({
 					borderWidth: 3,
 					pointRadius: 0,
 					pointHoverRadius: 5,
+				},
+				{
+					borderColor: '#4B1DBF',
+					borderWidth: 2,
+					tension: 0,
+					radius: 1,
+				},
+				{
+					borderColor: '#26FF00',
+					borderWidth: 2,
+					tension: 0,
+					radius: 1,
+					hidden: true,
+				},
+				{
+					borderColor: '#EE0E0E',
+					borderWidth: 2,
+					tension: 0,
+					radius: 1,
+					hidden: true,
 				},
 			],
 		})
@@ -153,8 +186,18 @@ export default defineComponent({
 			return `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}`
 		}
 
+		const extractMonth = value => {
+			const month = value.toString().slice(-2) // 마지막 두 자리를 추출 (월)
+			return `${month}월` // 월에 '월'을 붙여서 반환
+		}
+
 		onMounted(() => {
 			getLast3Months()
+
+			chartData.datasets[5].label = `MDF (${extractMonth(months.value[0])})`
+			chartData.datasets[6].label = `MDF (${extractMonth(months.value[1])})`
+			chartData.datasets[7].label = `MDF (${extractMonth(months.value[2])})`
+
 			// if (props.content) {
 			// 	chartData.labels = props.content.index || []
 			// 	chartData.datasets[0].data = props.content.real || [] //mdf
@@ -171,10 +214,26 @@ export default defineComponent({
 			if (props.content) {
 				chartData.labels = props.content.index || [] //레이블연도
 				chartData.datasets[0].data = props.content.real || [] //MDF
-				chartData.datasets[1].data = props.content.pred[String(selectedMonth.value)] || [] //MDF-예측
+				//chartData.datasets[1].data = props.content.pred[String(selectedMonth.value)] || [] //MDF-예측
+
 				chartData.datasets[3].data = props.content.bzplan || [] //사업계획
+
+				chartData.datasets[5].data = props.content.pred[String(months.value[0])] || [] //MDF-예측
+				chartData.datasets[6].data = props.content.pred[String(months.value[1])] || [] //MDF-예측
+				chartData.datasets[7].data = props.content.pred[String(months.value[2])] || [] //MDF-예측
+
+				if (months.value) {
+					console.log('months.value[0]', months.value[0])
+					// chartData.datasets[5].label = `MDF (${extractMonth(months.value[0])})`
+					// chartData.datasets[6].label = `MDF (${extractMonth(months.value[1])})`
+					// chartData.datasets[7].label = `MDF (${extractMonth(months.value[2])})`
+				}
+
 				if (selectedMonth.value && props.content.srm) {
 					chartData.datasets[4].data = Object.values(props.content.srm) || [] //SRM
+					chartData.datasets[5].label = `MDF (${extractMonth(months.value[0])})`
+					chartData.datasets[6].label = `MDF (${extractMonth(months.value[1])})`
+					chartData.datasets[7].label = `MDF (${extractMonth(months.value[2])})`
 				}
 
 				if (chartInstance) {
@@ -185,6 +244,14 @@ export default defineComponent({
 
 		const handleMonthChange = newMonth => {
 			selectedMonth.value = newMonth
+
+			if (newMonth === months.value[0]) {
+				toggleDataset(5)
+			} else if (newMonth === months.value[1]) {
+				toggleDataset(6)
+			} else {
+				toggleDataset(7)
+			}
 		}
 
 		const customVerticalLine = {
@@ -265,7 +332,7 @@ export default defineComponent({
 						tooltip: {
 							callbacks: {
 								label: function (tooltipItem) {
-									console.log('tooltipItem', tooltipItem)
+									//console.log('tooltipItem', tooltipItem)
 									const value = tooltipItem.raw
 									const label = tooltipItem.dataset.label
 									return value !== undefined ? `${label}: ${value}` : 'No Data'
@@ -287,21 +354,36 @@ export default defineComponent({
 				plugins: [customVerticalLine, customVerticalLine02],
 			})
 			hiddenDatasets.length = chartData.datasets.length
-			hiddenDatasets.fill(false)
+			hiddenDatasets.splice(0, hiddenDatasets.length, ...chartData.datasets.map(dataset => dataset.hidden ?? false))
 		}
 
 		const toggleDataset = index => {
+			if (index === 1) {
+				hiddenDatasets[5] = !hiddenDatasets[5] // 반전
+				hiddenDatasets[6] = true
+				hiddenDatasets[7] = true
+
+				const datasetMeta5 = chartInstance.getDatasetMeta(5)
+				const datasetMeta6 = chartInstance.getDatasetMeta(6)
+				const datasetMeta7 = chartInstance.getDatasetMeta(7)
+
+				datasetMeta5.hidden = hiddenDatasets[5]
+				datasetMeta6.hidden = hiddenDatasets[6]
+				datasetMeta7.hidden = hiddenDatasets[7]
+			}
 			const datasetMeta = chartInstance.getDatasetMeta(index)
-			datasetMeta.hidden = !datasetMeta.hidden
+			const isCurrentlyHidden = hiddenDatasets[index]
+
+			datasetMeta.hidden = !isCurrentlyHidden
 			hiddenDatasets[index] = datasetMeta.hidden
-			chartInstance.update()
+
+			nextTick(() => {
+				chartInstance.update()
+			})
 		}
 
-		// const isHidden = index => {
-		// 	// console.log('chartInstancechartInstance', chartInstance)
-		// 	return chartInstance?.getDatasetMeta(index)?.hidden ?? false
-		// 	//checkLabel.value = chartInstance?.getDatasetMeta(index)?.hidden ?? false
-		// }
+		// 초기 hidden 상태로 반응형 배열 채우기
+		//hiddenDatasets.splice(0, hiddenDatasets.length, ...chartData.datasets.map(dataset => dataset.hidden ?? false))
 
 		const hasSRM = val => {
 			if (typeof val === 'string' && val.includes('SRM')) {
@@ -340,6 +422,7 @@ export default defineComponent({
 			hasSRM,
 			hasBZPLAN,
 			hasINSANE,
+			extractMonth,
 		}
 	},
 })
@@ -376,7 +459,21 @@ export default defineComponent({
 	cursor: pointer;
 }
 
+.legend-item02 {
+	display: flex;
+	align-items: center;
+	background: #fff;
+	border-radius: 100px;
+	padding: 3px 10px;
+	border: 1px solid #cccccc;
+}
 .legend-color {
+	width: 15px;
+	height: 3px;
+	margin-left: 6px;
+}
+
+.legend-item02 .legend-color {
 	width: 15px;
 	height: 3px;
 	margin-left: 6px;
@@ -411,6 +508,12 @@ export default defineComponent({
 
 .legend-text {
 	color: white;
+	font-size: 14px;
+	font-weight: 400;
+}
+
+.legend-item02 .legend-text {
+	color: #000;
 	font-size: 14px;
 	font-weight: 400;
 }
