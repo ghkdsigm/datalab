@@ -20,7 +20,7 @@
 					class="max-w-full mt-1 text-md overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack"
 					v-if="!loadingContent01"
 				>
-					{{ content?.summary?.short }}
+					{{ content.summary?.short }}
 				</p>
 				<p
 					class="max-w-full mt-1 text-md overflow-hidden text-ellipsis line-clamp-1 text-left text-primaryBlack"

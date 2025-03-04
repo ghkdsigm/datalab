@@ -31,7 +31,12 @@
 			</div>
 
 			<!-- 캘린더 (우측) -->
-			<Select02 :selectedMonth="selectedMonth" :months="months" @update:selectedMonth="handleMonthChange" />
+			<Select02
+				:selectedMonth="selectedMonth"
+				:months="months"
+				@update:selectedMonth="handleMonthChange"
+				:hiddenDatasets="hiddenDatasets"
+			/>
 		</div>
 		<div class="chart-container">
 			<canvas ref="chartCanvas"></canvas>

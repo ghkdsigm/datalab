@@ -87,7 +87,7 @@ export function useUtilities() {
 		const start = parsedMonths[parsedMonths.length - 1]
 		const end = parsedMonths[0]
 
-		return `${start.year} ${start.month}월 ~ ${end.shortYear}년 ${end.month}월 월별 예측 예상`
+		return `${start.year}년 ${start.month}월 ~ ${end.shortYear}년 ${end.month}월 월별 예측 예상`
 	}
 
 	const getStartEndDate = dates => {
@@ -98,7 +98,7 @@ export function useUtilities() {
 		const month = start.substring(4, 6) // 월 추출
 		const end = `${year + 1}${month}` // 1년 뒤 생성
 
-		return `${year} ${month}월 ~ ${year + 1}년 ${month}월 월별 예측 예상`
+		return `${year}년 ${month}월 ~ ${year + 1}년 ${month}월 월별 예측 예상`
 	}
 
 	return {
