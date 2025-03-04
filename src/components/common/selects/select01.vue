@@ -73,7 +73,7 @@ export default {
 
 		// 마지막 선택된 값과 나머지 개수 계산
 		const getSelectDisplayValue = computed(() => {
-			const lastSelected = props.selectedOptions[props.selectedOptions.length - 1] || '선택'
+			const lastSelected = props.selectedOptions[props.selectedOptions.length - 1] || '선택해주세요.'
 
 			return `
     <span class="w-[230px] overflow-hidden text-ellipsis line-clamp-1 text-left">${lastSelected}</span>

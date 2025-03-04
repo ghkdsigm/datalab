@@ -95,7 +95,7 @@ export default defineComponent({
 				},
 				{
 					label: '특이사항',
-					data: [{}, {}, { x: 3, y: 25000 }],
+					//data: [{}, {}, { x: 3, y: 25000, z: '특이사항입니당' }],
 					borderColor: '#48B68E',
 					backgroundColor: '#48B68E',
 					radius: 6,
@@ -132,12 +132,16 @@ export default defineComponent({
 					borderWidth: 2,
 					tension: 0,
 					radius: 1,
+					pointRadius: 0,
+					pointHoverRadius: 5,
 				},
 				{
 					borderColor: '#26FF00',
 					borderWidth: 2,
 					tension: 0,
 					radius: 1,
+					pointRadius: 0,
+					pointHoverRadius: 5,
 					hidden: true,
 				},
 				{
@@ -145,10 +149,20 @@ export default defineComponent({
 					borderWidth: 2,
 					tension: 0,
 					radius: 1,
+					pointRadius: 0,
+					pointHoverRadius: 5,
 					hidden: true,
 				},
 			],
 		})
+
+		// 특이사항 필터
+		// const accidentData = computed(() =>
+		// 	props.content.index.value.map(date => {
+		// 		const key = date.replace("-", ""); // "2024-03" -> "202403"
+		// 		return data.value[key] ? { x: date, y: data.value[key] } : null;
+		// 	})
+		// );
 
 		// 최근 3개월 옵션 생성
 		const getLast3Months = () => {
@@ -191,6 +205,30 @@ export default defineComponent({
 			return `${month}월` // 월에 '월'을 붙여서 반환
 		}
 
+		const accidentData = computed(() => {
+			const filteredRealValues = props.content?.real?.filter(value => value !== null)
+
+			const minRealValue = Math.min(...filteredRealValues)
+			const maxRealValue = Math.max(...filteredRealValues)
+
+			const chartMinValue = minRealValue
+			const chartMaxValue = maxRealValue
+
+			const midValue = (chartMaxValue + chartMinValue) / 2
+
+			const adjustedY = midValue + midValue * 0.01 // 10% 정도 더 아래로 내리기
+
+			return props.content.index?.map(date => {
+				const key = date?.replace('-', '') // "2024-03" -> "202403"
+				console.log('accide', key)
+
+				// accident 데이터가 해당 월에 있는 경우에만 표시
+				const accident = props.content.accident[key] ? { x: 3, y: adjustedY, z: props.content.accident[key] } : {}
+
+				return accident
+			})
+		})
+
 		onMounted(() => {
 			getLast3Months()
 
@@ -215,7 +253,8 @@ export default defineComponent({
 				chartData.labels = props.content.index || [] //레이블연도
 				chartData.datasets[0].data = props.content.real || [] //MDF
 				//chartData.datasets[1].data = props.content.pred[String(selectedMonth.value)] || [] //MDF-예측
-
+				//chartData.datasets[2].data = accidentData.value || [] //특이사항
+				//chartData.datasets[2].data = accidentData.value || []
 				chartData.datasets[3].data = props.content.bzplan || [] //사업계획
 
 				chartData.datasets[5].data = props.content.pred[String(months.value[0])] || [] //MDF-예측
@@ -234,6 +273,10 @@ export default defineComponent({
 					chartData.datasets[5].label = `MDF (${extractMonth(months.value[0])})`
 					chartData.datasets[6].label = `MDF (${extractMonth(months.value[1])})`
 					chartData.datasets[7].label = `MDF (${extractMonth(months.value[2])})`
+				}
+
+				if (props.content.accident) {
+					chartData.datasets[2].data = accidentData.value || [] //특이사항
 				}
 
 				if (chartInstance) {
@@ -290,6 +333,38 @@ export default defineComponent({
 			},
 		}
 
+		const customLabelPlugin = {
+			id: 'customLabelPlugin',
+			afterDraw(chart) {
+				const ctx = chart.ctx
+
+				chart.data.datasets.forEach((dataset, datasetIndex) => {
+					if (dataset.label === '특이사항') {
+						const meta = chart.getDatasetMeta(datasetIndex)
+
+						//console.log('특이사항', dataset)
+
+						dataset.data.forEach((point, index) => {
+							if (!point || !meta.data[index]) return // point가 null이거나 element가 없으면 건너뛰기
+
+							if (point.z) {
+								//console.log('meta.data[index]', meta.data[index])
+								//console.log('point.z', point.z)
+								// z 값이 있을 때만 실행
+								// const element = meta.data[index]
+								// const x = element.x
+								// const y = element.y
+								// ctx.fillStyle = '#000'
+								// ctx.font = '12px Arial'
+								// ctx.textAlign = 'center'
+								// ctx.fillText(point.z, x, y - 10) // 텍스트를 포인트 위에 표시
+							}
+						})
+					} else return
+				})
+			},
+		}
+
 		const createChart = () => {
 			const ctx = chartCanvas.value.getContext('2d')
 
@@ -332,7 +407,9 @@ export default defineComponent({
 						tooltip: {
 							callbacks: {
 								label: function (tooltipItem) {
-									//console.log('tooltipItem', tooltipItem)
+									if (tooltipItem.raw.z) {
+										return `${tooltipItem.raw.z}` // z 값 표시
+									}
 									const value = tooltipItem.raw
 									const label = tooltipItem.dataset.label
 									return value !== undefined ? `${label}: ${value}` : 'No Data'
@@ -351,7 +428,7 @@ export default defineComponent({
 					},
 					hover: { mode: 'nearest', intersect: false },
 				},
-				plugins: [customVerticalLine, customVerticalLine02],
+				plugins: [customVerticalLine, customVerticalLine02, customLabelPlugin],
 			})
 			hiddenDatasets.length = chartData.datasets.length
 			hiddenDatasets.splice(0, hiddenDatasets.length, ...chartData.datasets.map(dataset => dataset.hidden ?? false))
@@ -423,6 +500,7 @@ export default defineComponent({
 			hasBZPLAN,
 			hasINSANE,
 			extractMonth,
+			accidentData,
 		}
 	},
 })
