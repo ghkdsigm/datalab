@@ -377,7 +377,7 @@ export default defineComponent({
 					responsive: true,
 					maintainAspectRatio: false,
 					scales: {
-						x: { grid: { display: false } },
+						x: { grid: { display: false }, ticks: { padding: 5 }, offset: true },
 						y: {
 							beginAtZero: false,
 							grid: {
