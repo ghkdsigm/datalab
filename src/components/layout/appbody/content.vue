@@ -1,6 +1,11 @@
 <template>
 	<section class="flex justify-between gap-6 w-full">
-		<div class="flex flex-col gap-6 flex-[7] min-w-[0] sticky-container">
+		<div
+			class="flex flex-col gap-6 flex-[7] min-w-[0] sticky-container"
+			:style="
+				chartHeight ? 'height:630px; max-height:630px' : 'height:535px; max-height:535px;     margin-bottom: 120px;'
+			"
+		>
 			<div class="mb-2 px-4 py-3 border rounded-lg bg-white shadow-black">
 				<div class="flex justify-between items-center">
 					<strong class="text-cyan-500 font-bold flex">
@@ -34,16 +39,21 @@
 						>상세보기</span
 					>
 				</div>
-				<div class="w-full chartWrap" v-if="!loadingContent01">
-					<Line01 :content="content?.table_data"></Line01>
+				<div class="w-full chartWrap" v-if="!loadingContent01" :style="chartHeight ? 'height: 88%;' : 'height: 82%;'">
+					<Line01 :content="content?.table_data" @updateChartHeight="updateChartHeight"></Line01>
 				</div>
 				<div
 					class="w-full chartWrap flex justify-center items-center"
+					:style="chartHeight ? 'height: 88%;' : 'height: 82%;'"
 					v-else-if="!loadingContent01 && !content.table_data"
 				>
 					업데이트 예정
 				</div>
-				<div class="w-full chartWrap flex justify-center items-center" v-else>
+				<div
+					class="w-full chartWrap flex justify-center items-center"
+					:style="chartHeight ? 'height: 88%;' : 'height: 82%;'"
+					v-else
+				>
 					<LoadingStatus :comment="'보드 예측 결과를 불러오고있습니다'" />
 				</div>
 			</div>
@@ -185,6 +195,8 @@ export default {
 
 		const loadingContent01 = computed(() => serviceStore.getLoadingpreddata)
 
+		const chartHeight = ref(true)
+
 		onMounted(() => {
 			handleReset()
 		})
@@ -318,6 +330,10 @@ export default {
 			)
 		}
 
+		const updateChartHeight = val => {
+			chartHeight.value = val
+		}
+
 		return {
 			currentRoutes,
 			currentPath,
@@ -342,6 +358,8 @@ export default {
 			deleteItem,
 			formatSummaryText,
 			loadingContent01,
+			updateChartHeight,
+			chartHeight,
 		}
 	},
 }
@@ -349,10 +367,11 @@ export default {
 
 <style scoped>
 .sticky-container {
-	max-height: 630px;
-	height: 630px;
+	/*max-height: 630px;*/
+	/*height: 630px;*/
 	position: sticky !important;
-	top: 80px;
+	/* top: 80px; */
+	top: 30px;
 }
 
 .chartWrap {

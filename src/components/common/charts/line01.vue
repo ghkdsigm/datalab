@@ -55,7 +55,7 @@ export default defineComponent({
 			require: false,
 		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const chartCanvas = ref(null)
 		let chartInstance = null
 		const isFirstChange = ref(true)
@@ -68,9 +68,7 @@ export default defineComponent({
 		const months = ref([])
 		const hiddenDatasets = reactive([])
 
-		const subLabels = reactive({
-			MDF: [5, 6, 7],
-		})
+		const chartHeight = ref(null)
 
 		const chartData = reactive({
 			labels: [],
@@ -206,24 +204,23 @@ export default defineComponent({
 		}
 
 		const accidentData = computed(() => {
-			const filteredRealValues = props.content?.real?.filter(value => value !== null)
+			// MDF실제값 중간 Y축 위치
+			// const filteredRealValues = props.content?.real?.filter(value => value !== null)
+			// const minRealValue = Math.min(...filteredRealValues)
+			// const maxRealValue = Math.max(...filteredRealValues)
+			// const chartMinValue = minRealValue
+			// const chartMaxValue = maxRealValue
+			// const midValue = (chartMaxValue + chartMinValue) / 2
+			// const adjustedY = midValue + midValue * 0.01 // 10% 정도 더 아래로 내리기
 
-			const minRealValue = Math.min(...filteredRealValues)
-			const maxRealValue = Math.max(...filteredRealValues)
-
-			const chartMinValue = minRealValue
-			const chartMaxValue = maxRealValue
-
-			const midValue = (chartMaxValue + chartMinValue) / 2
-
-			const adjustedY = midValue + midValue * 0.01 // 10% 정도 더 아래로 내리기
-
-			return props.content.index?.map(date => {
+			return props.content.index?.map((date, idx) => {
 				const key = date?.replace('-', '') // "2024-03" -> "202403"
 				console.log('accide', key)
 
 				// accident 데이터가 해당 월에 있는 경우에만 표시
-				const accident = props.content.accident[key] ? { x: 3, y: adjustedY, z: props.content.accident[key] } : {}
+				const accident = props.content.accident[key]
+					? { x: 3, y: props.content.real[idx], z: props.content.accident[key] }
+					: {}
 
 				return accident
 			})
@@ -448,6 +445,7 @@ export default defineComponent({
 				datasetMeta6.hidden = hiddenDatasets[6]
 				datasetMeta7.hidden = hiddenDatasets[7]
 			}
+
 			const datasetMeta = chartInstance.getDatasetMeta(index)
 			const isCurrentlyHidden = hiddenDatasets[index]
 
@@ -461,6 +459,21 @@ export default defineComponent({
 
 		// 초기 hidden 상태로 반응형 배열 채우기
 		//hiddenDatasets.splice(0, hiddenDatasets.length, ...chartData.datasets.map(dataset => dataset.hidden ?? false))
+
+		watch(hiddenDatasets, (newVal, oldVal) => {
+			if (newVal[5] && newVal[6] && newVal[7]) {
+				chartHeight.value = true
+				hiddenDatasets[1] = true
+			} else if (!newVal[5] || !newVal[6] || !newVal[7]) {
+				chartHeight.value = false
+				hiddenDatasets[1] = false
+			} else {
+				chartHeight.value = false
+				hiddenDatasets[1] = false
+			}
+
+			emit('updateChartHeight', chartHeight.value)
+		})
 
 		const hasSRM = val => {
 			if (typeof val === 'string' && val.includes('SRM')) {
@@ -501,6 +514,7 @@ export default defineComponent({
 			hasINSANE,
 			extractMonth,
 			accidentData,
+			chartHeight,
 		}
 	},
 })
