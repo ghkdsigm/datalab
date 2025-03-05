@@ -43,7 +43,7 @@ export default defineComponent({
 	padding: 8px 12px;
 	border-radius: 4px;
 	border: 1px solid #ffffff87;
-	box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.5);
+	box-shadow: 6px 6px 10px 0px #000000de;
 	font-size: 18px;
 	font-weight: 600;
 	min-width: 140px;

@@ -26,6 +26,7 @@ import { defineComponent, computed, onMounted, ref, reactive } from 'vue'
 import Chart from 'chart.js/auto'
 import zoomPlugin from 'chartjs-plugin-zoom'
 import { useServiceStore } from '@/store/service'
+import { useUtilities } from '@/utils/common'
 
 Chart.register(zoomPlugin)
 
@@ -74,6 +75,7 @@ export default defineComponent({
 		let chartInstance = null
 		const serviceStore = useServiceStore()
 		const prod = computed(() => serviceStore.getselectProd)
+		const { formatNumberWithCommaAndTwoDecimals } = useUtilities()
 
 		const chartData = reactive({
 			labels: props.idx,
@@ -136,6 +138,7 @@ export default defineComponent({
 						x: {
 							grid: { display: false },
 							//position: 'bottom',
+							offset: true,
 							ticks: {
 								callback: value => value,
 								maxRotation: props.type === 'trend' ? 0 : -90,
@@ -165,7 +168,7 @@ export default defineComponent({
 						y2: {
 							position: 'right',
 							grid: { drawOnChartArea: false },
-							title: { display: true, text: prod.value, color: 'white' },
+							title: { display: true, text: '영향인자', color: 'white' },
 							suggestedMin: Math.min(...props.content) * 0.9,
 							suggestedMax: Math.max(...props.content) * 1.1,
 							ticks: { color: 'white' },
@@ -246,7 +249,9 @@ export default defineComponent({
 							callbacks: {
 								label: function (tooltipItem) {
 									let dataset = tooltipItem.chart.data.datasets
-									let labels = dataset.map(ds => `${ds.label}: ${ds.data[tooltipItem.dataIndex]}`)
+									let labels = dataset.map(
+										ds => `${ds.label}: ${formatNumberWithCommaAndTwoDecimals(ds.data[tooltipItem.dataIndex])}`,
+									)
 									return labels
 								},
 							},
@@ -314,7 +319,7 @@ export default defineComponent({
 			return chartInstance?.getDatasetMeta(index)?.hidden ?? false
 		}
 
-		return { chartCanvas, chartData, toggleDataset, isHidden, prod }
+		return { chartCanvas, chartData, toggleDataset, isHidden, prod, formatNumberWithCommaAndTwoDecimals }
 	},
 })
 </script>

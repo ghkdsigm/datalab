@@ -49,6 +49,7 @@ import { defineComponent, onMounted, ref, reactive, watch, watchEffect, computed
 import Chart from 'chart.js/auto'
 import { useServiceStore } from '@/store/service'
 import zoomPlugin from 'chartjs-plugin-zoom'
+import { useUtilities } from '@/utils/common'
 
 Chart.register(zoomPlugin)
 
@@ -158,6 +159,8 @@ export default defineComponent({
 				},
 			],
 		})
+
+		const { formatNumberWithCommaAndTwoDecimals } = useUtilities()
 
 		// 특이사항 필터
 		// const accidentData = computed(() =>
@@ -414,7 +417,7 @@ export default defineComponent({
 									}
 									const value = tooltipItem.raw
 									const label = tooltipItem.dataset.label
-									return value !== undefined ? `${label}: ${value}` : 'No Data'
+									return value !== undefined ? `${label}: ${formatNumberWithCommaAndTwoDecimals(value)}` : 'No Data'
 								},
 							},
 							enabled: true,
@@ -520,6 +523,7 @@ export default defineComponent({
 			extractMonth,
 			accidentData,
 			chartHeight,
+			formatNumberWithCommaAndTwoDecimals,
 		}
 	},
 })

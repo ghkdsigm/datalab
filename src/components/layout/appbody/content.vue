@@ -145,6 +145,7 @@
 		>
 			<p
 				class="text-gray-600 text-left"
+				style="overflow-y: auto; max-height: 560px"
 				v-if="content?.summary?.full"
 				v-html="formatSummaryText(content?.summary?.full)"
 			></p>

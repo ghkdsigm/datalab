@@ -24,6 +24,7 @@
 <script>
 import { defineComponent, onMounted, ref, reactive } from 'vue'
 import Chart from 'chart.js/auto'
+import { useUtilities } from '@/utils/common'
 
 export default defineComponent({
 	name: 'LineChart02',
@@ -56,6 +57,7 @@ export default defineComponent({
 	setup(props) {
 		const chartCanvas = ref(null)
 		let chartInstance = null
+		const { formatNumberWithCommaAndTwoDecimals } = useUtilities()
 
 		const chartData = reactive({
 			labels: props.idx,
@@ -112,6 +114,7 @@ export default defineComponent({
 
 						x: {
 							grid: { display: false },
+							offset: true,
 							//position: 'bottom',
 							ticks: {
 								callback: value => value,
@@ -121,7 +124,7 @@ export default defineComponent({
 								//autoSkip: true,
 								color: 'white',
 								autoSkip: true, // 일부 레이블 자동 생략
-								padding: 40, // 간격 조정
+								padding: 10, // 간격 조정
 								align: 'end', // 레이블 정렬 변경
 							},
 							//title: { display: true, text: '수량', color: 'white', font: { size: 14 } },
@@ -141,9 +144,15 @@ export default defineComponent({
 						},
 						y2: {
 							position: 'right',
-							beginAtZero: true,
+							beginAtZero: false,
 							grid: { drawOnChartArea: false },
-							ticks: { callback: value => `${value / 0.5}`, stepSize: 0.5, color: 'white' },
+							min: -1, // 원하는 최소값 (예: -2)
+							max: 1, // 원하는 최대값 (예: 2)
+							ticks: {
+								callback: value => (value % 1 === 0 ? value : value.toFixed(1)), // 정수는 그대로, 소수는 소수점 1자리
+								stepSize: 0.5,
+								color: 'white',
+							},
 							title: { display: true, text: '영향인자', color: 'white', font: { size: 14 }, padding: { bottom: 10 } },
 						},
 					},
@@ -155,7 +164,7 @@ export default defineComponent({
 									console.log('tooltipItem', tooltipItem)
 									const value = tooltipItem.raw
 									const label = tooltipItem.dataset.label
-									return value !== undefined ? `${label}: ${value}` : 'No Data'
+									return value !== undefined ? `${label}: ${formatNumberWithCommaAndTwoDecimals(value)}` : 'No Data'
 								},
 							},
 							enabled: true,
@@ -221,7 +230,7 @@ export default defineComponent({
 			return chartInstance?.getDatasetMeta(index)?.hidden ?? false
 		}
 
-		return { chartCanvas, chartData, toggleDataset, isHidden }
+		return { chartCanvas, chartData, toggleDataset, isHidden, formatNumberWithCommaAndTwoDecimals }
 	},
 })
 </script>
