@@ -83,7 +83,7 @@ export default defineComponent({
 				{
 					label: 'MDF',
 					data: props.allcontent,
-					tension: 0,
+					//tension: 0,
 					radius: 1,
 					borderColor: props.borderColor[0],
 					borderWidth: 1,
@@ -94,7 +94,7 @@ export default defineComponent({
 				{
 					label: props.title,
 					data: props.content,
-					tension: 0,
+					//tension: 0,
 					radius: 1,
 					borderColor: props.borderColor[1],
 					borderWidth: 1,

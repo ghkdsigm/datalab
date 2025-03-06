@@ -1,5 +1,5 @@
 <template>
-	<div class="flex items-center w-full border border-gray-300 rounded-lg p-4">
+	<div class="flex items-center w-full border border-gray-300 rounded-lg p-4 bg-white border-dashed border-2">
 		<!-- 좌측 제목 -->
 		<span class="pr-[40px] text-gray-700 font-semibold">{{ title }}</span>
 
@@ -12,13 +12,7 @@
 			>
 				<div class="flex items-center">
 					<!-- 아이콘 -->
-					<svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M12 16v-8m0 0l-3 3m3-3l3 3M4 16c0 3.313 2.687 6 6 6h4c3.313 0 6-2.687 6-6m-6-10a6 6 0 00-6 6"
-						/>
-					</svg>
+					<img :src="imageSrc('common', 'ico_upload')" alt="업로드" class="inline-block mr-[10px]" />
 					<!-- 텍스트 -->
 					<p class="text-gray-500 text-sm">파일을 첨부해주세요</p>
 				</div>
@@ -39,7 +33,7 @@
 			<!-- 우측 버튼 -->
 			<button
 				v-if="!selectedFile"
-				class="ml-auto px-6 py-2 font-bold text-white bg-gray-600 rounded-md hover:bg-black"
+				class="ml-auto px-6 py-2 font-bold text-white bg-[#555555] rounded-md hover:bg-black"
 				@click="triggerFileInput"
 			>
 				파일 선택
@@ -51,8 +45,19 @@
 
 		<!-- 취소 / 삭제 버튼 -->
 		<button v-if="selectedFile" class="ml-auto text-gray-500 hover:text-red-500" @click="cancelUpload">
-			<svg v-if="!isUploaded" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+			<svg
+				v-if="!isUploaded"
+				class="w-6 h-6"
+				fill="none"
+				stroke="#fff"
+				stroke-width="1"
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+			>
+				<circle cx="9" cy="9" r="9" fill="#555555" />
+				<path d="M4.5 5.22958L5.22958 4.5L13.5 12.7704L12.7704 13.5L4.5 5.22958Z" fill="white" />
+				<path d="M13.5 5.22958L12.7704 4.5L4.5 12.7704L5.22958 13.5L13.5 5.22958Z" fill="white" />
 			</svg>
 			<svg v-else class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 				<path
@@ -66,29 +71,44 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useUtilities } from '@/utils/common'
+import { useUpdateStore } from '@/store/update'
 
-defineProps({
+const props = defineProps({
 	title: {
 		type: String,
 		required: true,
 	},
 })
 
+const { setImageSrc } = useUtilities()
+const imageSrc = (folder, img) => setImageSrc(folder, img)
 const selectedFile = ref(null)
 const uploadProgress = ref(0)
 const isUploading = ref(false)
 const isUploaded = ref(false)
 const fileInput = ref(null)
+const updateStore = useUpdateStore()
 
 // 각 컴포넌트마다 고유한 ID 생성
 const fileInputId = computed(() => `file-upload-${Math.random().toString(36).substring(2, 10)}`)
 
-const handleFileSelect = event => {
+const handleFileSelect = async event => {
+	console.log('event', event)
 	const file = event.target.files[0]
+
 	if (file) {
+		const formData = new FormData()
+		formData.append('file', file)
+
 		selectedFile.value = file
-		startUpload()
+		if (props.title === 'MDF') {
+			await fetchtUpdateCompetitorMdf(formData)
+		} else {
+			await fetchtUpdateCompetitorPb(formData)
+		}
+		startUpload() // 업로드 성공 후 실행
 	}
 }
 
@@ -106,6 +126,16 @@ const startUpload = () => {
 			uploadProgress.value += 10
 		}
 	}, 300)
+}
+
+// 외부 경기지표 리스트 불러오기
+const fetchtUpdateCompetitorMdf = async formData => {
+	await updateStore.actGetUpdateCompetitorMdf(formData)
+}
+
+// 외부 경기지표 리스트 불러오기
+const fetchtUpdateCompetitorPb = async formData => {
+	await updateStore.actGetUpdateCompetitorPb(formData)
 }
 
 const cancelUpload = () => {

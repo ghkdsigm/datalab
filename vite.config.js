@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => ({
 				target: 'https://localhost:3000',
 				// rewrite: path => path.replace(/^\/api/, ''),
 				// target: 'https://hkpmelmjlg-vpce-0794c449beb2d4841.execute-api.ap-northeast-2.amazonaws.com',
-				changeOrigin: true,
+				changeOrigin: false,
 				secure: false,
 			},
 		},

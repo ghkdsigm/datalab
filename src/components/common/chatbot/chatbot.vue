@@ -105,6 +105,7 @@ const newMessage = ref('')
 const isLoading = ref(true)
 
 const toggleChat = () => {
+	isExpanded.value = false
 	isOpen.value = !isOpen.value
 	if (isOpen.value) {
 		document.body.style.overflow = 'hidden' // 챗봇 열릴 때 스크롤 막기

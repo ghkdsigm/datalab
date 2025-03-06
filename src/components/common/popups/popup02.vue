@@ -13,7 +13,7 @@
 					<strong class="">예측오차(비율)</strong>
 					<span
 						class="border border-[#CCCCCC] bg-[#F8F8F8] py-[10px] px-[16px] ml-[16px] rounded-md w-[160px] text-left"
-						>{{ data?.pred_error }}</span
+						>{{ addCommaToLargeNumbers(data?.pred_error) }}</span
 					>
 				</div>
 				<div class="flex max-h-[300px]" style="min-width: max-content">
@@ -91,6 +91,12 @@ const formatNumber = value => {
 	return value != null && !isNaN(value)
 		? Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 		: '-'
+}
+
+const addCommaToLargeNumbers = input => {
+	return input.replace(/\d{4,}/g, num => {
+		return num.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+	})
 }
 </script>
 

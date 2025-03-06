@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useUtilities } from '@/utils/common'
 
 const props = defineProps({
