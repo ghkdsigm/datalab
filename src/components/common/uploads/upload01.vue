@@ -27,7 +27,8 @@
 				<div v-if="isUploading" class="w-full bg-[#E6E6E6] rounded-full h-2 mt-2">
 					<div class="loadingBar h-2 rounded-full" :style="{ width: uploadProgress + '%' }"></div>
 				</div>
-				<p v-if="isUploaded" class="text-green-500 text-xs mt-2">파일이 정상 업로드 되었습니다</p>
+				<p v-if="isUploaded && !fail" class="text-green-500 text-xs mt-2">파일이 정상 업로드 되었습니다</p>
+				<p v-if="isUploaded && fail" class="text-red-500 text-xs mt-2">업로드에 실패하였습니다.</p>
 			</div>
 
 			<!-- 우측 버튼 -->
@@ -90,6 +91,7 @@ const isUploading = ref(false)
 const isUploaded = ref(false)
 const fileInput = ref(null)
 const updateStore = useUpdateStore()
+const fail = ref(false)
 
 // 각 컴포넌트마다 고유한 ID 생성
 const fileInputId = computed(() => `file-upload-${Math.random().toString(36).substring(2, 10)}`)
@@ -108,11 +110,10 @@ const handleFileSelect = async event => {
 		} else {
 			await fetchtUpdateCompetitorPb(formData)
 		}
-		startUpload() // 업로드 성공 후 실행
 	}
 }
 
-const startUpload = () => {
+const startUpload = val => {
 	isUploading.value = true
 	isUploaded.value = false
 	uploadProgress.value = 0
@@ -128,14 +129,43 @@ const startUpload = () => {
 	}, 300)
 }
 
-// 외부 경기지표 리스트 불러오기
-const fetchtUpdateCompetitorMdf = async formData => {
-	await updateStore.actGetUpdateCompetitorMdf(formData)
+const failUpload = val => {
+	isUploading.value = true
+	isUploaded.value = false
+	fail.value = false
+	uploadProgress.value = 0
+
+	const interval = setInterval(() => {
+		if (uploadProgress.value >= 100) {
+			clearInterval(interval)
+			isUploading.value = false
+			isUploaded.value = true
+			fail.value = true
+		} else {
+			uploadProgress.value += 10
+		}
+	}, 300)
 }
 
-// 외부 경기지표 리스트 불러오기
+// 외부 경기지표 리스트 등록
+const fetchtUpdateCompetitorMdf = async formData => {
+	const res = await updateStore.actGetUpdateCompetitorMdf(formData)
+	if (res.status === 200) {
+		startUpload()
+	} else {
+		failUpload()
+	}
+}
+
+// 외부 경기지표 리스트 등록
 const fetchtUpdateCompetitorPb = async formData => {
-	await updateStore.actGetUpdateCompetitorPb(formData)
+	const res = await updateStore.actGetUpdateCompetitorPb(formData)
+	console.log('??', res)
+	if (res.status === 200) {
+		startUpload()
+	} else {
+		failUpload()
+	}
 }
 
 const cancelUpload = () => {

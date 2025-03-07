@@ -18,6 +18,7 @@ export const useServiceStore = defineStore('service', {
 			preddata: false,
 			trend: false,
 		},
+		tab: 'accident',
 	}),
 	getters: {
 		getErrorMessage: state => state.errorMessage,
@@ -33,6 +34,7 @@ export const useServiceStore = defineStore('service', {
 		getExternaltrend: state => state.externaltrend,
 		getLoadingpreddata: state => state.loading.preddata,
 		getLoadingtrend: state => state.loading.trend,
+		getTab: state => state.tab,
 	},
 	actions: {
 		// 공통 에러 처리 메서드
@@ -69,6 +71,11 @@ export const useServiceStore = defineStore('service', {
 
 		selectProdValue(prod) {
 			this.selectProd = prod
+		},
+
+		selectTab(tab) {
+			console.log('asdfasdfasdfasdf', tab)
+			this.getTab = tab
 		},
 
 		async actGetBasemonth(code) {

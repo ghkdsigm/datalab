@@ -22,7 +22,7 @@ const getPredictFeatureList = params => {
 
 // 개별 영향인자 정보
 const getPredictFeatureValue = params => {
-	return request.sendRequest('/predict/feature_value', v, 'POST', 'json')
+	return request.sendRequest('/predict/feature_value', params, 'POST', 'json')
 }
 
 // 외부 경기지표 리스트
@@ -53,6 +53,16 @@ const getUpdateDownload = params => {
 // 데이터 히스토리
 const getUpdateHistorys = () => {
 	return request.sendRequest('/update/competitor_indicator_history', null, 'GET', 'json')
+}
+
+// 업데이트데이터 받기
+const getUpdateGetdata = params => {
+	return request.sendRequest('/update/getdata', params, 'POST', 'raw')
+}
+
+// 업데이트데이터 업로드
+const getUpdateUpload = params => {
+	return request.sendRequest('/update/upload', params, 'POST', 'raw')
 }
 
 // 시뮬레이션 영향인자 리스트
@@ -86,6 +96,8 @@ export default {
 	getUpdateCompetitorPb,
 	getUpdateDownload,
 	getUpdateHistorys,
+	getUpdateGetdata,
+	getUpdateUpload,
 	getSimulationFeatureList,
 	getSimulationExecute,
 }

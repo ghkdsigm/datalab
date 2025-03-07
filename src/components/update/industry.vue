@@ -51,7 +51,7 @@
 							<th class="bg-[#F8F8F8] text-[#262626] font-bold py-[13px] border-[#E6E6E6] border-b">
 								파일 업로드 현황
 							</th>
-							<th class="bg-[#F8F8F8] text-[#262626] font-bold py-[13px] border-[#E6E6E6] border-b-2">업로드 날짜</th>
+							<th class="bg-[#F8F8F8] text-[#262626] font-bold py-[13px] border-[#E6E6E6] border-b">업로드 날짜</th>
 							<th class="bg-[#F8F8F8] text-[#262626] font-bold py-[13px] border-[#E6E6E6] border-b">모델 학습 여부</th>
 						</tr>
 					</thead>
@@ -94,14 +94,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useUpdateStore } from '@/store/update'
-import axios from 'axios'
-
-const feature = ref()
 const updateStore = useUpdateStore()
 
 const content = computed(() => updateStore.getUpdateHistory)
-
-const data = ref(null)
 
 // 업데이트 히스토리
 const fetchUpdateHistory = async () => {
@@ -114,32 +109,29 @@ const getDownLoadFile = async val => {
 		file_name: val,
 	}
 
-	//fetchData(params)
-	await updateStore.actGetUpdateDownload(params)
+	fetchData(params)
 }
 
-// const fetchData = async params => {
-// 	try {
-// 		const response = await axios.post(
-// 			'https://hkpmelmjlg-vpce-0794c449beb2d4841.execute-api.ap-northeast-2.amazonaws.com/v1/dev/update/download',
-// 			params,
-// 		)
+const fetchData = async params => {
+	try {
+		const response = await updateStore.actGetUpdateDownload(params)
 
-// 		// if (response.data && response.data.fileUrl) {
-// 		// 	// 🔥 파일 URL을 받아서 다운로드 처리
-// 		// 	const link = document.createElement('a')
-// 		// 	link.href = response.data.fileUrl
-// 		// 	link.setAttribute('download', '') // 파일 이름 자동 지정
-// 		// 	document.body.appendChild(link)
-// 		// 	link.click()
-// 		// 	link.remove()
-// 		// } else {
-// 		// 	console.error('파일 URL이 응답에 없습니다.', response.data)
-// 		// }
-// 	} catch (err) {
-// 		console.error('파일 다운로드 중 오류 발생:', err)
-// 	}
-// }
+		console.log('response', response)
+
+		if (response.data && response.data.body.presigned_url) {
+			const link = document.createElement('a')
+			link.href = response.data.body.presigned_url
+			link.setAttribute('download', '') // 파일 이름 자동 지정
+			document.body.appendChild(link)
+			link.click()
+			link.remove()
+		} else {
+			console.error('파일 URL이 응답에 없습니다.', response.data)
+		}
+	} catch (err) {
+		console.error('파일 다운로드 중 오류 발생:', err)
+	}
+}
 
 onMounted(async () => {
 	await fetchUpdateHistory()

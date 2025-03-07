@@ -29,22 +29,46 @@ import Plan from '@/components/update/plan.vue'
 import Significant from '@/components/update/significant.vue'
 import Srm from '@/components/update/srm.vue'
 import { useServiceStore } from '@/store/service'
+import { useUpdateStore } from '@/store/update'
 
 export default {
 	name: 'UPDATE',
 	setup() {
 		const serviceStore = useServiceStore()
-		const activeTab = ref('Significant')
+		const updateStore = useUpdateStore()
+		const activeTab = ref('accident')
 		const tabs = [
-			{ name: 'Significant', label: '특이사항', component: Significant },
-			{ name: 'Plan', label: '사업계획', component: Plan },
-			{ name: 'Srm', label: 'SRM', component: Srm },
+			{ name: 'accident', label: '특이사항', component: Significant },
+			{ name: 'bzplan', label: '사업계획', component: Plan },
+			{ name: 'srm', label: 'SRM', component: Srm },
 			{ name: 'Industry', label: '동종사지표', component: Industry },
 		]
+
+		const fetchUpdateGetdata = async params => {
+			await updateStore.actGetUpdateGetdata(params)
+		}
+
+		const content = ref([])
 
 		const activeComponent = computed(() => {
 			const tab = tabs.find(t => t.name === activeTab.value)
 			return tab ? tab.component : null
+		})
+
+		watch(
+			() => activeTab.value,
+			async (newValue, oldValue) => {
+				console.log('oldValue', oldValue)
+				console.log('newValue', newValue)
+				if (!newValue || newValue === 'Industry') return
+
+				const params = { data_type: newValue }
+				await fetchUpdateGetdata(params)
+			},
+		)
+		onMounted(async () => {
+			const params = { data_type: activeTab.value }
+			await fetchUpdateGetdata(params)
 		})
 
 		return { activeTab, activeComponent, tabs }

@@ -9,6 +9,8 @@ export const useUpdateStore = defineStore('update', {
 		competitionPb: [],
 		updateHistory: null,
 		updateDownloadFile: null,
+		updateGetdata: null,
+		updateUpload: null,
 	}),
 	getters: {
 		getErrorMessage: state => state.errorMessage,
@@ -17,6 +19,8 @@ export const useUpdateStore = defineStore('update', {
 		getCompetitionPb: state => state.competitionPb,
 		getUpdateHistory: state => state.updateHistory,
 		getUpdateDownloadFile: state => state.updateDownloadFile,
+		getUpdateGetdata: state => state.updateGetdata,
+		getUpdateUpload: state => state.updateUpload,
 	},
 	actions: {
 		// 공통 에러 처리 메서드
@@ -55,25 +59,23 @@ export const useUpdateStore = defineStore('update', {
 					const type = 'update'
 					this.handleError(type, res)
 				} else {
-					//this.competitionMdf = res.data.body || []
+					this.competitionMdf = res.data.body || []
 					this.errorMessage = ''
 					this.status = res.status
 				}
+				return res
 			} catch (error) {
 				this.competitionMdf = []
 				this.errorMessage = '서버와 연결할 수 없습니다.'
 				this.status = 500
 				console.error('Failed to fetch data:', error)
+				return { status: 500, error }
 			}
 		},
 
 		async actGetUpdateCompetitorPb(formData) {
-			console.log('232323', service)
 			try {
 				const res = await service.getUpdateCompetitorPb(formData)
-				console.log('response', res.data)
-
-				console.log('찍히나2', res)
 				if (res.status !== 200) {
 					const type = 'update'
 					this.handleError(type, res)
@@ -82,11 +84,13 @@ export const useUpdateStore = defineStore('update', {
 					this.errorMessage = ''
 					this.status = res.status
 				}
+				return res
 			} catch (error) {
 				this.competitionPb = []
 				this.errorMessage = '서버와 연결할 수 없습니다.'
 				this.status = 500
 				console.error('Failed to fetch data:', error)
+				return { status: 500, error }
 			}
 		},
 
@@ -114,7 +118,6 @@ export const useUpdateStore = defineStore('update', {
 		async actGetUpdateDownload(params) {
 			try {
 				const res = await service.getUpdateDownload(params)
-				console.log('무지', res)
 
 				if (res.status !== 200) {
 					const type = 'updatedownloadfile'
@@ -124,11 +127,57 @@ export const useUpdateStore = defineStore('update', {
 					this.errorMessage = ''
 					this.status = res.status
 				}
+				return res
 			} catch (error) {
 				this.updateDownloadFile = []
 				this.errorMessage = '서버와 연결할 수 없습니다.'
 				this.status = 500
 				console.error('Failed to fetch data:', error)
+				return { status: 500, error }
+			}
+		},
+
+		async actGetUpdateGetdata(params) {
+			try {
+				const res = await service.getUpdateGetdata(params)
+
+				if (res.status !== 200) {
+					const type = 'updatedownloadfile'
+					this.handleError(type, res)
+				} else {
+					this.updateGetdata = res.data.body.data || []
+					this.errorMessage = ''
+					this.status = res.status
+				}
+				return res
+			} catch (error) {
+				this.updateGetdata = []
+				this.errorMessage = '서버와 연결할 수 없습니다.'
+				this.status = 500
+				console.error('Failed to fetch data:', error)
+				return { status: 500, error }
+			}
+		},
+
+		async actGetUpdateUpload(params) {
+			try {
+				const res = await service.getUpdateUpload(params)
+
+				if (res.status !== 200) {
+					const type = 'updatedownloadfile'
+					this.handleError(type, res)
+				} else {
+					this.updateUpload = res || []
+					this.errorMessage = ''
+					this.status = res.status
+				}
+				return res
+			} catch (error) {
+				this.updateUpload = []
+				this.errorMessage = '서버와 연결할 수 없습니다.'
+				this.status = 500
+				console.error('Failed to fetch data:', error)
+				return { status: 500, error }
 			}
 		},
 	},
