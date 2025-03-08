@@ -27,7 +27,6 @@ export default {
 
 		console.log('layout', layout)
 
-		// layout 값이 변경될 때 layoutReady를 true로 설정
 		watchEffect(() => {
 			if (layout.value) {
 				layoutReady.value = true

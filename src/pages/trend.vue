@@ -61,7 +61,7 @@
 						{{ Object.keys(item)[1] }}
 					</h2>
 					<div class="flex gap-x-6 h-[205px] overflow-hidden">
-						<!-- Left Section -->
+						<!-- Left -->
 						<div class="flex flex-col flex-[9] h-full">
 							<div class="bg-white rounded-md h-full">
 								<Line02
@@ -75,7 +75,7 @@
 							</div>
 						</div>
 
-						<!-- Right Section -->
+						<!-- Right -->
 						<div class="flex flex-col flex-[3]">
 							<div class="bg-white rounded-md">
 								<Table02 :type="'trend'" :title="Object.keys(item)[1]" :content="item" />

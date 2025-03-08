@@ -10,7 +10,6 @@
 			<span class="ml-5 text-white text-[20px] font-medium">보드 수량 예측 결과입니다.</span>
 		</div>
 		<div class="text-md text-white">{{ `( ${getStartEndDate(basemonth)} )` }}</div>
-		<!-- (2024 12월 ~ 25년 5월 월별 예측 예상) -->
 	</div>
 </template>
 

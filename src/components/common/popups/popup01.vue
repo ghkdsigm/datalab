@@ -83,12 +83,12 @@ const filteredData = computed(() => {
 	return Object.keys(props.data)
 		.filter(year => year !== 'rank')
 		.reduce((acc, year) => {
-			acc[year] = props.data[year].filter(Boolean) // null 제거
+			acc[year] = props.data[year].filter(Boolean)
 			return acc
 		}, {})
 })
 
-// 가장 많은 데이터를 가진 테이블의 항목 수를 계산
+// 가장 많은 데이터를 가진 테이블의 항목 수
 const maxRows = computed(() => {
 	return Math.max(...Object.values(filteredData.value).map(values => values.length), 0)
 })

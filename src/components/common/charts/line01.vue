@@ -70,7 +70,7 @@ export default defineComponent({
 		const serviceStore = useServiceStore()
 		const currentMonth = computed(() => serviceStore.getselectMonth)
 
-		const selectedMonth = ref() // 기본값: 이번 달
+		const selectedMonth = ref()
 		const months = ref([])
 		const hiddenDatasets = reactive([])
 
@@ -112,7 +112,7 @@ export default defineComponent({
 				},
 				{
 					label: '사업계획',
-					data: [34000, 22000, 31000],
+					//data: [34000, 22000, 31000],
 					tension: 0,
 					radius: 1,
 					borderColor: '#FF11BC',
@@ -305,7 +305,6 @@ export default defineComponent({
 		const customVerticalLine = {
 			id: 'customVerticalLine',
 			afterDraw(chart) {
-				//console.log('chart??', chart)
 				if (!chart.tooltip?.active) return
 
 				const { ctx, tooltip, chartArea } = chart
@@ -346,8 +345,6 @@ export default defineComponent({
 				chart.data.datasets.forEach((dataset, datasetIndex) => {
 					if (dataset.label === '특이사항') {
 						const meta = chart.getDatasetMeta(datasetIndex)
-
-						//console.log('특이사항', dataset)
 
 						dataset.data.forEach((point, index) => {
 							if (!point || !meta.data[index]) return // point가 null이거나 element가 없으면 건너뛰기
@@ -398,15 +395,15 @@ export default defineComponent({
 						legend: { display: false },
 						zoom: {
 							pan: {
-								enabled: true, // 드래그 이동 가능
-								mode: 'x', // X, Y축 모두 이동
+								enabled: true,
+								mode: 'x', // X, Y축 모두 이동 가능ㅋ
 								threshold: 10, // 드래그 시작 감지 민감도 (10픽셀 이상 이동시 반응)
 							},
 							zoom: {
 								wheel: {
 									enabled: true, // 마우스 휠 확대/축소
 								},
-								mode: 'x', // X, Y축 모두 확대/축소
+								mode: 'x', // X, Y축 모두 확대/축소 가능
 							},
 						},
 						tooltip: {
@@ -441,7 +438,7 @@ export default defineComponent({
 
 		const toggleDataset = index => {
 			if (index === 1) {
-				hiddenDatasets[5] = !hiddenDatasets[5] // 반전
+				hiddenDatasets[5] = !hiddenDatasets[5] 
 				hiddenDatasets[6] = true
 				hiddenDatasets[7] = true
 

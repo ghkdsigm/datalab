@@ -108,7 +108,7 @@ const toggleChat = () => {
 	isExpanded.value = false
 	isOpen.value = !isOpen.value
 	if (isOpen.value) {
-		document.body.style.overflow = 'hidden' // 챗봇 열릴 때 스크롤 막기
+		document.body.style.overflow = 'hidden'
 		setTimeout(() => {
 			messages.value = [
 				{ isUser: false, text: '안녕하세요. 수요예측기반 Chatbot 입니다.' },
@@ -117,7 +117,7 @@ const toggleChat = () => {
 			isLoading.value = false
 		}, 2000)
 	} else {
-		document.body.style.overflow = '' // 챗봇 닫을 때 스크롤 복원
+		document.body.style.overflow = ''
 	}
 }
 

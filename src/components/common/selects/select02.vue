@@ -1,6 +1,5 @@
 <template>
 	<div class="flex justify-between items-center text-white">
-		<!-- Calendar Icon -->
 		<div class="cursor-pointer">
 			<i class="fas fa-calendar-alt text-xl"></i>
 		</div>
@@ -41,8 +40,8 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useUtilities } from '@/utils/common'
 
 const props = defineProps({
-	selectedMonth: String, // 부모로부터 선택된 월
-	months: Array, // 선택 가능한 월 목록
+	selectedMonth: String,
+	months: Array,
 	hiddenDatasets: Array,
 })
 
@@ -63,18 +62,16 @@ const toggleDropdown = event => {
 }
 
 const selectMonth = month => {
-	emit('update:selectedMonth', month) // 부모에게 선택된 월 전달
-	isDropdownOpen.value = false // 드롭다운 닫기
+	emit('update:selectedMonth', month) 
+	isDropdownOpen.value = false 
 }
 
-// 드롭다운 외부 클릭 시 닫기
 const onClickOutside = event => {
 	if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
 		isDropdownOpen.value = false
 	}
 }
 
-// 이벤트 리스너 추가 및 제거
 onMounted(() => {
 	document.addEventListener('click', onClickOutside)
 	console.log('props.hiddenDatasets', props.hiddenDatasets)

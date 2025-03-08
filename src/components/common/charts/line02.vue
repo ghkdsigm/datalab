@@ -187,7 +187,6 @@ export default defineComponent({
 		const customVerticalLine = {
 			id: 'customVerticalLine',
 			afterDraw(chart) {
-				//console.log('뭐나옴1', chart)
 				if (!chart.tooltip?.active) return
 
 				const { ctx, tooltip, chartArea } = chart

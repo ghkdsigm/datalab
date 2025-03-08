@@ -105,7 +105,6 @@
 				</div>
 			</div>
 
-			<!-- <div class="p-4 border rounded-lg bg-gray-50 h-[3200px]">주요 영향인자 분석을 선택해주세요.</div> -->
 			<div v-if="content02.length !== 0">
 				<div class="mb-6" v-for="(item, idx) in content02" :key="idx">
 					<h2 class="text-[#262626] text-[16px] font-bold flex justify-start mb-[16px]">
@@ -150,7 +149,6 @@
 				v-html="formatSummaryText(content?.summary?.full)"
 			></p>
 			<p class="text-gray-600 text-center" v-else="isLoading">예측 결과 요약 정보가 존재하지않습니다.</p>
-			<!-- <p class="text-gray-600 text-center" v-if="isLoading">예측 결과 요약 상세 정보를 불러오고 있습니다.</p> -->
 		</Popup00>
 
 		<Popup02
