@@ -2,92 +2,95 @@
 	<!-- Center Section -->
 	<div class="flex flex-col flex-[12] w-full">
 		<h2 class="text-left text-[#777777] py-[40px] text-[18px] font-bold">트렌드를 확인할 외부 지표를 선택하세요.</h2>
-		<div class="flex flex-col gap-6 flex-[5] min-w-[0]">
-			<div class="p-4 border rounded-lg bg-gray-50">
-				<div class="flex justify-between items-center">
-					<div class="flex gap-4">
-						<div class="flex items-center gap-4 pr-4">
-							<SelectBasic v-model="years" :options="yearsList || []" :width="'160'" :label="'시작 기준월'" />
-							<SelectBasic v-model="months" :options="monthsList || []" :width="'160'" />
+		<FullScreenLoader v-if="loadingContent01" />
+		<div v-else>
+			<div class="flex flex-col gap-6 flex-[5] min-w-[0] sticky top-[20px] z-[3]">
+				<div class="p-4 border rounded-lg bg-gray-50">
+					<div class="flex justify-between items-center">
+						<div class="flex gap-4">
+							<div class="flex items-center gap-4 pr-4">
+								<SelectBasic v-model="years" :options="yearsList || []" :width="'160'" :label="'시작 기준월'" />
+								<SelectBasic v-model="months" :options="monthsList || []" :width="'160'" />
+							</div>
+							<Select01
+								:options="options"
+								:selected-options="selectedOptions"
+								:label="'외부지표선택'"
+								@select="handleSelectChange"
+							/>
 						</div>
-						<Select01
-							:options="options"
-							:selected-options="selectedOptions"
-							:label="'외부지표선택'"
-							@select="handleSelectChange"
-						/>
+						<button @click="handleReset" class="text-pale p-2 font-light text-sm">
+							<img :src="imageSrc('mdf', 'ico_refresh')" alt="초기화" class="inline-block mr-1" />
+							초기화
+						</button>
 					</div>
-					<button @click="handleReset" class="text-pale p-2 font-light text-sm">
-						<img :src="imageSrc('mdf', 'ico_refresh')" alt="초기화" class="inline-block mr-1" />
-						초기화
-					</button>
-				</div>
 
-				<div
-					v-if="selectedOptions.length"
-					class="flex gap-2 mt-3 overflow-hidden whitespace-nowrap scrollbar-hide cursor-grab active:cursor-grabbing min-w-[250px]"
-					ref="scrollContainer"
-					@mousedown="startDrag"
-					@mousemove="onDrag"
-					@mouseup="stopDrag"
-					@mouseleave="stopDrag"
-					@touchstart="startDrag"
-					@touchmove="onDrag"
-					@touchend="stopDrag"
-				>
 					<div
-						v-for="option in selectedOptions"
-						:key="option"
-						class="flex items-center px-3 py-1 border rounded-full bg-white min-w-[180px] text-[14px] select-none"
+						v-if="selectedOptions.length"
+						class="flex gap-2 mt-3 overflow-hidden whitespace-nowrap scrollbar-hide cursor-grab active:cursor-grabbing min-w-[250px]"
+						ref="scrollContainer"
+						@mousedown="startDrag"
+						@mousemove="onDrag"
+						@mouseup="stopDrag"
+						@mouseleave="stopDrag"
+						@touchstart="startDrag"
+						@touchmove="onDrag"
+						@touchend="stopDrag"
 					>
-						<span class="text-gray-800 mr-2 w-[80%] overflow-hidden text-ellipsis line-clamp-1 text-left">{{
-							option
-						}}</span>
-						<span
-							class="flex items-center justify-center text-white rounded-full cursor-pointer"
-							@click="handleRemove(option)"
+						<div
+							v-for="option in selectedOptions"
+							:key="option"
+							class="flex items-center px-3 py-1 border rounded-full bg-white min-w-[180px] text-[14px] select-none"
 						>
-							<img :src="imageSrc('common', 'ico_close')" alt="초기화" class="inline-block mr-1" />
-						</span>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div>
-			<div v-if="content.length !== 0" class="flex flex-col gap-6 pb-[100px] mt-8">
-				<div class="flex flex-col gap-6" v-for="(item, idx) in content" :key="idx">
-					<h2 class="text-[#262626] text-[16px] font-bold flex justify-start">
-						{{ Object.keys(item)[1] }}
-					</h2>
-					<div class="flex gap-x-6 h-[205px] overflow-hidden">
-						<!-- Left -->
-						<div class="flex flex-col flex-[9] h-full">
-							<div class="bg-white rounded-md h-full">
-								<Line02
-									:type="'trend'"
-									:borderColor="['#5DB096', '#D17EB1']"
-									:leftTit="'외부지표'"
-									:rightTit="'영향인자'"
-									:idx="item[Object.keys(item)[0]]"
-									:content="item[Object.keys(item)[1]]"
-								/>
-							</div>
-						</div>
-
-						<!-- Right -->
-						<div class="flex flex-col flex-[3]">
-							<div class="bg-white rounded-md">
-								<Table02 :type="'trend'" :title="Object.keys(item)[1]" :content="item" />
-							</div>
+							<span class="text-gray-800 mr-2 w-[80%] overflow-hidden text-ellipsis line-clamp-1 text-left">{{
+								option
+							}}</span>
+							<span
+								class="flex items-center justify-center text-white rounded-full cursor-pointer"
+								@click="handleRemove(option)"
+							>
+								<img :src="imageSrc('common', 'ico_close')" alt="초기화" class="inline-block mr-1" />
+							</span>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div v-else-if="!isLoading" class="py-[100px] text-center text-gray-500">외부 지표를 선택해주세요.</div>
 
-			<div v-if="isLoading" class="py-[100px] text-center text-gray-500">
-				<LoadingStatus :comment="'지표를 불러오고있습니다'" />
+			<div>
+				<div v-if="content.length !== 0" class="flex flex-col gap-6 pb-[100px] mt-8">
+					<div class="flex flex-col gap-6" v-for="(item, idx) in content" :key="idx">
+						<h2 class="text-[#262626] text-[16px] font-bold flex justify-start">
+							{{ Object.keys(item)[1] }}
+						</h2>
+						<div class="flex gap-x-6 h-[205px] overflow-hidden">
+							<!-- Left -->
+							<div class="flex flex-col flex-[9] h-full">
+								<div class="bg-white rounded-md h-full">
+									<Line02
+										:type="'trend'"
+										:borderColor="['#5DB096', '#D17EB1']"
+										:leftTit="'외부지표'"
+										:rightTit="'영향인자'"
+										:idx="item[Object.keys(item)[0]]"
+										:content="item[Object.keys(item)[1]]"
+									/>
+								</div>
+							</div>
+
+							<!-- Right -->
+							<div class="flex flex-col flex-[3]">
+								<div class="bg-white rounded-md">
+									<Table02 :type="'trend'" :title="Object.keys(item)[1]" :content="item" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div v-else-if="!isLoading" class="py-[100px] text-center text-gray-500">외부 지표를 선택해주세요.</div>
+
+				<div v-if="isLoading" class="py-[100px] text-center text-gray-500">
+					<LoadingStatus :comment="'지표를 불러오고있습니다'" />
+				</div>
 			</div>
 		</div>
 	</div>

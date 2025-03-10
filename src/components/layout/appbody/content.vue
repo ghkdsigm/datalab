@@ -60,7 +60,7 @@
 		</div>
 
 		<div class="flex flex-col gap-6 flex-[5] min-w-[0]">
-			<div class="p-4 border rounded-lg bg-gray-50">
+			<div class="p-4 border rounded-lg bg-gray-50 sticky top-[30px] z-[3]">
 				<div class="flex justify-between items-center">
 					<Select01
 						:disabled="loadingContent01 ? true : false"

@@ -137,4 +137,8 @@ createApp(App)
 		'LoadingStatus',
 		defineAsyncComponent(() => import('./components/common/spinner/loadiStatus.vue')),
 	)
+	.component(
+		'FullScreenLoader',
+		defineAsyncComponent(() => import('./components/common/spinner/fullscreen.vue')),
+	)
 	.mount('#app')

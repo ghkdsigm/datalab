@@ -121,6 +121,8 @@ const addRow = () => {
 // 업데이트 로직
 const updateTable = () => {
 	console.log('Updated Data:', tableData.value)
+	if (!tableData.value || tableData.value.length === 0) return
+
 	const params = {
 		data_type: props.title,
 		data: tableData.value,

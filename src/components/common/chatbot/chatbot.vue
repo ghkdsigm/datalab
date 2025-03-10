@@ -14,15 +14,14 @@
 
 	<!-- 챗봇 팝업 -->
 	<div
-		v-if="isOpen"
-		class="chatbotBody fixed bottom-[0] h-[100vh] bg-white flex flex-col overflow-hidden"
-		:class="!isExpanded ? 'w-[21vw]' : 'w-[42vw]'"
+		class="chatbotBody fixed bottom-0 h-screen bg-white flex flex-col overflow-hidden transition-[transform,width] duration-300 ease-in-out right-0"
+		:class="[isExpanded ? 'w-[42vw]' : 'w-[21vw]', isOpen ? 'translate-x-0' : 'translate-x-full']"
 	>
 		<!-- 헤더 -->
 		<div class="text-white px-6 py-5 flex justify-between items-center h-[56px]">
 			<span class="font-bold text-[#555555] text-[18px]">Chat bot</span>
 			<div>
-				<button @click="sizeToggleChat" class="pr-6">
+				<button @click="sizeToggleChat" class="mr-6">
 					<img :src="imageSrc('chatbot', 'ico_size')" alt="챗봇검색" />
 				</button>
 				<button @click="toggleChat">

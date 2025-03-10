@@ -11,10 +11,16 @@ export const useUpdateStore = defineStore('update', {
 		updateDownloadFile: null,
 		updateGetdata: null,
 		updateUpload: null,
+		loading: {
+			getdata: false,
+			history: false,
+		},
 	}),
 	getters: {
 		getErrorMessage: state => state.errorMessage,
 		getstatus: state => state.status,
+		getLoadinghistory: state => state.loading.history,
+		getLoadinggetdata: state => state.loading.getdata,
 		getCompetitionMdf: state => state.competitionMdf,
 		getCompetitionPb: state => state.competitionPb,
 		getUpdateHistory: state => state.updateHistory,
@@ -95,7 +101,7 @@ export const useUpdateStore = defineStore('update', {
 		},
 
 		async actGetUpdateHistory() {
-			console.log('vv', service)
+			this.loading.history = true
 			try {
 				const res = await service.getUpdateHistorys()
 
@@ -112,6 +118,8 @@ export const useUpdateStore = defineStore('update', {
 				this.errorMessage = '서버와 연결할 수 없습니다.'
 				this.status = 500
 				console.error('Failed to fetch data:', error)
+			} finally {
+				this.loading.history = false
 			}
 		},
 
@@ -138,6 +146,7 @@ export const useUpdateStore = defineStore('update', {
 		},
 
 		async actGetUpdateGetdata(params) {
+			this.loading.getdata = true
 			try {
 				const res = await service.getUpdateGetdata(params)
 
@@ -156,6 +165,8 @@ export const useUpdateStore = defineStore('update', {
 				this.status = 500
 				console.error('Failed to fetch data:', error)
 				return { status: 500, error }
+			} finally {
+				this.loading.getdata = false
 			}
 		},
 

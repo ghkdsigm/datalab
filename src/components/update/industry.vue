@@ -40,7 +40,8 @@
 					데이터 히스토리
 					<span class="text-[#777777] text-[14px] font-normal pl-[16px]">*모델은 매달 25일 학습합니다</span>
 				</h3>
-				<table class="w-full">
+				<FullScreenLoader v-if="loadingContent01" />
+				<table class="w-full" v-else>
 					<colgroup>
 						<col width="*" />
 						<col width="20%" />
@@ -97,6 +98,7 @@ import { useUpdateStore } from '@/store/update'
 const updateStore = useUpdateStore()
 
 const content = computed(() => updateStore.getUpdateHistory)
+const loadingContent01 = computed(() => updateStore.getLoadinghistory)
 
 // 업데이트 히스토리
 const fetchUpdateHistory = async () => {
