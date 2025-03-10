@@ -71,6 +71,14 @@ const router = createRouter({
 			meta: { isMenu: true, layout: 'SecondLayout', requireAuth: false },
 		},
 		{
+			path: '/simulation',
+			name: 'Simulation',
+			component: () => import('@/pages/simulation.vue'),
+			title: '예측시뮬레이션',
+			icon: 'far fa-bell fa-fw text-2xl',
+			meta: { isMenu: true, layout: 'SecondLayout', requireAuth: false },
+		},
+		{
 			path: '/:pathMatch(.*)*',
 			name: 'notFound',
 			component: NotFound,

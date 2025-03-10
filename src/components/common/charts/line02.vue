@@ -68,6 +68,7 @@ export default defineComponent({
 					tension: 0,
 					radius: 1,
 					borderColor: props.borderColor[0],
+					backgroundColor: props.borderColor[0],
 					borderWidth: 2,
 					pointRadius: 0,
 					pointHoverRadius: 5,

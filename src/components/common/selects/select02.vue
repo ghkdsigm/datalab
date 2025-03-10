@@ -10,7 +10,7 @@
 				class="px-4 py-2 rounded-md flex items-center space-x-2 justify-between w-[140px] border border-[#CCCCCC]"
 				@click="toggleDropdown"
 			>
-				<span class="pr-2">{{ selectedMonth }}</span>
+				<span class="pr-2">{{ formatYearMonth(selectedMonth) }}</span>
 				<img :src="imageSrc('common', 'ico_calander')" alt="" />
 			</button>
 
@@ -27,7 +27,7 @@
 						:class="{ 'bg-gray-200': !checkEle[idx] }"
 						class="px-4 py-2 hover:bg-[#262626] hover:text-white cursor-pointer text-left"
 					>
-						{{ month }}
+						{{ formatYearMonth(month) }}
 					</li>
 				</ul>
 			</div>
@@ -45,7 +45,7 @@ const props = defineProps({
 	hiddenDatasets: Array,
 })
 
-const { setImageSrc } = useUtilities()
+const { setImageSrc, formatYearMonth } = useUtilities()
 const imageSrc = (folder, img) => setImageSrc(folder, img)
 
 const emit = defineEmits(['update:selectedMonth'])
@@ -62,8 +62,8 @@ const toggleDropdown = event => {
 }
 
 const selectMonth = month => {
-	emit('update:selectedMonth', month) 
-	isDropdownOpen.value = false 
+	emit('update:selectedMonth', month)
+	isDropdownOpen.value = false
 }
 
 const onClickOutside = event => {

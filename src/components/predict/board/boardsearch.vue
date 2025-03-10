@@ -1,10 +1,10 @@
 <template>
 	<div class="w-full flex items-center justify-between">
 		<div>
-			<label for="month" class="mr-2 text-md text-white">기준월</label>
+			<label class="mr-2 text-md text-white">기준월</label>
 			<SelectBox id="month" :options="month" v-model="selectedMonth" />
 
-			<label for="prod" class="mx-2 text-md text-white">제품</label>
+			<label class="mx-2 text-md text-white">제품</label>
 			<SelectBox id="prod" :options="prod" v-model="selectedProduct" />
 
 			<span class="ml-5 text-white text-[20px] font-medium">보드 수량 예측 결과입니다.</span>

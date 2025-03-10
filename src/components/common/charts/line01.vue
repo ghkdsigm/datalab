@@ -84,6 +84,7 @@ export default defineComponent({
 					tension: 0,
 					radius: 1,
 					borderColor: '#25CFEE',
+					backgroundColor: '#25CFEE',
 					borderWidth: 3,
 					pointRadius: 0,
 					pointHoverRadius: 5,
@@ -92,7 +93,8 @@ export default defineComponent({
 					label: 'MDF (예측)',
 					tension: 0,
 					radius: 1,
-					borderColor: '#4B1DBF',
+					borderColor: '#F7832F',
+					backgroundColor: '#F7832F',
 					borderWidth: 3,
 					pointRadius: 0,
 					pointHoverRadius: 5,
@@ -100,8 +102,8 @@ export default defineComponent({
 				{
 					label: '특이사항',
 					//data: [{}, {}, { x: 3, y: 25000, z: '특이사항입니당' }],
-					borderColor: '#48B68E',
-					backgroundColor: '#48B68E',
+					borderColor: '#9299AC',
+					backgroundColor: '#9299AC',
 					radius: 6,
 					pointStyle: 'circle',
 					// pointRadius: 10,
@@ -116,9 +118,10 @@ export default defineComponent({
 					tension: 0,
 					radius: 1,
 					borderColor: '#FF11BC',
+					backgroundColor: '#FF11BC',
 					fill: false,
 					borderDash: [5, 5],
-					borderWidth: 3,
+					borderWidth: 2,
 					pointRadius: 0,
 					pointHoverRadius: 5,
 				},
@@ -126,22 +129,25 @@ export default defineComponent({
 					label: 'SRM 표시',
 					tension: 0,
 					radius: 1,
-					borderColor: '#23A400',
+					borderColor: '#23E19D',
+					backgroundColor: '#23E19D',
 					borderWidth: 3,
 					pointRadius: 0,
 					pointHoverRadius: 5,
 				},
 				{
-					borderColor: '#4B1DBF',
-					borderWidth: 2,
+					borderColor: '#FFD600',
+					backgroundColor: '#FFD600',
+					borderWidth: 3,
 					tension: 0,
 					radius: 1,
 					pointRadius: 0,
 					pointHoverRadius: 5,
 				},
 				{
-					borderColor: '#26FF00',
-					borderWidth: 2,
+					borderColor: '#735EF0',
+					backgroundColor: '#735EF0',
+					borderWidth: 3,
 					tension: 0,
 					radius: 1,
 					pointRadius: 0,
@@ -149,8 +155,9 @@ export default defineComponent({
 					hidden: true,
 				},
 				{
-					borderColor: '#EE0E0E',
-					borderWidth: 2,
+					borderColor: '#F1476B',
+					backgroundColor: '#F1476B',
+					borderWidth: 3,
 					tension: 0,
 					radius: 1,
 					pointRadius: 0,
@@ -438,7 +445,7 @@ export default defineComponent({
 
 		const toggleDataset = index => {
 			if (index === 1) {
-				hiddenDatasets[5] = !hiddenDatasets[5] 
+				hiddenDatasets[5] = !hiddenDatasets[5]
 				hiddenDatasets[6] = true
 				hiddenDatasets[7] = true
 

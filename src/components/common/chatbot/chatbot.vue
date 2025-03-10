@@ -39,39 +39,66 @@
 		</div> -->
 
 		<!-- 채팅 메시지 영역 -->
-		<div class="flex-1 p-4 overflow-y-auto flex flex-col gap-[30px]">
-			<!-- 대화 시작 전 안내 -->
-			<div v-if="isLoading" class="flex flex-col items-center text-center gap-2">
-				<span class="text-3xl">
-					<img :src="imageSrc('chatbot', 'ico_bot')" alt="챗봇검색아이콘" />
-				</span>
-				<p class="text-[18px] mt-[10px]">
-					안녕하세요 <span class="font-bold">AI ChatBot</span> 입니다. <br />무엇을 도와드릴까요? 질문을 입력해주세요.
-				</p>
-			</div>
+		<div class="flex-1 flex flex-col h-[85%]" :class="recommends.length > 0 ? 'isRecommend' : ''">
+			<div class="chatWrap overflow-y-auto" ref="chatWrap">
+				<!-- 대화 시작 전 안내 -->
+				<div v-if="isLoading" class="flex flex-col items-center text-center gap-2">
+					<span class="text-3xl">
+						<img :src="imageSrc('chatbot', 'ico_bot')" alt="챗봇검색아이콘" />
+					</span>
+					<p class="text-[18px] mt-[10px]">
+						안녕하세요 <span class="font-bold">AI ChatBot</span> 입니다. <br />무엇을 도와드릴까요? 질문을 입력해주세요.
+					</p>
+				</div>
 
-			<!-- 채팅 메시지 -->
-			<!-- <div v-for="(message, index) in messages" :key="index" class="flex items-start gap-3">
+				<!-- 채팅 메시지 -->
+				<!-- <div v-for="(message, index) in messages" :key="index" class="flex items-start gap-3">
 				<div class="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
 				<div class="bg-gray-100 px-3 py-2 rounded-lg max-w-[70%]">
 					{{ message.text }}
 				</div>
 			</div> -->
 
-			<div
-				v-for="(message, index) in messages"
-				:key="index"
-				class="flex"
-				:class="message.isUser ? 'justify-end' : 'justify-start items-start text-left'"
-			>
-				<!-- <div v-if="!message.isUser" class="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div> -->
-				<img v-if="!message.isUser" :src="imageSrc('chatbot', 'ico_ans_bot')" alt="챗봇검색" class="pr-2" />
 				<div
-					class="py-2 max-w-[60%] text-[16px]"
-					:class="message.isUser ? 'bg-[#1D3C6A] text-white px-[16px] py-[16px] text-left' : 'text-[#262626] '"
-					:style="message.isUser ? 'border-radius:24px 4px 24px 24px' : ''"
+					v-for="(message, index) in messages"
+					:key="index"
+					class="flex my-4 px-4"
+					:class="message.isUser ? 'justify-end' : 'justify-start items-start text-left'"
 				>
-					{{ message.text }}
+					<!-- <div v-if="!message.isUser" class="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div> -->
+					<img v-if="!message.isUser" :src="imageSrc('chatbot', 'ico_ans_bot')" alt="챗봇검색" class="pr-2" />
+					<div
+						class="max-w-[60%] text-[16px]"
+						:class="
+							message.isUser
+								? 'bg-[#1D3C6A] text-white px-[16px] py-[16px] text-left py-2 break-all'
+								: 'pb-2 text-[#262626] '
+						"
+						:style="message.isUser ? 'border-radius:24px 4px 24px 24px' : ''"
+					>
+						{{ message.text }}
+					</div>
+				</div>
+			</div>
+
+			<div class="recommendWrap px-6 my-4">
+				<div
+					v-for="(recommend, index) in recommends"
+					:key="index"
+					class="flex"
+					:class="recommend ? 'justify-end' : 'justify-start items-start text-left'"
+				>
+					<div
+						class="max-w-[60%] text-[14px]"
+						:class="
+							recommend
+								? 'bg-[#F8F8F8] text-[#555555] px-[16px] my-[4px] text-left py-[10px] break-all border border-[#CCCCCC]'
+								: ''
+						"
+						:style="recommend ? 'border-radius:24px 4px 24px 24px' : ''"
+					>
+						{{ recommend.text }}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -95,13 +122,25 @@
 
 <script setup>
 import { useUtilities } from '@/utils/common'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 
 const isOpen = ref(false)
 const isExpanded = ref(false)
 const messages = ref([])
 const newMessage = ref('')
 const isLoading = ref(true)
+const chatWrap = ref(null)
+const recommends = ref([
+	{
+		text: '꼬리 질문 말풍선 입력해주세요.',
+	},
+	{
+		text: '꼬리 질문 말풍선 입력해주세요. 추천 입력 알아서 길어지면 두줄 처리 ',
+	},
+	{
+		text: '꼬리 질문',
+	},
+])
 
 const toggleChat = () => {
 	isExpanded.value = false
@@ -114,6 +153,7 @@ const toggleChat = () => {
 				{ isUser: false, text: '무엇이든 물어보세요.' },
 			]
 			isLoading.value = false
+			scrollToBottom()
 		}, 2000)
 	} else {
 		document.body.style.overflow = ''
@@ -127,12 +167,14 @@ const sizeToggleChat = () => {
 const sendMessage = () => {
 	if (newMessage.value.trim()) {
 		messages.value.push({ isUser: true, text: newMessage.value })
+		scrollToBottom()
 
 		setTimeout(() => {
 			messages.value.push({
 				isUser: false,
 				text: `AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답AI의 응답: ${newMessage.value}`,
 			})
+			scrollToBottom()
 		}, 1000)
 
 		newMessage.value = ''
@@ -144,6 +186,14 @@ const refreshChat = () => {
 		{ isUser: false, text: '안녕하세요. 챗봇입니다.' },
 		{ isUser: false, text: '무엇이든 물어보세요.' },
 	]
+}
+
+const scrollToBottom = () => {
+	nextTick(() => {
+		if (chatWrap.value) {
+			chatWrap.value.scrollTop = chatWrap.value.scrollHeight
+		}
+	})
 }
 
 const { setImageSrc } = useUtilities()
@@ -162,6 +212,14 @@ const imageSrc = (folder, img) => setImageSrc(folder, img)
 	right: 0;
 	z-index: 9;
 }
+
+.chatWrap {
+	height: 100;
+}
+.isRecommend .chatWrap {
+	height: calc(100% - 100px);
+}
+
 .newTalk {
 	box-shadow: 0px 2px 4px 0px #00000014;
 }

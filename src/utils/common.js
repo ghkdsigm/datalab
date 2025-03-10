@@ -91,7 +91,7 @@ export function useUtilities() {
 	}
 
 	const getStartEndDate = dates => {
-		if (!Array.isArray(dates) || dates.length === 0) return null
+		if (!Array.isArray(dates) || dates.length === 0) return '불러오는중..'
 
 		const start = dates[0]
 		const year = parseInt(start.substring(0, 4)) // 연도 추출
@@ -99,6 +99,13 @@ export function useUtilities() {
 		const end = `${year + 1}${month}` // 1년 뒤 생성
 
 		return `${year}년 ${month}월 ~ ${year + 1}년 ${month}월 월별 예측 예상`
+	}
+
+	const formatYearMonth = value => {
+		if (!value || value.length !== 6) return value
+		const year = value.slice(0, 4)
+		const month = value.slice(4, 6)
+		return `${year}년 ${month}월`
 	}
 
 	return {
@@ -112,5 +119,6 @@ export function useUtilities() {
 		formatMonthRange,
 		getStartEndDate,
 		formatNumberWithCommaAndTwoDecimals,
+		formatYearMonth,
 	}
 }

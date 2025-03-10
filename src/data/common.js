@@ -35,4 +35,10 @@ export const Menu = [
 		to: '/update',
 		state: true,
 	},
+	{
+		ico: 'ico_simulation',
+		title: '예측시뮬레이션',
+		to: '/simulation',
+		state: true,
+	},
 ]
