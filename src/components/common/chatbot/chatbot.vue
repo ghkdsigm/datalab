@@ -39,7 +39,7 @@
 		</div> -->
 
 		<!-- 채팅 메시지 영역 -->
-		<div class="flex-1 flex flex-col h-[85%]" :class="recommends.length > 0 ? 'isRecommend' : ''">
+		<div class="flex-1 flex flex-col botWrap" :class="recommends.length > 0 ? 'isRecommend' : ''">
 			<div class="chatWrap overflow-y-auto" ref="chatWrap">
 				<!-- 대화 시작 전 안내 -->
 				<div v-if="isLoading" class="flex flex-col items-center text-center gap-2">
@@ -89,7 +89,7 @@
 					:class="recommend ? 'justify-end' : 'justify-start items-start text-left'"
 				>
 					<div
-						class="max-w-[60%] text-[14px]"
+						class="max-w-[85%] text-[14px]"
 						:class="
 							recommend
 								? 'bg-[#F8F8F8] text-[#555555] px-[16px] my-[4px] text-left py-[10px] break-all border border-[#CCCCCC]'
@@ -212,7 +212,9 @@ const imageSrc = (folder, img) => setImageSrc(folder, img)
 	right: 0;
 	z-index: 9;
 }
-
+.botWrap {
+	height: calc(100% - 200px);
+}
 .chatWrap {
 	height: 100;
 }
